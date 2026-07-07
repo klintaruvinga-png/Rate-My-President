@@ -69,7 +69,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       () => {
         // Geolocation permission denied or unavailable.
         clearTimeout(timeoutId);
-      }
+      },
+      { timeout: 8000 }
     );
 
     return () => {
