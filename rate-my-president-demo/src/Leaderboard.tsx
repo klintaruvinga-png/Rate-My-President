@@ -44,6 +44,9 @@ export default function Leaderboard({
   const handleRetry = useCallback(() => {
     if (onRetry) {
       onRetry();
+    } else {
+      // Fallback for consumers that didn't provide onRetry
+      window.location.reload();
     }
   }, [onRetry]);
 
