@@ -4,6 +4,7 @@ import type { CardData } from './SwipeCard.types';
 
 export function SwipeCardDemo() {
   const [voteHistory, setVoteHistory] = useState<string[]>([]);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   // Initial mock cards list
   const initialCards: CardData[] = [
@@ -182,17 +183,34 @@ export function SwipeCardDemo() {
         )}
       </div>
 
-      {/* Instructions */}
-      <div className="fixed top-4 right-4 bg-[oklch(0.20_0.02_250)] p-4 rounded-lg text-[oklch(0.75_0.02_250)] text-sm max-w-xs border border-[oklch(0.28_0.02_250)] shadow-xl z-50">
-        <h3 className="font-bold mb-2 text-white">Controls:</h3>
-        <ul className="space-y-1 opacity-80 text-xs">
-          <li>• Swipe left/right (pointer gestures)</li>
-          <li>• Swipe up to Skip</li>
-          <li>• Keyboard: D/Right = Approve</li>
-          <li>• Keyboard: A/Left = Disapprove</li>
-          <li>• Keyboard: S/Up = Skip</li>
-          <li>• Mobile: Haptic feedback on vote</li>
-        </ul>
+      {/* Controls toggle (keeps UI uncluttered on desktop) */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          aria-expanded={showInstructions}
+          aria-controls="demo-controls-panel"
+          onClick={() => setShowInstructions((s) => !s)}
+          className="w-10 h-10 rounded-full bg-[oklch(0.28_0.02_250)] text-white flex items-center justify-center shadow-md focus:outline-none focus:ring-2 focus:ring-[oklch(0.62_0.18_142)]"
+          title="Show controls"
+        >
+          ?
+        </button>
+
+        {showInstructions && (
+          <div id="demo-controls-panel" className="mt-2 w-72 bg-[oklch(0.20_0.02_250)] p-4 rounded-lg text-[oklch(0.75_0.02_250)] text-sm border border-[oklch(0.28_0.02_250)] shadow-xl">
+            <div className="flex justify-between items-start">
+              <h3 className="font-bold mb-2 text-white">Controls:</h3>
+              <button onClick={() => setShowInstructions(false)} className="ml-2 text-sm opacity-70">Close</button>
+            </div>
+            <ul className="space-y-1 opacity-80 text-xs">
+              <li>• Swipe left/right (pointer gestures)</li>
+              <li>• Swipe up to Skip</li>
+              <li>• Keyboard: D/Right = Approve</li>
+              <li>• Keyboard: A/Left = Disapprove</li>
+              <li>• Keyboard: S/Up = Skip</li>
+              <li>• Mobile: Haptic feedback on vote</li>
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

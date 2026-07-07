@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { LeaderboardEntry, LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
+import { TrendUpIcon, TrendDownIcon } from './Icons';
 
 export default function Leaderboard({
   entries,
@@ -74,7 +75,7 @@ export default function Leaderboard({
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 bg-[oklch(0.28_0.02_250)] rounded-full" />
+          <div className="h-10 w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
           <div className="h-4 w-24 bg-[oklch(0.28_0.02_250)] rounded" />
         </div>
       </td>
@@ -204,7 +205,7 @@ export default function Leaderboard({
                           <img
                             src={entry.avatarUrl}
                             alt={entry.name}
-                            className="h-10 w-10 rounded-full bg-[oklch(0.20_0.02_250)] flex-shrink-0"
+                            className="h-10 w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0"
                           />
                           {/* Name */}
                           <span className="font-['Space_Grotesk'] font-600 text-sm hover:text-[oklch(0.62_0.18_142)] transition-colors truncate">
@@ -220,11 +221,17 @@ export default function Leaderboard({
                         </span>
                       </td>
                       <td className="hidden px-4 py-4 text-right md:table-cell">
-                        <span
-                          className={`text-lg ${entry.trend === 'up' ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]'}`}
-                        >
-                          {entry.trend === 'up' ? '↑' : '↓'}
-                        </span>
+                        {entry.trend === 'up' ? (
+                          <TrendUpIcon
+                            className={`w-5 h-5 text-[oklch(0.62_0.18_142)]`}
+                            aria-label="Trend up"
+                          />
+                        ) : (
+                          <TrendDownIcon
+                            className={`w-5 h-5 text-[oklch(0.55_0.20_25)]`}
+                            aria-label="Trend down"
+                          />
+                        )}
                       </td>
                       <td className="hidden px-4 py-4 text-right font-['Inter'] text-[oklch(0.75_0.02_250)] lg:table-cell">
                         {entry.voteCount.toLocaleString()}
