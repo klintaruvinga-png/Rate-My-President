@@ -6,7 +6,7 @@ import LeaderboardDemo from './Leaderboard.demo';
 import headerImage from '../../assets/Obama Header No BG.png';
 import NewsTicker from './NewsTicker';
 import LeaderTicker from './LeaderTicker';
-import { getHasCompletedOnboarding, setHasCompletedOnboarding } from './onboardingStorage';
+import { getHasCompletedOnboarding, setHasCompletedOnboarding, setUserCountry } from './onboardingStorage';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'swipe' | 'onboarding' | 'leaderboard'>(() => {
@@ -19,8 +19,10 @@ function App() {
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = (countryCode: string | null) => {
     setHasCompletedOnboarding(true);
+    // Persist (or clear) the home country so the swipe stack shows it immediately
+    setUserCountry(countryCode);
     setActiveTab('swipe');
   };
 

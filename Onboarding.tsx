@@ -15,21 +15,32 @@ interface OnboardingProps {
   onComplete: (countryCode: string | null) => void;
   onSkip?: () => void;
   availableCountries: CountryData[];
+  /** Pre-populate the country picker from a previously saved selection */
+  defaultCountryCode?: string | null;
 }
 
 export const Onboarding: React.FC<OnboardingProps> = ({
   onComplete,
   onSkip,
   availableCountries = [],
+  defaultCountryCode,
 }) => {
   const [currentScreen, setCurrentScreen] = useState<OnboardingScreen>('intro');
-  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
+
+  const defaultCountry = defaultCountryCode
+    ? availableCountries.find((c) => c.code === defaultCountryCode) ?? null
+    : null;
+
+  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(defaultCountry);
   const [searchQuery, setSearchQuery] = useState('');
   const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
+  // When true, hide the search UI and show the selected-country preview card
+  const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
-  // Detect user's geolocation on mount
+  // Detect user's geolocation on mount (only when not pre-populated)
   useEffect(() => {
+    if (defaultCountry) return; // already have a saved selection
     if (navigator.geolocation && availableCountries.length > 0) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -96,6 +107,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   const handleSkipCountry = () => {
     setSelectedCountry(null);
+    setCountryConfirmed(false);
     setCurrentScreen('confirmation');
   };
 
@@ -299,23 +311,51 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </p>
           </div>
 
-          {/* Search input */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search countries..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
-            />
-          </div>
+          {/* Search input — only shown when no country is confirmed yet */}
+          {countryConfirmed && selectedCountry ? (
+            <div className="rounded-xl bg-[oklch(0.20_0.02_250)] border border-[oklch(0.62_0.18_142)/0.4] p-5 flex items-center gap-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)]">
+              <div className="flex-shrink-0 text-4xl">{selectedCountry.flag}</div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs uppercase tracking-[0.18em] text-[oklch(0.72_0.15_65)] font-['Space_Grotesk'] mb-0.5">Your home country</p>
+                <p className="text-xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] truncate">{selectedCountry.name}</p>
+                {selectedCountry.leader && (
+                  <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mt-0.5 truncate">{selectedCountry.leader}</p>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  setCountryConfirmed(false);
+                  setSelectedCountry(null);
+                  setSearchQuery('');
+                }}
+                className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] text-xs font-semibold font-['Space_Grotesk'] hover:border-[oklch(0.95_0.02_250)/0.6] hover:text-[oklch(0.95_0.02_250)] transition-colors"
+              >
+                Change
+              </button>
+            </div>
+          ) : (
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search countries..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
+              />
+            </div>
+          )}
 
-          {/* Country list */}
-          <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto space-y-0`}>
+          {/* Country list — hidden when a selection is confirmed */}
+          {!countryConfirmed && (
+            <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto space-y-0`}>
             {filteredCountries.slice(0, 10).map((country) => (
                 <button
                 key={country.code}
-                onClick={() => setSelectedCountry(country)}
+                onClick={() => {
+                userMadeExplicitChoice.current = true;
+                setSelectedCountry(country);
+                setCountryConfirmed(true);
+              }}
                 className={`w-full px-4 py-3 text-left transition-colors ${
                   selectedCountry?.code === country.code
                     ? 'bg-[oklch(0.28_0.02_250)]'
@@ -332,6 +372,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </button>
             ))}
           </div>
+          )}
 
           {/* Action buttons */}
           <div className="space-y-2">

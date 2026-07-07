@@ -24,21 +24,32 @@ export interface OnboardingProps {
   onComplete: (countryCode: string | null) => void;
   onSkip?: () => void;
   availableCountries: CountryData[];
+  /** Pre-populate the country picker from a previously saved selection */
+  defaultCountryCode?: string | null;
 }
 
 export const Onboarding: React.FC<OnboardingProps> = ({
   onComplete,
   onSkip: _onSkip,
   availableCountries = [],
+  defaultCountryCode,
 }) => {
   const [currentScreen, setCurrentScreen] = useState<OnboardingScreen>('intro');
-  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
+
+  // Seed selected country from default if provided
+  const defaultCountry = defaultCountryCode
+    ? availableCountries.find((c) => c.code === defaultCountryCode) ?? null
+    : null;
+
+  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(defaultCountry);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const [focusedCountryIndex, setFocusedCountryIndex] = useState(0);
+  // When true, hide the search UI and show the selected-country preview card
+  const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
   const countryButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const userMadeExplicitChoice = useRef(false);
+  const userMadeExplicitChoice = useRef(defaultCountry !== null);
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
   const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation'];
   const progressPercent = ((screenOrder.indexOf(currentScreen) + 1) / screenOrder.length) * 100;
@@ -56,19 +67,18 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         try {
           const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
-            {
-              signal: abortController.signal,
-              // Nominatim public endpoint prefers a Referer or contact header for polite usage; callers should supply a production provider instead.
-            }
+            { signal: abortController.signal }
           );
           const data = await response.json();
-          const countryCode = data.address?.country_code?.toLowerCase();
+          const countryCode = data.address?.country_code?.toUpperCase();
           const matchedCountry = availableCountries.find(
-            (country) => country.code.toLowerCase() === countryCode
+            (country) => country.code.toUpperCase() === countryCode
           );
 
           if (matchedCountry && !userMadeExplicitChoice.current) {
             setSelectedCountry(matchedCountry);
+            setCountryConfirmed(true);
+            userMadeExplicitChoice.current = true;
           }
         } catch {
           // Reverse geocoding failed or was aborted; fallback to manual selection.
@@ -164,6 +174,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const handleCountrySelection = (country: CountryData) => {
     userMadeExplicitChoice.current = true;
     setSelectedCountry(country);
+    setCountryConfirmed(true);
+  };
+
+  const handleClearCountry = () => {
+    setCountryConfirmed(false);
+    setSelectedCountry(null);
+    setSearchQuery('');
+    userMadeExplicitChoice.current = false;
   };
 
   const handleCountryKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -316,64 +334,90 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <h2 className="text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Where are you from?</h2>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. (You can change this later.)</p>
             </div>
-            {/* Location consent prompt: only show when we haven't asked yet */}
-            {locationConsent === null && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
-              <div className="p-3 rounded-lg bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] space-y-2">
-                <p className="text-sm">Allow using your location to preselect your country? This sends coordinates to a reverse-geocoding provider.</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setLocationConsent(true)}
-                    className="flex-1 py-2 bg-[oklch(0.62_0.18_142)] text-white rounded-md"
-                  >
-                    Yes, use my location
-                  </button>
-                  <button
-                    onClick={() => { setLocationConsent(false); userMadeExplicitChoice.current = true; }}
-                    className="flex-1 py-2 bg-transparent border border-[oklch(0.75_0.02_250)] rounded-md"
-                  >
-                    No thanks
-                  </button>
+
+            {/* ── Selected-country preview card ── */}
+            {countryConfirmed && selectedCountry ? (
+              <div className="rounded-xl bg-[oklch(0.20_0.02_250)] border border-[oklch(0.62_0.18_142)/0.4] p-5 flex items-center gap-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)]">
+                <div className="flex-shrink-0">
+                  <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-14 h-14" />
                 </div>
-              </div>
-            )}
-            <div className="relative">
-              <label htmlFor="country-search" className="sr-only">Search countries</label>
-              <input
-                id="country-search"
-                type="text"
-                placeholder="Search countries..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
-              />
-            </div>
-            {filteredCountries.length > 10 && <p className="text-xs text-[oklch(0.75_0.02_250)]">Showing the first 10 matching countries. Narrow your search for more results.</p>}
-            <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto`} role="listbox" aria-label="Country list">
-              {visibleCountries.map((country, index) => (
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs uppercase tracking-[0.18em] text-[oklch(0.72_0.15_65)] font-['Space_Grotesk'] mb-0.5">Your home country</p>
+                  <p className="text-xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] truncate">{selectedCountry.name}</p>
+                  {selectedCountry.leader && (
+                    <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mt-0.5 truncate">{selectedCountry.leader}</p>
+                  )}
+                </div>
                 <button
-                  key={country.code}
-                  ref={(element) => {
-                    countryButtonRefs.current[index] = element;
-                  }}
-                  onClick={() => handleCountrySelection(country)}
-                  onKeyDown={(event) => handleCountryKeyDown(event, index)}
-                  role="option"
-                  aria-selected={selectedCountry?.code === country.code}
-                  className={`w-full px-4 py-3 text-left transition-colors ${selectedCountry?.code === country.code ? 'bg-[oklch(0.28_0.02_250)]' : 'hover:bg-[oklch(0.28_0.02_250)]'} border-b border-[oklch(0.28_0.02_250)] last:border-b-0 ${focusedCountryIndex === index ? 'ring-1 ring-[oklch(0.62_0.18_142)]' : ''}`}
+                  onClick={handleClearCountry}
+                  className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] text-xs font-semibold font-['Space_Grotesk'] hover:border-[oklch(0.95_0.02_250)/0.6] hover:text-[oklch(0.95_0.02_250)] transition-colors"
                 >
-                  <AnimatedFlag countryCode={country.code} fallbackFlag={country.flag} className="w-6 h-6 inline-flex mr-3" />
-                  <span className="text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] text-sm">{country.name}</span>
-                  {selectedCountry?.code === country.code && <span className="float-right text-[oklch(0.62_0.18_142)]">✓</span>}
+                  Change
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <>
+                {/* Location consent prompt: only show when we haven't asked yet */}
+                {locationConsent === null && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
+                  <div className="p-3 rounded-lg bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] space-y-2">
+                    <p className="text-sm">Allow using your location to preselect your country? This sends coordinates to a reverse-geocoding provider.</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setLocationConsent(true)}
+                        className="flex-1 py-2 bg-[oklch(0.62_0.18_142)] text-white rounded-md"
+                      >
+                        Yes, use my location
+                      </button>
+                      <button
+                        onClick={() => { setLocationConsent(false); userMadeExplicitChoice.current = true; }}
+                        className="flex-1 py-2 bg-transparent border border-[oklch(0.75_0.02_250)] rounded-md"
+                      >
+                        No thanks
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <div className="relative">
+                  <label htmlFor="country-search" className="sr-only">Search countries</label>
+                  <input
+                    id="country-search"
+                    type="text"
+                    placeholder="Search countries..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
+                  />
+                </div>
+                {filteredCountries.length > 10 && <p className="text-xs text-[oklch(0.75_0.02_250)]">Showing the first 10 matching countries. Narrow your search for more results.</p>}
+                <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto`} role="listbox" aria-label="Country list">
+                  {visibleCountries.map((country, index) => (
+                    <button
+                      key={country.code}
+                      ref={(element) => {
+                        countryButtonRefs.current[index] = element;
+                      }}
+                      onClick={() => handleCountrySelection(country)}
+                      onKeyDown={(event) => handleCountryKeyDown(event, index)}
+                      role="option"
+                      aria-selected={selectedCountry?.code === country.code}
+                      className={`w-full px-4 py-3 text-left transition-colors ${selectedCountry?.code === country.code ? 'bg-[oklch(0.28_0.02_250)]' : 'hover:bg-[oklch(0.28_0.02_250)]'} border-b border-[oklch(0.28_0.02_250)] last:border-b-0 ${focusedCountryIndex === index ? 'ring-1 ring-[oklch(0.62_0.18_142)]' : ''}`}
+                    >
+                      <AnimatedFlag countryCode={country.code} fallbackFlag={country.flag} className="w-6 h-6 inline-flex mr-3" />
+                      <span className="text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] text-sm">{country.name}</span>
+                      {selectedCountry?.code === country.code && <span className="float-right text-[oklch(0.62_0.18_142)]">✓</span>}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             <div className="space-y-2">
               <button
                 onClick={handleAdvanceScreen}
                 disabled={!selectedCountry}
                 className={`w-full py-3 rounded-lg font-semibold font-['Space_Grotesk'] transition-all ${selectedCountry ? 'bg-[oklch(0.62_0.18_142)] text-white hover:opacity-90' : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] opacity-50 cursor-not-allowed'}`}
               >
-                Continue with {selectedCountry?.flag} {selectedCountry?.name}
+                Continue with {selectedCountry?.flag} {selectedCountry?.name || '...'}
               </button>
               <button
                 onClick={handleSkipCountry}
