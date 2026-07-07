@@ -391,7 +391,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             }`}
             aria-label="Disapprove"
           >
-            <DisapproveIcon className="w-4 h-4" aria-hidden="true" />
+            <span aria-hidden="true" className="inline-flex">
+              <DisapproveIcon className="w-4 h-4" />
+            </span>
             Disapprove
           </button>
 
@@ -402,7 +404,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Disapprove"
           >
-            <DisapproveIcon className="w-6 h-6" aria-hidden="true" />
+            <span aria-hidden="true" className="inline-flex">
+              <DisapproveIcon className="w-6 h-6" />
+            </span>
           </button>
 
           {/* Approve button */}
@@ -418,7 +422,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             }`}
             aria-label="Approve"
           >
-            <ApproveIcon className="w-4 h-4" aria-hidden="true" />
+            <span aria-hidden="true" className="inline-flex">
+              <ApproveIcon className="w-4 h-4" />
+            </span>
             Approve
           </button>
 
@@ -429,7 +435,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Approve"
           >
-            <ApproveIcon className="w-6 h-6" aria-hidden="true" />
+            <span aria-hidden="true" className="inline-flex">
+              <ApproveIcon className="w-6 h-6" />
+            </span>
           </button>
 
           {/* Skip button (muted) */}
@@ -445,7 +453,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             }`}
             aria-label="Skip"
           >
-            <SkipIcon className="w-4 h-4" aria-hidden="true" />
+            <span aria-hidden="true" className="inline-flex">
+              <SkipIcon className="w-4 h-4" />
+            </span>
             Skip
           </button>
         </div>
@@ -495,11 +505,17 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               Yesterday:{' '}
               <span className="inline-block w-4 h-4 align-text-bottom">
                 {card.yesterdayVote === 'approve' ? (
-                  <ApproveIcon aria-hidden="true" />
+                  <span aria-hidden="true" className="inline-flex">
+                    <ApproveIcon />
+                  </span>
                 ) : card.yesterdayVote === 'disapprove' ? (
-                  <DisapproveIcon aria-hidden="true" />
+                  <span aria-hidden="true" className="inline-flex">
+                    <DisapproveIcon />
+                  </span>
                 ) : (
-                  <SkipIcon aria-hidden="true" />
+                  <span aria-hidden="true" className="inline-flex">
+                    <SkipIcon />
+                  </span>
                 )}
               </span>{' '}
               {card.yesterdayVote === 'approve' ? 'Approve' : card.yesterdayVote === 'disapprove' ? 'Disapprove' : 'Skip'}

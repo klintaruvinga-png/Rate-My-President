@@ -437,7 +437,7 @@ These patterns are incompatible with Rate My President's brand and product princ
 **Before code:**
 - [ ] Author portrait illustration system: 18+ leaders in editorial style, rounded-square canvas, using only permitted colors (no flag colors, no vote semantics)
 - [ ] Create neutral silhouette fallback asset (same rounded-square canvas, `--surface-muted` fill)
-- [ ] Commission or generate 18-icon SVG set: Home, Leaderboard, Globe, News, Profile, Approve, Disapprove, Skip, Share, Search, Filter, Settings, Notifications, Trend Up, Trend Down, Approval, Vote, Streak, Tip Jar (all 24�24px, 2px stroke, `currentColor`-driven)
+- [ ] Commission or generate 18-icon SVG set: Home, Leaderboard, Globe, News, Profile, Approve, Disapprove, Skip, Share, Search, Filter, Settings, Notifications, Trend Up, Trend Down, Approval, Vote, Streak, Tip Jar (all 24×24px, 2px stroke, `currentColor`-driven)
 - [ ] Update `tailwind.config.js`: add avatar border-radius tokens (rounded-square: 20px, 8px, 12px, 24px per context)
 
 **Component migrations:**
@@ -448,14 +448,14 @@ These patterns are incompatible with Rate My President's brand and product princ
 - [ ] Tip Jar: Replace any placeholder icons with Tip Jar SVG; ensure no pre-checked boxes
 
 **Avatar updates (all components):**
-- [ ] Replace `rounded-full` with `rounded-[20px]` (Swipe Card, 120�120px)
-- [ ] Replace `rounded-full` with `rounded-[8px]` (Leaderboard rows, 40�40px)
-- [ ] Replace `rounded-full` with `rounded-[12px]` (Profile, 64�64px)
-- [ ] Replace `rounded-full` with `rounded-[24px]` (Share card, 160�160px)
+- [ ] Replace `rounded-full` with `rounded-[20px]` (Swipe Card, 120×120px)
+- [ ] Replace `rounded-full` with `rounded-[8px]` (Leaderboard rows, 40×40px)
+- [ ] Replace `rounded-full` with `rounded-[12px]` (Profile, 64×64px)
+- [ ] Replace `rounded-full` with `rounded-[24px]` (Share card, 160×160px)
 - [ ] All avatar `alt` text: "[Leader Name], [Title/Country]"
 
 **Accessibility pass:**
-- [ ] Audit all icon `aria-label` attributes (describe action, not visual�"Approve" not "thumbs up outline")
+- [ ] Audit all icon `aria-label` attributes (describe action, not visual — e.g. “Approve” rather than “thumbs up outline”)
 - [ ] Verify portrait `alt` text is present and descriptive
 - [ ] Test keyboard navigation (swipe card buttons, leaderboard sort, form controls)
 - [ ] Run contrast audit: ensure all text =4.5:1, all interactive elements readable at target sizes
@@ -473,10 +473,10 @@ These patterns are incompatible with Rate My President's brand and product princ
 
 ## Next Steps (Implementation Sequencing)
 
-1. **Week 1 � Design assets:** Finalize portrait library (editorial style, rounded-square, color constraints). Finalize icon system (18 SVGs, 24�24px, `currentColor`).
-2. **Week 2 � Component updates:** Migrate emoji to icons in SwipeCard, Onboarding, Streak Counter. Update all avatar border-radius. Add Daily Prompt row to SwipeCard layout.
-3. **Week 3 � Integration & polish:** Accessibility audit, contrast verification, reduced-motion testing. Update Tailwind config, CSS tokens. Verify build and CI.
-4. **Week 4 � QA & documentation:** Full end-to-end testing. Update component library. Prepare handoff notes for maintainers.
+1. **Week 1 — Design assets:** Finalize portrait library (editorial style, rounded-square, color constraints). Finalize icon system (18 SVGs, 24×24px, `currentColor`).
+2. **Week 2 — Component updates:** Migrate emoji to icons in SwipeCard, Onboarding, Streak Counter. Update all avatar border-radius. Add Daily Prompt row to SwipeCard layout.
+3. **Week 3 — Integration & polish:** Accessibility audit, contrast verification, reduced-motion testing. Update Tailwind config, CSS tokens. Verify build and CI.
+4. **Week 4 — QA & documentation:** Full end-to-end testing. Update component library. Prepare handoff notes for maintainers.
 
 ---
 

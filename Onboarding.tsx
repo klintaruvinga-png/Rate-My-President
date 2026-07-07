@@ -164,9 +164,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <div className="w-20 h-20 bg-[oklch(0.28_0.02_250)] rounded-full mx-auto"></div>
             <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Your leader here</p>
             <div className="flex justify-center gap-4 text-xl">
-              <span className="inline-block w-6 h-6"><DisapproveIcon aria-label="Disapprove" /></span>
-              <span className="inline-block w-6 h-6"><ApproveIcon aria-label="Approve" /></span>
-              <span className="inline-block w-6 h-6"><SkipIcon aria-label="Skip" /></span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <DisapproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <ApproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <SkipIcon className="w-full h-full" />
+              </span>
             </div>
           </div>
 
@@ -208,9 +214,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <div className="w-20 h-20 bg-[oklch(0.28_0.02_250)] rounded-full mx-auto"></div>
             <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Random leader here</p>
             <div className="flex justify-center gap-4 text-xl">
-              <span className="inline-block w-6 h-6"><DisapproveIcon aria-label="Disapprove" /></span>
-              <span className="inline-block w-6 h-6"><ApproveIcon aria-label="Approve" /></span>
-              <span className="inline-block w-6 h-6"><SkipIcon aria-label="Skip" /></span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <DisapproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <ApproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <SkipIcon className="w-full h-full" />
+              </span>
             </div>
           </div>
 
@@ -249,16 +261,24 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
               <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
               <div className="flex justify-center gap-2 text-lg">
-                <span className="inline-block w-5 h-5"><DisapproveIcon aria-label="Disapprove" /></span>
-                <span className="inline-block w-5 h-5"><ApproveIcon aria-label="Approve" /></span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <DisapproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <ApproveIcon className="w-full h-full" />
+                </span>
               </div>
             </div>
             <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
               <div className="text-3xl inline-block w-10 h-10"><GlobeIcon aria-label="Global" /></div>
               <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
               <div className="flex justify-center gap-2 text-lg">
-                <span className="inline-block w-5 h-5"><DisapproveIcon aria-label="Disapprove" /></span>
-                <span className="inline-block w-5 h-5"><ApproveIcon aria-label="Approve" /></span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <DisapproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <ApproveIcon className="w-full h-full" />
+                </span>
               </div>
             </div>
           </div>

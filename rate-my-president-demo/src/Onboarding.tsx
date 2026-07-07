@@ -231,9 +231,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <div className="w-20 h-20 bg-[oklch(0.28_0.02_250)] rounded-full mx-auto" />
               <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Your leader here</p>
               <div className="flex justify-center gap-4 text-xl">
-                <span className="inline-block w-6 h-6"><DisapproveIcon aria-hidden="true" /></span>
-                <span className="inline-block w-6 h-6"><ApproveIcon aria-hidden="true" /></span>
-                <span className="inline-block w-6 h-6"><SkipIcon aria-hidden="true" /></span>
+                <span className="inline-block w-6 h-6" aria-hidden="true">
+                  <DisapproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-6 h-6" aria-hidden="true">
+                  <ApproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-6 h-6" aria-hidden="true">
+                  <SkipIcon className="w-full h-full" />
+                </span>
               </div>
             </div>
             <div className="flex gap-3">
