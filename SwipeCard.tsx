@@ -11,7 +11,7 @@ import {
 } from './Icons';
 
 type CardType = 'home' | 'global';
-type VoteAction = 'approve' | 'disapprove' | 'skip' | null;
+type VoteAction = 'like' | 'nolike' | 'skip' | null;
 
 interface CardData {
   id: string;
@@ -24,7 +24,7 @@ interface CardData {
   approvalPercent: number;
   trend: 'up' | 'down' | 'neutral';
   headlines: Array<{ title: string; source: string; date: string; url: string }>;
-  yesterdayVote?: 'approve' | 'disapprove' | 'skip';
+  yesterdayVote?: 'like' | 'nolike' | 'skip';
 }
 
 interface SwipeCardProps {
@@ -120,7 +120,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     
     // Check horizontal swipe
     if (Math.abs(offsetX) > SWIPE_THRESHOLD && Math.abs(offsetX) > Math.abs(offsetY)) {
-      const action = offsetX > 0 ? 'approve' : 'disapprove';
+      const action = offsetX > 0 ? 'like' : 'nolike';
       triggerFling(action);
     } 
     // Check vertical swipe up (skip)
@@ -153,15 +153,15 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     });
   };
 
-  const triggerFling = (action: 'approve' | 'disapprove' | 'skip') => {
+  const triggerFling = (action: 'like' | 'nolike' | 'skip') => {
     setIsFlinging(true);
     setFlingAction(action);
     
     let targetX = 0;
     let targetY = 0;
-    if (action === 'approve') {
+    if (action === 'like') {
       targetX = 600;
-    } else if (action === 'disapprove') {
+    } else if (action === 'nolike') {
       targetX = -600;
     } else {
       targetY = -800;
@@ -200,12 +200,12 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         case 'ArrowRight':
         case 'd':
         case 'D':
-          handleVote('approve');
+          handleVote('like');
           break;
         case 'ArrowLeft':
         case 'a':
         case 'A':
-          handleVote('disapprove');
+          handleVote('nolike');
           break;
         case 'ArrowUp':
         case 's':
@@ -241,19 +241,19 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const topScale = isFlinging ? 1.0 : 1 - Math.min(dragDistance / 1000, 0.04);
 
   // Overlay badge opacities
-  let approveOpacity = 0;
-  let disapproveOpacity = 0;
+  let likeOpacity = 0;
+  let nolikeOpacity = 0;
   let skipOpacity = 0;
 
   if (isFlinging) {
-    if (flingAction === 'approve') approveOpacity = 1;
-    if (flingAction === 'disapprove') disapproveOpacity = 1;
+    if (flingAction === 'like') likeOpacity = 1;
+    if (flingAction === 'nolike') nolikeOpacity = 1;
     if (flingAction === 'skip') skipOpacity = 1;
   } else if (dragState.isDragging) {
     if (offsetX > 0 && offsetX > Math.abs(offsetY)) {
-      approveOpacity = Math.min(offsetX / 80, 1);
+      likeOpacity = Math.min(offsetX / 80, 1);
     } else if (offsetX < 0 && Math.abs(offsetX) > Math.abs(offsetY)) {
-      disapproveOpacity = Math.min(Math.abs(offsetX) / 80, 1);
+      nolikeOpacity = Math.min(Math.abs(offsetX) / 80, 1);
     } else if (offsetY < 0 && Math.abs(offsetY) > Math.abs(offsetX)) {
       skipOpacity = Math.min(Math.abs(offsetY) / 80, 1);
     }
@@ -354,16 +354,16 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           >
             {/* Overlay Badges */}
             <div
-              style={{ opacity: approveOpacity }}
+              style={{ opacity: likeOpacity }}
               className="border-4 border-[oklch(0.62_0.18_142)] text-[oklch(0.62_0.18_142)] text-2xl font-bold uppercase rounded-lg px-3 py-1 tracking-widest absolute top-8 left-6 rotate-[-12deg] pointer-events-none z-30 transition-opacity duration-75"
             >
-              APPROVE
+              LIKE
             </div>
             <div
-              style={{ opacity: disapproveOpacity }}
+              style={{ opacity: nolikeOpacity }}
               className="border-4 border-[oklch(0.55_0.20_25)] text-[oklch(0.55_0.20_25)] text-2xl font-bold uppercase rounded-lg px-3 py-1 tracking-widest absolute top-8 right-6 rotate-[12deg] pointer-events-none z-30 transition-opacity duration-75"
             >
-              OPPOSE
+              NO LIKE
             </div>
             <div
               style={{ opacity: skipOpacity }}
@@ -378,62 +378,63 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
         {/* Button row (always visible on mobile, appear on hover on desktop) */}
         <div className="flex justify-center gap-4 mt-6">
-          {/* Disapprove button */}
+
+
+          {/* No Like button */}
           <button
-            onClick={() => handleVote('disapprove')}
-            onMouseEnter={() => setHoveredButton('disapprove')}
+            onClick={() => handleVote('nolike')}
+            onMouseEnter={() => setHoveredButton('nolike')}
             onMouseLeave={() => setHoveredButton(null)}
             disabled={isLoading || voteAction !== null || isFlinging}
             className={`hidden md:flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
-              hoveredButton === 'disapprove'
+              hoveredButton === 'nolike'
                 ? 'bg-[oklch(0.55_0.20_25)] text-white'
                 : 'bg-transparent text-[oklch(0.55_0.20_25)] border border-[oklch(0.55_0.20_25)]'
             }`}
-            aria-label="Disapprove"
+            aria-label="No Like"
           >
             <span aria-hidden="true" className="inline-flex">
               <DisapproveIcon className="w-4 h-4" />
             </span>
-            Disapprove
+            No Like
           </button>
-
-          {/* Mobile disapprove icon */}
+          {/* Mobile No Like icon */}
           <button
-            onClick={() => handleVote('disapprove')}
+            onClick={() => handleVote('nolike')}
             disabled={isLoading || voteAction !== null || isFlinging}
             className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] opacity-60 hover:opacity-100 transition-opacity"
-            aria-label="Disapprove"
+            aria-label="No Like"
           >
             <span aria-hidden="true" className="inline-flex">
               <DisapproveIcon className="w-6 h-6" />
             </span>
           </button>
 
-          {/* Approve button */}
+          {/* Like button */}
           <button
-            onClick={() => handleVote('approve')}
-            onMouseEnter={() => setHoveredButton('approve')}
+            onClick={() => handleVote('like')}
+            onMouseEnter={() => setHoveredButton('like')}
             onMouseLeave={() => setHoveredButton(null)}
             disabled={isLoading || voteAction !== null || isFlinging}
             className={`hidden md:flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
-              hoveredButton === 'approve'
+              hoveredButton === 'like'
                 ? 'bg-[oklch(0.62_0.18_142)] text-white'
                 : 'bg-transparent text-[oklch(0.62_0.18_142)] border border-[oklch(0.62_0.18_142)]'
             }`}
-            aria-label="Approve"
+            aria-label="Like"
           >
             <span aria-hidden="true" className="inline-flex">
               <ApproveIcon className="w-4 h-4" />
             </span>
-            Approve
+            Like
           </button>
 
-          {/* Mobile approve icon */}
+          {/* Mobile Like icon */}
           <button
-            onClick={() => handleVote('approve')}
+            onClick={() => handleVote('like')}
             disabled={isLoading || voteAction !== null || isFlinging}
             className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] opacity-60 hover:opacity-100 transition-opacity"
-            aria-label="Approve"
+            aria-label="Like"
           >
             <span aria-hidden="true" className="inline-flex">
               <ApproveIcon className="w-6 h-6" />
@@ -504,11 +505,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             <div className="text-center text-xs text-[oklch(0.75_0.02_250)] opacity-60 mb-4 font-['Inter']">
               Yesterday:{' '}
               <span className="inline-block w-4 h-4 align-text-bottom">
-                {card.yesterdayVote === 'approve' ? (
+                {card.yesterdayVote === 'like' ? (
                   <span aria-hidden="true" className="inline-flex">
                     <ApproveIcon />
                   </span>
-                ) : card.yesterdayVote === 'disapprove' ? (
+                ) : card.yesterdayVote === 'nolike' ? (
                   <span aria-hidden="true" className="inline-flex">
                     <DisapproveIcon />
                   </span>
@@ -518,7 +519,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
                   </span>
                 )}
               </span>{' '}
-              {card.yesterdayVote === 'approve' ? 'Approve' : card.yesterdayVote === 'disapprove' ? 'Disapprove' : 'Skip'}
+              {card.yesterdayVote === 'like' ? 'Like' : card.yesterdayVote === 'nolike' ? 'No Like' : 'Skip'}
             </div>
           )}
 
