@@ -221,15 +221,17 @@ export default function Leaderboard({
                         </span>
                       </td>
                       <td className="hidden px-4 py-4 text-right md:table-cell">
-                        <div
-                          className={`text-lg inline-block w-5 h-5 ${entry.trend === 'up' ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]'}`}
-                        >
-                          {entry.trend === 'up' ? (
-                            <TrendUpIcon aria-label="Trend up" />
-                          ) : (
-                            <TrendDownIcon aria-label="Trend down" />
-                          )}
-                        </div>
+                        {entry.trend === 'up' ? (
+                          <TrendUpIcon
+                            className={`w-5 h-5 text-[oklch(0.62_0.18_142)]`}
+                            aria-label="Trend up"
+                          />
+                        ) : (
+                          <TrendDownIcon
+                            className={`w-5 h-5 text-[oklch(0.55_0.20_25)]`}
+                            aria-label="Trend down"
+                          />
+                        )}
                       </td>
                       <td className="hidden px-4 py-4 text-right font-['Inter'] text-[oklch(0.75_0.02_250)] lg:table-cell">
                         {entry.voteCount.toLocaleString()}

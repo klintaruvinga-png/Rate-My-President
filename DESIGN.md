@@ -238,7 +238,6 @@ Swipe Area             (Gesture + Icon buttons: Approve/Disapprove/Skip)
 **Accessibility:** `role="region"` with `aria-label="Daily leader card"`, semantic buttons for keyboard users, pointer-capture guard to prevent scroll interference
 
 #### 2. Card Flip Reveal
-#### 2. Card Flip Reveal
 
 - **Approval %:** Inter 32px, bold, `--approve-green` (≥50%) or `--disapprove-red` (<50%)
 - **7-day trend:** Trend Up or Trend Down icon (2px stroke, 24×24px), inline with %, no text label (icon has `aria-label` for screen readers)
@@ -406,14 +405,14 @@ These patterns are incompatible with Rate My President's brand and product princ
 **Philosophy:** Smooth and bouncy on the swipe gesture (the core interaction, where playfulness lives); fast and quiet elsewhere (interaction chrome, leaderboard, list updates). All motion respects `prefers-reduced-motion: reduce` with instant/fade alternatives.
 
 ### Swipe Gesture
-- **Easing:** `cubic-bezier(0.34, 1.56, 0.64, 1)` � Ease-out with subtle overshoot (quart or quint equivalent)
-- **Duration:** 300�350ms drag and release; overshoot settles in ~400ms total
+- **Easing:** `cubic-bezier(0.34, 1.56, 0.64, 1)` — Ease-out with subtle overshoot (quart or quint equivalent)
+- **Duration:** 300–350ms drag and release; overshoot settles in ~400ms total
 - **Physics:** Card follows finger, slightly elastic; on release, snaps to final state with bounce
 - **Reduced motion alt:** Instant snap to final state (no drag visualization or bounce)
 
 ### Card Flip Reveal
 - **Stat counter:** Counts from 0 to final approval % over 600ms, easing out (quart)
-- **Flip transition:** Brief cross-fade or rotate (180�) of the card content, 250ms ease-out
+- **Flip transition:** Brief cross-fade or rotate (180°) of the card content, 250ms ease-out
 - **Reduced motion alt:** Instant reveal, no animation
 
 ### List & Leaderboard Scroll
@@ -478,133 +477,6 @@ These patterns are incompatible with Rate My President's brand and product princ
 2. **Week 2 � Component updates:** Migrate emoji to icons in SwipeCard, Onboarding, Streak Counter. Update all avatar border-radius. Add Daily Prompt row to SwipeCard layout.
 3. **Week 3 � Integration & polish:** Accessibility audit, contrast verification, reduced-motion testing. Update Tailwind config, CSS tokens. Verify build and CI.
 4. **Week 4 � QA & documentation:** Full end-to-end testing. Update component library. Prepare handoff notes for maintainers.
-
----
-
-## Reference
-
-- **PRODUCT.md:** Product principles, brand personality, user archetypes
-- **COMPONENT.md:** Component API documentation
-- **rate-my-president-prd.md:** Feature specifications and product requirements
-- **rate-my-president-design-theory.md:** Strategic design framework (register split, interaction tone)
----
-
-## Things We Never Do (Permanent Bans)
-
-These patterns are incompatible with Rate My President's brand and product principles:
-
-**Visual:**
-- Circular avatar crop (use rounded-square per illustration specs)
-- Caricature-level facial exaggeration (use editorial illustration)
-- National flag colors in leader illustrations
-- Glossy, shadowy, or skeuomorphic effects on portraits
-- Gradients or textures on illustration backgrounds
-- Emoji in interactive UI (use custom SVG icons)
-- Icon font or emoji fallback for required affordances
-
-**Component:**
-- Side-stripe borders (use full borders or background tints instead)
-- Gradient text (`background-clip: text`)
-- Glassmorphism as decoration
-- Nested cards (one level of hierarchy only)
-- Identical card grids repeated endlessly
-
-**Interaction:**
-- Decorative motion unrelated to state changes
-- Orchestrated page-load sequences (no waterfall animations)
-- Modal as the first choice (prefer inline or progressive alternatives)
-- Dark patterns or pre-checked consent boxes
-
-**Typography:**
-- Tiny uppercase tracked eyebrows on every section (use consistent heading structure instead)
-- Text overflow on headings (test at all breakpoints, reduce clamp max or rewrite copy if needed)
-- Display fonts in interactive labels (Space Grotesk for voice, Inter for data only)
-
-**Accessibility:**
-- Missing alt text on illustrations
-- Color as the only signal for state changes
-- Focus indicators removed without replacement
-- Motion that blocks content visibility
-
----
-
-## Motion & Animation
-
-**Philosophy:** Smooth and bouncy on the swipe gesture (the core interaction, where playfulness lives); fast and quiet elsewhere (interaction chrome, leaderboard, list updates). All motion respects `prefers-reduced-motion: reduce` with instant/fade alternatives.
-
-### Swipe Gesture
-- **Easing:** `cubic-bezier(0.34, 1.56, 0.64, 1)` — Ease-out with subtle overshoot (quart or quint equivalent)
-- **Duration:** 300–350ms drag and release; overshoot settles in ~400ms total
-- **Physics:** Card follows finger, slightly elastic; on release, snaps to final state with bounce
-- **Reduced motion alt:** Instant snap to final state (no drag visualization or bounce)
-
-### Card Flip Reveal
-- **Stat counter:** Counts from 0 to final approval % over 600ms, easing out (quart)
-- **Flip transition:** Brief cross-fade or rotate (180°) of the card content, 250ms ease-out
-- **Reduced motion alt:** Instant reveal, no animation
-
-### List & Leaderboard Scroll
-- **Scroll behavior:** Smooth (native CSS `scroll-behavior: smooth` or framework equivalent)
-- **Item entrance** (if staggered): Each row fades in over 200ms on view entry, staggered +50ms
-- **Reduced motion alt:** No stagger; instant fade-in or no entrance animation
-
-### Tab / Modal Transitions
-- **In:** Fade + 2% scale-up, 150ms ease-out
-- **Out:** Fade, 100ms ease-in
-- **Reduced motion alt:** Instant
-
-### Hover & Focus States
-- **Button hover:** Opacity shift from 100% to 85%, 100ms
-- **Focus ring:** 2px solid `--approve-green` (or context-appropriate accent), 2px offset, 100ms transition
-- **Reduced motion alt:** Static focus ring, no opacity transition
-
----
-
-## Implementation Checklist
-
-**Before code:**
-- [ ] Author portrait illustration system: 18+ leaders in editorial style, rounded-square canvas, using only permitted colors (no flag colors, no vote semantics)
-- [ ] Create neutral silhouette fallback asset (same rounded-square canvas, `--surface-muted` fill)
-- [ ] Commission or generate 18-icon SVG set: Home, Leaderboard, Globe, News, Profile, Approve, Disapprove, Skip, Share, Search, Filter, Settings, Notifications, Trend Up, Trend Down, Approval, Vote, Streak, Tip Jar (all 24×24px, 2px stroke, `currentColor`-driven)
-- [ ] Update `tailwind.config.js`: add avatar border-radius tokens (rounded-square: 20px, 8px, 12px, 24px per context)
-
-**Component migrations:**
-- [ ] `SwipeCard.tsx`: Add "Daily Prompt" text row; replace all emoji with icon imports; add pointer-capture guard
-- [ ] `Onboarding.tsx`: Replace all emoji with icon imports; add location consent UI and geolocation gate
-- [ ] `Leaderboard.tsx`: Replace trend emoji with Trend Up/Down icons; update avatar radius to 8px rounded-square; audit sort header semantics
-- [ ] Streak Counter: Replace fire emoji with Streak icon; add `aria-live` for state updates
-- [ ] Tip Jar: Replace any placeholder icons with Tip Jar SVG; ensure no pre-checked boxes
-
-**Avatar updates (all components):**
-- [ ] Replace `rounded-full` with `rounded-[20px]` (Swipe Card, 120×120px)
-- [ ] Replace `rounded-full` with `rounded-[8px]` (Leaderboard rows, 40×40px)
-- [ ] Replace `rounded-full` with `rounded-[12px]` (Profile, 64×64px)
-- [ ] Replace `rounded-full` with `rounded-[24px]` (Share card, 160×160px)
-- [ ] All avatar `alt` text: "[Leader Name], [Title/Country]"
-
-**Accessibility pass:**
-- [ ] Audit all icon `aria-label` attributes (describe action, not visual—"Approve" not "thumbs up outline")
-- [ ] Verify portrait `alt` text is present and descriptive
-- [ ] Test keyboard navigation (swipe card buttons, leaderboard sort, form controls)
-- [ ] Run contrast audit: ensure all text ≥4.5:1, all interactive elements readable at target sizes
-- [ ] Test reduced-motion alternatives (motion-safe animation, motion-reduce instant reveal)
-- [ ] Screen reader test: verify announcement of streak updates, vote confirmation, sort changes
-
-**Validation:**
-- [ ] Build succeeds (`npm run build`)
-- [ ] No console warnings or errors
-- [ ] Lighthouse audit ≥90 on Performance, Accessibility, Best Practices, SEO
-- [ ] Component library (Storybook or similar) updated with new illustrations and icon system
-- [ ] Design documentation updated if deviating from this spec
-
----
-
-## Next Steps (Implementation Sequencing)
-
-1. **Week 1 – Design assets:** Finalize portrait library (editorial style, rounded-square, color constraints). Finalize icon system (18 SVGs, 24×24px, `currentColor`).
-2. **Week 2 – Component updates:** Migrate emoji to icons in SwipeCard, Onboarding, Streak Counter. Update all avatar border-radius. Add Daily Prompt row to SwipeCard layout.
-3. **Week 3 – Integration & polish:** Accessibility audit, contrast verification, reduced-motion testing. Update Tailwind config, CSS tokens. Verify build and CI.
-4. **Week 4 – QA & documentation:** Full end-to-end testing. Update component library. Prepare handoff notes for maintainers.
 
 ---
 
