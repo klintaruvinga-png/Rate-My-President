@@ -29,10 +29,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   const countryButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const userMadeExplicitChoice = useRef(false);
+  const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
   const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation'];
   const progressPercent = ((screenOrder.indexOf(currentScreen) + 1) / screenOrder.length) * 100;
 
+  // Only attempt geolocation & reverse-geocoding after explicit user consent.
   useEffect(() => {
+    if (locationConsent !== true) return;
     if (!navigator.geolocation || availableCountries.length === 0) return;
 
     const abortController = new AbortController();
@@ -41,9 +44,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
-          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`, {
-            signal: abortController.signal,
-          });
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
+            {
+              signal: abortController.signal,
+              // Nominatim public endpoint prefers a Referer or contact header for polite usage; callers should supply a production provider instead.
+            }
+          );
           const data = await response.json();
           const countryCode = data.address?.country_code?.toLowerCase();
           const matchedCountry = availableCountries.find(
@@ -54,7 +61,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             setSelectedCountry(matchedCountry);
           }
         } catch {
-          // Reverse geocoding failed; fallback to manual selection.
+          // Reverse geocoding failed or was aborted; fallback to manual selection.
         } finally {
           clearTimeout(timeoutId);
         }
@@ -69,7 +76,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       clearTimeout(timeoutId);
       abortController.abort();
     };
-  }, [availableCountries]);
+  }, [availableCountries, locationConsent]);
 
   const handleAdvanceScreen = () => {
     switch (currentScreen) {
@@ -269,6 +276,26 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <h2 className="text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Where are you from?</h2>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. (You can change this later.)</p>
             </div>
+            {/* Location consent prompt: only show when we haven't asked yet */}
+            {locationConsent === null && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
+              <div className="p-3 rounded-lg bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] space-y-2">
+                <p className="text-sm">Allow using your location to preselect your country? This sends coordinates to a reverse-geocoding provider.</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setLocationConsent(true)}
+                    className="flex-1 py-2 bg-[oklch(0.62_0.18_142)] text-white rounded-md"
+                  >
+                    Yes, use my location
+                  </button>
+                  <button
+                    onClick={() => { setLocationConsent(false); userMadeExplicitChoice.current = true; }}
+                    className="flex-1 py-2 bg-transparent border border-[oklch(0.75_0.02_250)] rounded-md"
+                  >
+                    No thanks
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="relative">
               <label htmlFor="country-search" className="sr-only">Search countries</label>
               <input

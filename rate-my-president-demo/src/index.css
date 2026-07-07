@@ -24,8 +24,4 @@ body {
   background: oklch(0.15 0.04 250);
   color: oklch(0.95 0.02 250);
 }
-<<<<<<< HEAD
-=======
-
 /* Tailwind preflight already normalizes box-sizing and form font inheritance. */
->>>>>>> 4ed8d01 (fix: address review comments (accessibility, retry fallback, pointer-capture, index.css lint))
