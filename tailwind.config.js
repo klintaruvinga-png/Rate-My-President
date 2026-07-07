@@ -76,6 +76,13 @@ module.exports = {
         'elastic-out': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         'ease-out-quart': 'cubic-bezier(0.165, 0.84, 0.44, 1)',
       },
+      borderRadius: {
+        // Avatar rounded-square tokens per DESIGN.md
+        'avatar-hero': '20px',    // Swipe Card, 120×120px
+        'avatar-list': '8px',     // Leaderboard rows, 40×40px
+        'avatar-profile': '12px', // Profile, 64×64px
+        'avatar-share': '24px',   // Share card, 160×160px
+      },
     },
   },
   plugins: [],

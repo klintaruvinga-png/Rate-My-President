@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import {
+  GlobeIcon,
+  HomeIcon,
+  ApproveIcon,
+  DisapproveIcon,
+  SkipIcon,
+  BadgeIcon,
+  CountryIcon,
+} from './Icons';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
 
@@ -198,7 +207,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'intro' && (
           <div className="w-full space-y-8 text-center">
             <div>
-              <div className="text-6xl mb-4">🌍</div>
+              <div className="text-6xl mb-4 inline-block w-16 h-16">
+                <GlobeIcon aria-label="Global" />
+              </div>
               <h1 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">Rate My President</h1>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Your daily swipes on global leaders</p>
             </div>
@@ -210,14 +221,20 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'mechanic-home' && (
           <div className="w-full space-y-8">
             <div className="text-center">
-              <div className="text-6xl mb-4">🏠</div>
+              <div className="text-6xl mb-4 inline-block w-16 h-16">
+                <HomeIcon aria-label="Home" />
+              </div>
               <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Your home leader</h2>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Swipe on the leader of your country</p>
             </div>
             <div className={`${cardColor} rounded-lg p-8 text-center space-y-4`}>
               <div className="w-20 h-20 bg-[oklch(0.28_0.02_250)] rounded-full mx-auto" />
               <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Your leader here</p>
-              <div className="flex justify-center gap-4 text-xl"><span>👎</span><span>👍</span><span>⊘</span></div>
+              <div className="flex justify-center gap-4 text-xl">
+                <span className="inline-block w-6 h-6"><DisapproveIcon aria-hidden="true" /></span>
+                <span className="inline-block w-6 h-6"><ApproveIcon aria-hidden="true" /></span>
+                <span className="inline-block w-6 h-6"><SkipIcon aria-hidden="true" /></span>
+              </div>
             </div>
             <div className="flex gap-3">
               <button onClick={handleBackScreen} className="flex-1 py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors">Back</button>
@@ -229,15 +246,23 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'mechanic-global' && (
           <div className="w-full space-y-8">
             <div className="text-center">
-              <div className="text-6xl mb-4">🌍</div>
+              <div className="text-6xl mb-4 inline-block w-16 h-16">
+                <GlobeIcon aria-label="Global" />
+              </div>
               <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">A random global leader</h2>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Then meet someone from anywhere</p>
             </div>
             <div className={`${cardColor} rounded-lg p-8 text-center space-y-4`}>
-              <div className="text-2xl mb-2">🇯🇵</div>
+              <div className="text-2xl mb-2">
+                <CountryIcon aria-label="Example country" />
+              </div>
               <div className="w-20 h-20 bg-[oklch(0.28_0.02_250)] rounded-full mx-auto" />
               <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Random leader here</p>
-              <div className="flex justify-center gap-4 text-xl"><span>👎</span><span>👍</span><span>⊘</span></div>
+              <div className="flex justify-center gap-4 text-xl">
+                <span className="inline-block w-6 h-6"><DisapproveIcon aria-label="Disapprove" /></span>
+                <span className="inline-block w-6 h-6"><ApproveIcon aria-label="Approve" /></span>
+                <span className="inline-block w-6 h-6"><SkipIcon aria-label="Skip" /></span>
+              </div>
             </div>
             <div className="flex gap-3">
               <button onClick={handleBackScreen} className="flex-1 py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors">Back</button>
@@ -254,14 +279,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
-                <div className="text-3xl">🏠</div>
-                <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
-                <div className="flex justify-center gap-2 text-lg"><span>👎</span><span>👍</span></div>
+                  <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
+                  <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
+                  <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5"><DisapproveIcon aria-label="Disapprove" /></span><span className="inline-block w-5 h-5"><ApproveIcon aria-label="Approve" /></span></div>
               </div>
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
-                <div className="text-3xl">🌍</div>
+                <div className="text-3xl inline-block w-10 h-10"><GlobeIcon aria-label="Global" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
-                <div className="flex justify-center gap-2 text-lg"><span>👎</span><span>👍</span></div>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5"><DisapproveIcon aria-label="Disapprove" /></span><span className="inline-block w-5 h-5"><ApproveIcon aria-label="Approve" /></span></div>
               </div>
             </div>
             <div className="flex gap-3">
@@ -324,7 +349,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 >
                   <span className="text-xl mr-3">{country.flag}</span>
                   <span className="text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] text-sm">{country.name}</span>
-                  {selectedCountry?.code === country.code && <span className="float-right text-[oklch(0.62_0.18_142)]">✓</span>}
+                  {selectedCountry?.code === country.code && <BadgeIcon className="inline-block w-4 h-4 float-right text-[oklch(0.62_0.18_142)]" aria-label="Selected" />}
                 </button>
               ))}
             </div>

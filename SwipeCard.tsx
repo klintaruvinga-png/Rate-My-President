@@ -1,4 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
+import {
+  HomeIcon,
+  GlobeIcon,
+  DisapproveIcon,
+  ApproveIcon,
+  SkipIcon,
+  TrendUpIcon,
+  TrendDownIcon,
+  BadgeIcon,
+} from './Icons';
 
 type CardType = 'home' | 'global';
 type VoteAction = 'approve' | 'disapprove' | 'skip' | null;
@@ -255,7 +265,6 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
   // Results colors
   const percentColor = card.approvalPercent >= 50 ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]';
-  const trendIcon = card.trend === 'up' ? '↑' : card.trend === 'down' ? '↓' : '→';
   const trendColor = card.trend === 'up'
     ? 'text-[oklch(0.62_0.18_142)]'
     : card.trend === 'down'
@@ -267,7 +276,13 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       <div className="h-full flex flex-col justify-between relative">
         {/* Badge + Country (top-right) */}
         <div className="absolute top-0 right-0 flex items-center gap-2 text-[oklch(0.75_0.02_250)] text-xs font-medium opacity-60">
-          <span>{cardData.type === 'home' ? '🏠' : '🌍'}</span>
+          <div className="w-4 h-4 text-[oklch(0.75_0.02_250)]">
+            {cardData.type === 'home' ? (
+              <HomeIcon aria-label="Home" />
+            ) : (
+              <GlobeIcon aria-label="Global" />
+            )}
+          </div>
           <span>{cardData.countryFlag}</span>
           <span className="text-xs">{cardData.countryName}</span>
         </div>
@@ -277,7 +292,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           <img
             src={cardData.avatarUrl}
             alt={cardData.leaderName}
-            className="w-[120px] h-[120px] rounded-full object-cover border-2 border-[oklch(0.28_0.02_250)]"
+            className="w-[120px] h-[120px] rounded-avatar-hero object-cover border-2 border-[oklch(0.28_0.02_250)]"
           />
         </div>
 
@@ -369,24 +384,25 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             onMouseEnter={() => setHoveredButton('disapprove')}
             onMouseLeave={() => setHoveredButton(null)}
             disabled={isLoading || voteAction !== null || isFlinging}
-            className={`hidden md:block px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
+            className={`hidden md:flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
               hoveredButton === 'disapprove'
                 ? 'bg-[oklch(0.55_0.20_25)] text-white'
                 : 'bg-transparent text-[oklch(0.55_0.20_25)] border border-[oklch(0.55_0.20_25)]'
             }`}
             aria-label="Disapprove"
           >
-            👎 Disapprove
+            <DisapproveIcon className="w-4 h-4" aria-hidden="true" />
+            Disapprove
           </button>
 
           {/* Mobile disapprove icon */}
           <button
             onClick={() => handleVote('disapprove')}
             disabled={isLoading || voteAction !== null || isFlinging}
-            className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-lg opacity-60 hover:opacity-100 transition-opacity"
+            className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Disapprove"
           >
-            👎
+            <DisapproveIcon className="w-6 h-6" aria-hidden="true" />
           </button>
 
           {/* Approve button */}
@@ -395,24 +411,25 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             onMouseEnter={() => setHoveredButton('approve')}
             onMouseLeave={() => setHoveredButton(null)}
             disabled={isLoading || voteAction !== null || isFlinging}
-            className={`hidden md:block px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
+            className={`hidden md:flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
               hoveredButton === 'approve'
                 ? 'bg-[oklch(0.62_0.18_142)] text-white'
                 : 'bg-transparent text-[oklch(0.62_0.18_142)] border border-[oklch(0.62_0.18_142)]'
             }`}
             aria-label="Approve"
           >
-            👍 Approve
+            <ApproveIcon className="w-4 h-4" aria-hidden="true" />
+            Approve
           </button>
 
           {/* Mobile approve icon */}
           <button
             onClick={() => handleVote('approve')}
             disabled={isLoading || voteAction !== null || isFlinging}
-            className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-lg opacity-60 hover:opacity-100 transition-opacity"
+            className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Approve"
           >
-            👍
+            <ApproveIcon className="w-6 h-6" aria-hidden="true" />
           </button>
 
           {/* Skip button (muted) */}
@@ -421,14 +438,15 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             onMouseEnter={() => setHoveredButton('skip')}
             onMouseLeave={() => setHoveredButton(null)}
             disabled={isLoading || voteAction !== null || isFlinging}
-            className={`px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
+            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
               hoveredButton === 'skip'
                 ? 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)]'
                 : 'bg-transparent text-[oklch(0.75_0.02_250)] opacity-50'
             }`}
             aria-label="Skip"
           >
-            ⊘ Skip
+            <SkipIcon className="w-4 h-4" aria-hidden="true" />
+            Skip
           </button>
         </div>
       </div>
@@ -448,7 +466,15 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               <div className={`text-5xl font-bold ${percentColor} font-['Inter']`}>
                 {card.approvalPercent}%
               </div>
-              <div className={`text-2xl ${trendColor}`}>{trendIcon}</div>
+              <div className={`text-2xl ${trendColor}`}>
+                {card.trend === 'up' ? (
+                  <TrendUpIcon aria-label="Trend up" />
+                ) : card.trend === 'down' ? (
+                  <TrendDownIcon aria-label="Trend down" />
+                ) : (
+                  <span className="inline-block">→</span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -467,7 +493,15 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {showMicroHistory && card.yesterdayVote && revealStage === 'news' && (
             <div className="text-center text-xs text-[oklch(0.75_0.02_250)] opacity-60 mb-4 font-['Inter']">
               Yesterday:{' '}
-              {card.yesterdayVote === 'approve' ? '👍' : card.yesterdayVote === 'disapprove' ? '👎' : '⊘'}{' '}
+              <span className="inline-block w-4 h-4 align-text-bottom">
+                {card.yesterdayVote === 'approve' ? (
+                  <ApproveIcon aria-hidden="true" />
+                ) : card.yesterdayVote === 'disapprove' ? (
+                  <DisapproveIcon aria-hidden="true" />
+                ) : (
+                  <SkipIcon aria-hidden="true" />
+                )}
+              </span>{' '}
               {card.yesterdayVote === 'approve' ? 'Approve' : card.yesterdayVote === 'disapprove' ? 'Disapprove' : 'Skip'}
             </div>
           )}
