@@ -8,6 +8,8 @@ import {
   SkipIcon,
 } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
+import NewsTicker from './NewsTicker';
+import SwipeTutorial from './SwipeTutorial';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
 
@@ -193,16 +195,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const cardColor = 'bg-[oklch(0.20_0.02_250)]';
 
   return (
-    <div className={`min-h-full ${bgColor} flex items-start justify-center p-4 pr-8 transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
-      <div className="w-full max-w-md space-y-4">
-        <div className="space-y-4">
-          <div className="overflow-hidden px-3 py-2">
-            <div className="welcome-marquee whitespace-nowrap text-sm font-semibold text-[oklch(0.95_0.02_250)]">
-              <span>{welcomeTickerText}</span>
-              <span className="ml-8">{welcomeTickerText}</span>
-            </div>
-          </div>
+    <div className={`min-h-full ${bgColor} flex items-start justify-center transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
+      <div className="w-full max-w-md">
+        {/* Full-width ticker bar — matches swipe page exactly */}
+        <NewsTicker />
 
+        <div className="space-y-4 p-4 pr-8">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
               <span>Setup</span>
@@ -212,7 +210,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <div className="h-2 rounded-full bg-[oklch(0.62_0.18_142)] transition-all" style={{ width: `${progressPercent}%` }} />
             </div>
           </div>
-        </div>
 
         {currentScreen === 'intro' && (
           <div className="w-full space-y-6 text-center">
@@ -220,6 +217,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <h1 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">Rate My President</h1>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Your daily swipes on global leaders</p>
             </div>
+            <SwipeTutorial />
             <div className="space-y-2">
               <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 leading-relaxed font-['Space_Grotesk']">In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.</p>
               <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
@@ -418,6 +416,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <button onClick={handleComplete} className="w-full py-3 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity">Start swiping</button>
           </div>
         )}
+        </div>{/* /space-y-4 p-4 pr-8 */}
       </div>
     </div>
   );

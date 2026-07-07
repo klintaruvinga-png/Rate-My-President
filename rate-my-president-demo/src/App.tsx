@@ -4,8 +4,8 @@ import OnboardingDemo from './Onboarding.demo';
 import SwipeCardDemo from './SwipeCard.demo';
 import LeaderboardDemo from './Leaderboard.demo';
 import headerImage from '../../assets/Obama Header No BG.png';
-// import AnimatedGlobe from './AnimatedGlobe';
-import newGlobeImage from '../../assets/New Globe.png';
+import NewsTicker from './NewsTicker';
+import LeaderTicker from './LeaderTicker';
 import { getHasCompletedOnboarding, setHasCompletedOnboarding } from './onboardingStorage';
 
 function App() {
@@ -69,7 +69,7 @@ function App() {
                 : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
             }`}
           >
-            🔥 Swipe Stack
+            🔥 Swipe
           </button>
           <button
             onClick={() => setActiveTab('leaderboard')}
@@ -137,17 +137,19 @@ function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 min-h-0">
-        {/* <AnimatedGlobe /> */}
-        <div className="mx-auto mb-4 flex w-full max-w-[260px] items-center justify-center overflow-hidden">
-          <img
-            src={newGlobeImage}
-            alt="Globe illustration"
-            className="h-[180px] w-[180px] object-cover drop-shadow-[0_20px_40px_rgba(0,0,0,0.22)] sm:h-[220px] sm:w-[220px]"
-          />
-        </div>
         {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
-        {activeTab === 'swipe' && <SwipeCardDemo />}
-        {activeTab === 'leaderboard' && <LeaderboardDemo />}
+        {activeTab === 'swipe' && (
+          <>
+            <NewsTicker />
+            <SwipeCardDemo />
+          </>
+        )}
+        {activeTab === 'leaderboard' && (
+          <>
+            <LeaderTicker />
+            <LeaderboardDemo />
+          </>
+        )}
       </main>
 
       {showHelpTooltip && (

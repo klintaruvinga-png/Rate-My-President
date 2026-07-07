@@ -2,18 +2,68 @@
 
 @keyframes welcome-marquee {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 .welcome-marquee {
   display: inline-flex;
+  /* Must be exactly 2× the content so the loop resets invisibly */
   width: max-content;
   animation: welcome-marquee 16s linear infinite;
   will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.welcome-marquee span {
+  display: inline-block;
+  /* Use padding-right instead of margin so spacing is part of the box,
+     keeping both halves identical in width for a seamless -50% reset */
+  padding-right: 3rem;
+}
+
+/* ─── News ticker ─────────────────────────────────── */
+@keyframes news-ticker {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.news-ticker {
+  display: inline-flex;
+  width: max-content;
+  animation: news-ticker 60s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.news-ticker span {
+  display: inline-block;
+  padding-right: 0; /* spacing now handled by news-ticker-sep */
+}
+
+/* Country name — amber */
+.news-ticker-country {
+  color: oklch(0.72 0.15 65);
+  font-weight: 600;
+}
+
+/* Separator dots — muted */
+.news-ticker-sep {
+  color: oklch(0.40 0.02 250);
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+.news-live-dot {
+  animation: live-pulse 1.4s ease-in-out infinite;
 }
 
 .hero {
