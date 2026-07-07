@@ -27,6 +27,9 @@ export interface LeaderboardEntry {
   /** Total number of votes cast for this leader */
   voteCount: number;
 
+  /** Optional: leader region or continent */
+  region?: string;
+
   /** Optional: timestamp when this ranking was last updated */
   updatedAt?: string;
 }
@@ -56,9 +59,29 @@ export interface LeaderboardProps {
   selectedWindow?: 'day' | 'week' | 'all';
 
   /**
+   * Current selected region filter
+   */
+  selectedRegion?: string;
+
+  /**
+   * Available regions for the region toggle
+   */
+  regions?: string[];
+
+  /**
    * Callback when user switches time window
    */
   onWindowChange?: (window: 'day' | 'week' | 'all') => void;
+
+  /**
+   * Callback when user switches region filter
+   */
+  onRegionChange?: (region: string) => void;
+
+  /**
+   * Callback when retrying leaderboard data fetch
+   */
+  onRetry?: () => void;
 
   /**
    * Callback when user clicks a leader (e.g., to view details)

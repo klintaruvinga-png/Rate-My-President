@@ -114,12 +114,12 @@ function App() {
 - **Country tap** selects that country and enables Continue button
 - **"Prefer not to say" button** skips country selection with equal visual weight
 
-### Geolocation
+### Geolocation & Privacy
 
-- On mount, component attempts to detect user's browser geolocation
-- If available, auto-selects the detected country as default
-- User can override by searching/selecting a different country
-- If geolocation fails, input starts empty with placeholder
+- The component now asks for explicit consent before using the browser Geolocation API. A small prompt appears on the country-selection screen: "Allow using your location to preselect your country?".
+- If the user consents, the component requests the device location and performs a reverse-geocoding lookup to suggest a default country. The reverse-geocoding call is cancellable and times out after 8s.
+- If the user declines or the request fails, the onboarding flow falls back to manual country selection and does not send coordinates.
+- Note: the demo uses the public Nominatim endpoint for reverse geocoding. For production, replace this with a provider that allows your traffic volume and supports an identifying `Referer`/contact header, or perform reverse geocoding server-side to avoid exposing user coordinates to third parties.
 
 ### Form Validation
 
