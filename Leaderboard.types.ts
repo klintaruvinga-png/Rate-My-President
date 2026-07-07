@@ -29,6 +29,12 @@ export interface LeaderboardEntry {
 
   /** Optional: timestamp when this ranking was last updated */
   updatedAt?: string;
+
+  /** Optional: ISO 2-letter country code (e.g. 'US', 'GB') */
+  countryCode?: string;
+
+  /** Optional: Unicode flag emoji fallback (e.g. '🇺🇸') */
+  countryFlag?: string;
 }
 
 /**

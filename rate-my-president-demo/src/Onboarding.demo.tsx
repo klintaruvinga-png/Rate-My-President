@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Onboarding from './Onboarding';
 
 interface CountryData {
@@ -8,10 +7,11 @@ interface CountryData {
   leader?: string;
 }
 
-export function OnboardingDemo() {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+interface OnboardingDemoProps {
+  onComplete?: (countryCode: string | null) => void;
+}
 
+export function OnboardingDemo({ onComplete }: OnboardingDemoProps) {
   // Example country data
   const availableCountries: CountryData[] = [
     { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', leader: 'Keir Starmer' },
@@ -29,45 +29,8 @@ export function OnboardingDemo() {
   ];
 
   const handleOnboardingComplete = (countryCode: string | null) => {
-    setSelectedCountry(countryCode);
-    setHasCompletedOnboarding(true);
-    console.log('Onboarding complete. Selected country:', countryCode);
+    onComplete?.(countryCode);
   };
-
-  const handleReset = () => {
-    setHasCompletedOnboarding(false);
-    setSelectedCountry(null);
-  };
-
-  if (hasCompletedOnboarding) {
-    return (
-      <div className="min-h-screen bg-[oklch(0.15_0.04_250)] flex flex-col items-center justify-center p-4">
-        <div className="text-center space-y-6 max-w-md">
-          <div>
-            <h1 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
-              Onboarding complete!
-            </h1>
-            <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-              {selectedCountry
-                ? `You selected: ${availableCountries.find((c) => c.code === selectedCountry)?.flag} ${availableCountries.find((c) => c.code === selectedCountry)?.name}`
-                : 'You chose Global cards only'}
-            </p>
-          </div>
-
-          <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 font-['Space_Grotesk']">
-            Now you would proceed to your first SwipeCard...
-          </p>
-
-          <button
-            onClick={handleReset}
-            className="py-2 px-4 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
-          >
-            Start over
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <Onboarding

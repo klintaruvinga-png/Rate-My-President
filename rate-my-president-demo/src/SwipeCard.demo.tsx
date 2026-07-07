@@ -114,7 +114,7 @@ export function SwipeCardDemo() {
           url: 'https://reuters.com',
         },
       ],
-      yesterdayVote: (['approve', 'disapprove', 'skip'][Math.floor(Math.random() * 3)] as any),
+      yesterdayVote: (['like', 'nolike', 'skip'][Math.floor(Math.random() * 3)] as any),
     };
   };
 
@@ -157,20 +157,20 @@ export function SwipeCardDemo() {
         showMicroHistory={true}
       />
 
-      {/* Debug info */}
-      <div className="fixed bottom-4 left-4 bg-[oklch(0.20_0.02_250)] p-4 rounded-lg text-[oklch(0.75_0.02_250)] text-sm max-w-xs border border-[oklch(0.28_0.02_250)] shadow-xl z-50">
+      {/* Vote History (repositioned to top-right on desktop, away from interactive content) */}
+      <div className="hidden lg:block fixed top-80 right-4 bg-[oklch(0.20_0.02_250)] p-4 rounded-lg text-[oklch(0.75_0.02_250)] text-sm max-w-xs border border-[oklch(0.28_0.02_250)] shadow-xl z-40">
         <h3 className="font-bold mb-2 text-white">Vote History:</h3>
         {voteHistory.length === 0 ? (
-          <p className="opacity-60">No votes yet. Try swiping!</p>
+          <p className="opacity-60 text-xs">No votes yet. Try swiping!</p>
         ) : (
           <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
             {voteHistory.map((vote, idx) => (
-              <div key={idx} className="flex justify-between gap-4 border-b border-[oklch(0.28_0.02_250)] pb-1">
+              <div key={idx} className="flex justify-between gap-4 border-b border-[oklch(0.28_0.02_250)] pb-1 text-xs">
                 <span>Leader {idx + 1}:</span>
                 <span className={`font-semibold ${
-                  vote === 'approve' 
+                  vote === 'like' 
                     ? 'text-[oklch(0.62_0.18_142)]' 
-                    : vote === 'disapprove' 
+                    : vote === 'nolike' 
                       ? 'text-[oklch(0.55_0.20_25)]' 
                       : 'text-[oklch(0.72_0.15_65)]'
                 }`}>
@@ -180,19 +180,6 @@ export function SwipeCardDemo() {
             ))}
           </div>
         )}
-      </div>
-
-      {/* Instructions */}
-      <div className="fixed top-4 right-4 bg-[oklch(0.20_0.02_250)] p-4 rounded-lg text-[oklch(0.75_0.02_250)] text-sm max-w-xs border border-[oklch(0.28_0.02_250)] shadow-xl z-50">
-        <h3 className="font-bold mb-2 text-white">Controls:</h3>
-        <ul className="space-y-1 opacity-80 text-xs">
-          <li>• Swipe left/right (pointer gestures)</li>
-          <li>• Swipe up to Skip</li>
-          <li>• Keyboard: D/Right = Approve</li>
-          <li>• Keyboard: A/Left = Disapprove</li>
-          <li>• Keyboard: S/Up = Skip</li>
-          <li>• Mobile: Haptic feedback on vote</li>
-        </ul>
       </div>
     </div>
   );

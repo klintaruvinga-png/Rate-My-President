@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { GlobeIcon, HomeIcon, ApproveIcon, DisapproveIcon, SkipIcon, CountryIcon, BadgeIcon } from './Icons';
+import AnimatedFlag from './AnimatedFlag';
 
 type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
 
@@ -128,9 +130,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </p>
           </div>
 
-          <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 leading-relaxed font-['Space_Grotesk']">
-            In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 leading-relaxed font-['Space_Grotesk']">
+              In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.
+            </p>
+            <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">
+              You can opt out from home swipes later on this page.
+            </p>
+          </div>
 
           <button
             onClick={handleAdvanceScreen}
@@ -144,13 +151,18 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       {/* Screen 2: Mechanic - Home Card */}
       {currentScreen === 'mechanic-home' && (
         <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🏠</div>
+          <div className="text-center space-y-1">
+            <div className="text-6xl mb-4 inline-block w-16 h-16">
+              <HomeIcon aria-label="Home" />
+            </div>
             <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
-              Your home leader
+              Swipe 1: Your home leader
             </h2>
             <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-              Swipe on the leader of your country
+              Swipe on the leader of your country.
+            </p>
+            <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">
+              You can opt out from home swipes later on this page.
             </p>
           </div>
 
@@ -185,13 +197,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       {/* Screen 3: Mechanic - Global Card */}
       {currentScreen === 'mechanic-global' && (
         <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🌍</div>
-            <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
-              A random global leader
+          <div className="text-center space-y-1">
+            <div className="text-6xl mb-4 inline-block w-16 h-16">
+              <GlobeIcon aria-label="Global" />
+            </div>
+            <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2 whitespace-nowrap">
+              Swipe 2: A random global leader
             </h2>
             <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-              Then meet someone from anywhere
+              Then meet someone from anywhere in the world.
             </p>
           </div>
 
@@ -299,7 +313,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           {/* Country list */}
           <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto space-y-0`}>
             {filteredCountries.slice(0, 10).map((country) => (
-              <button
+                <button
                 key={country.code}
                 onClick={() => setSelectedCountry(country)}
                 className={`w-full px-4 py-3 text-left transition-colors ${
@@ -308,7 +322,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     : 'hover:bg-[oklch(0.28_0.02_250)]'
                 } border-b border-[oklch(0.28_0.02_250)] last:border-b-0`}
               >
-                <span className="text-xl mr-3">{country.flag}</span>
+                <AnimatedFlag countryCode={country.code} fallbackFlag={country.flag} className="w-6 h-6 inline-flex mr-3" />
                 <span className="text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] text-sm">
                   {country.name}
                 </span>
@@ -351,8 +365,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 <h2 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
                   Got it!
                 </h2>
-                <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-                  {selectedCountry.flag} {selectedCountry.name}
+                <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] flex items-center justify-center gap-2">
+                  <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-8 h-8" />
+                  {selectedCountry.name}
                 </p>
               </div>
 

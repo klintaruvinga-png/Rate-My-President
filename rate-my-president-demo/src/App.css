@@ -1,5 +1,20 @@
 /* Tailwind CSS handles all styling */
 
+@keyframes welcome-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.welcome-marquee {
+  display: inline-flex;
+  width: max-content;
+  animation: welcome-marquee 16s linear infinite;
+  will-change: transform;
+}
 
 .hero {
   position: relative;

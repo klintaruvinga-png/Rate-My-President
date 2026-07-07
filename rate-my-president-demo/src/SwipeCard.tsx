@@ -1,4 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
+import {
+  HomeIcon,
+  GlobeIcon,
+} from './Icons';
+import AnimatedFlag from './AnimatedFlag';
 
 type CardType = 'home' | 'global';
 type VoteAction = 'approve' | 'disapprove' | 'skip' | null;
@@ -269,8 +274,14 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     return (
       <div className="h-full flex flex-col justify-between relative">
         <div className="absolute top-0 right-0 flex items-center gap-2 text-[oklch(0.75_0.02_250)] text-xs font-medium opacity-60">
-          <span>{cardData.type === 'home' ? '🏠' : '🌍'}</span>
-          <span>{cardData.countryFlag}</span>
+          <div className="w-4 h-4 text-[oklch(0.75_0.02_250)]">
+            {cardData.type === 'home' ? (
+              <HomeIcon aria-label="Home" />
+            ) : (
+              <GlobeIcon aria-label="Global" />
+            )}
+          </div>
+          <AnimatedFlag countryCode={cardData.countryCode} fallbackFlag={cardData.countryFlag} className="w-5 h-5" />
           <span className="text-xs">{cardData.countryName}</span>
         </div>
 

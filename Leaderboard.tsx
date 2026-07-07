@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { LeaderboardEntry, LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
+import { TrendUpIcon, TrendDownIcon } from './Icons';
+import AnimatedFlag from './AnimatedFlag';
 
 export default function Leaderboard({
   entries,
@@ -206,7 +208,14 @@ export default function Leaderboard({
                             alt={entry.name}
                             className="h-10 w-10 rounded-full bg-[oklch(0.20_0.02_250)] flex-shrink-0"
                           />
-                          {/* Name */}
+                          {/* Flag + Name */}
+                          {(entry.countryCode || entry.countryFlag) && (
+                            <AnimatedFlag
+                              countryCode={entry.countryCode}
+                              fallbackFlag={entry.countryFlag}
+                              className="w-5 h-5 flex-shrink-0"
+                            />
+                          )}
                           <span className="font-['Space_Grotesk'] font-600 text-sm hover:text-[oklch(0.62_0.18_142)] transition-colors truncate">
                             {entry.name}
                           </span>
