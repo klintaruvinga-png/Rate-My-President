@@ -28,32 +28,47 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [focusedCountryIndex, setFocusedCountryIndex] = useState(0);
 
   const countryButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const userMadeExplicitChoice = useRef(false);
   const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation'];
   const progressPercent = ((screenOrder.indexOf(currentScreen) + 1) / screenOrder.length) * 100;
 
   useEffect(() => {
     if (!navigator.geolocation || availableCountries.length === 0) return;
 
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 8000);
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
-          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`, {
+            signal: abortController.signal,
+          });
           const data = await response.json();
+          const countryCode = data.address?.country_code?.toLowerCase();
           const matchedCountry = availableCountries.find(
-            (country) => country.name.toLowerCase() === data.address?.country?.toLowerCase()
+            (country) => country.code.toLowerCase() === countryCode
           );
 
-          if (matchedCountry) {
+          if (matchedCountry && !userMadeExplicitChoice.current) {
             setSelectedCountry(matchedCountry);
           }
         } catch {
           // Reverse geocoding failed; fallback to manual selection.
+        } finally {
+          clearTimeout(timeoutId);
         }
       },
       () => {
         // Geolocation permission denied or unavailable.
+        clearTimeout(timeoutId);
       }
     );
+
+    return () => {
+      clearTimeout(timeoutId);
+      abortController.abort();
+    };
   }, [availableCountries]);
 
   const handleAdvanceScreen = () => {
@@ -102,6 +117,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleSkipCountry = () => {
+    userMadeExplicitChoice.current = true;
     setSelectedCountry(null);
     setCurrentScreen('confirmation');
   };
@@ -125,10 +141,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   useEffect(() => {
     setFocusedCountryIndex(0);
-    countryButtonRefs.current = [];
   }, [searchQuery]);
 
   const handleCountrySelection = (country: CountryData) => {
+    userMadeExplicitChoice.current = true;
     setSelectedCountry(country);
   };
 

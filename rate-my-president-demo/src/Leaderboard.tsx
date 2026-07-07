@@ -211,7 +211,6 @@ export default function Leaderboard({
                   onClick={() => handleColumnClick('rank')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'rank')}
                   tabIndex={0}
-                  role="button"
                   aria-sort={sortState.column === 'rank' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center gap-1">
@@ -227,7 +226,6 @@ export default function Leaderboard({
                   onClick={() => handleColumnClick('approval')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'approval')}
                   tabIndex={0}
-                  role="button"
                   aria-sort={sortState.column === 'approval' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center justify-end gap-1">
@@ -243,7 +241,6 @@ export default function Leaderboard({
                   onClick={() => handleColumnClick('votes')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'votes')}
                   tabIndex={0}
-                  role="button"
                   aria-sort={sortState.column === 'votes' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center justify-end gap-1">

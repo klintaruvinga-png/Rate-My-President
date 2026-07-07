@@ -106,7 +106,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       }, 650);
     }
 
-    e.currentTarget.setPointerCapture(e.pointerId);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Ignore pointer-capture errors for unsupported browsers.
+    }
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
