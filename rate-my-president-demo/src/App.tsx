@@ -137,19 +137,21 @@ function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 min-h-0">
-        {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
-        {activeTab === 'swipe' && (
-          <>
-            <NewsTicker />
-            <SwipeCardDemo />
-          </>
-        )}
-        {activeTab === 'leaderboard' && (
-          <>
-            <LeaderTicker />
-            <LeaderboardDemo />
-          </>
-        )}
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
+          {activeTab === 'swipe' && (
+            <>
+              <NewsTicker />
+              <SwipeCardDemo />
+            </>
+          )}
+          {activeTab === 'leaderboard' && (
+            <>
+              <LeaderTicker />
+              <LeaderboardDemo />
+            </>
+          )}
+        </div>
       </main>
 
       {showHelpTooltip && (

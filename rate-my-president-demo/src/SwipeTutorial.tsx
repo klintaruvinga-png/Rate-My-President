@@ -316,10 +316,10 @@ export const SwipeTutorial: React.FC = () => {
 
         {/* Pointer / Hand Wrapper */}
         <div className="absolute left-0 top-0 w-12 h-12 pointer-events-none animate-tutorial-hand will-change-transform z-20 overflow-visible">
-          {/* Ripple behind index finger */}
-          <div className="absolute top-[3px] left-[15px] w-6 h-6 rounded-full border border-[oklch(0.72_0.15_65)] bg-[oklch(0.72_0.15_65)]/20 -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 animate-tutorial-ripple"></div>
+          {/* Ripple behind fingertip */}
+          <div className="absolute top-[4px] left-[24px] w-6 h-6 rounded-full border border-[oklch(0.72_0.15_65)] bg-[oklch(0.72_0.15_65)]/20 -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 animate-tutorial-ripple"></div>
 
-          {/* Vector Pointing Finger */}
+          {/* Vector Open Palm Hand */}
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -327,16 +327,12 @@ export const SwipeTutorial: React.FC = () => {
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="w-12 h-12 text-[oklch(0.95_0.02_250)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] rotate-[-15deg]"
+            className="w-12 h-12 text-[oklch(0.95_0.02_250)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] rotate-[-10deg]"
           >
-            {/* Index finger pointing up */}
-            <path d="M10 9V2.5a1.5 1.5 0 0 1 3 0V11" />
-            {/* Folded fingers */}
-            <path d="M13 6.5a1.5 1.5 0 0 1 3 0v4.5" />
-            <path d="M16 8.5a1.5 1.5 0 0 1 3 0V12" />
-            <path d="M19 10.5a1.5 1.5 0 0 1 3 0V14c0 4-3 6-7 6h-2c-3.5 0-6-2.5-6-6V9.5a1.5 1.5 0 0 1 3 0V12" />
-            {/* Thumb */}
-            <path d="M4.5 12a1.5 1.5 0 0 1 1.5-1.5h1" />
+            <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
+            <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
+            <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
+            <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
           </svg>
         </div>
       </div>

@@ -42,8 +42,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
   const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation'];
   const progressPercent = ((screenOrder.indexOf(currentScreen) + 1) / screenOrder.length) * 100;
-  const welcomeTickerText =
-    'Welcome to rate my President! 🌸 Swipe Right to Like! ❤️ Left To No Like! ❌ Its just like Minder! 😉';
 
   // Only attempt geolocation & reverse-geocoding after explicit user consent.
   useEffect(() => {
@@ -195,12 +193,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const cardColor = 'bg-[oklch(0.20_0.02_250)]';
 
   return (
-    <div className={`min-h-full ${bgColor} flex items-start justify-center transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
-      <div className="w-full max-w-md">
+    <div className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
+      <div className="w-full">
         {/* Full-width ticker bar — matches swipe page exactly */}
         <NewsTicker />
 
-        <div className="space-y-4 p-4 pr-8">
+        <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
               <span>Setup</span>
@@ -260,7 +258,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'mechanic-global' && (
           <div className="w-full space-y-8">
             <div className="text-center space-y-1">
-              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2 whitespace-nowrap">Swipe 2: A random global leader</h2>
+              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2 whitespace-normal break-words">Swipe 2: A random global leader</h2>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Then meet someone from anywhere in the world.</p>
             </div>
             <div className={`${cardColor} rounded-lg p-6 text-center space-y-4`}>

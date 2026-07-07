@@ -71,7 +71,7 @@ export function LeaderboardDemo() {
 
   return (
     <div className="min-h-screen bg-[oklch(0.15_0.04_250)]">
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full">
         {/* Header */}
         <div className="p-6 border-b border-[oklch(0.28_0.02_250)]">
           <h1 className="text-3xl font-bold font-['Space_Grotesk'] text-[oklch(0.95_0.02_250)] mb-2">
