@@ -19,6 +19,7 @@ interface CardData {
 
 interface SwipeCardProps {
   card: CardData;
+  nextCard?: CardData;
   onVote: (action: VoteAction) => void;
   isLoading?: boolean;
   showMicroHistory?: boolean;
@@ -26,6 +27,7 @@ interface SwipeCardProps {
 
 export const SwipeCard: React.FC<SwipeCardProps> = ({
   card,
+  nextCard,
   onVote,
   isLoading = false,
   showMicroHistory = true,
@@ -33,95 +35,156 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const [dragState, setDragState] = useState<{
     isDragging: boolean;
     startX: number;
-    currentX: number;
-    currentRotation: number;
-  }>({ isDragging: false, startX: 0, currentX: 0, currentRotation: 0 });
+    startY: number;
+    offsetX: number;
+    offsetY: number;
+  }>({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
+
+  const [isFlinging, setIsFlinging] = useState(false);
+  const [flingAction, setFlingAction] = useState<VoteAction>(null);
 
   const [voteAction, setVoteAction] = useState<VoteAction>(null);
   const [showResults, setShowResults] = useState(false);
   const [revealStage, setRevealStage] = useState<'idle' | 'number' | 'confirmation' | 'news'>('idle');
   const [hoveredButton, setHoveredButton] = useState<VoteAction>(null);
 
-  const cardRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
 
-  const SWIPE_THRESHOLD = 0.4; // 40% of card width
-  const DRAG_ROTATION_MULTIPLIER = 0.05;
+  const SWIPE_THRESHOLD = 120; // 120px drag threshold
 
-  // Handle mouse drag
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (voteAction || isLoading) return;
+  // Reset state when card changes
+  useEffect(() => {
+    setVoteAction(null);
+    setShowResults(false);
+    setRevealStage('idle');
+    setDragState({
+      isDragging: false,
+      startX: 0,
+      startY: 0,
+      offsetX: 0,
+      offsetY: 0,
+    });
+    setIsFlinging(false);
+    setFlingAction(null);
+  }, [card.id]);
+
+  // Pointer drag event handlers
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (voteAction || isLoading || isFlinging) return;
+    
     const startX = e.clientX;
-    setDragState((prev) => ({ ...prev, isDragging: true, startX }));
+    const startY = e.clientY;
+    
+    setDragState({
+      isDragging: true,
+      startX,
+      startY,
+      offsetX: 0,
+      offsetY: 0,
+    });
+    
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!dragState.isDragging || voteAction || isLoading) return;
-
-    const cardWidth = draggableRef.current?.offsetWidth || 0;
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragState.isDragging || voteAction || isLoading || isFlinging) return;
+    
     const deltaX = e.clientX - dragState.startX;
-    const rotation = deltaX * DRAG_ROTATION_MULTIPLIER;
-
+    const deltaY = e.clientY - dragState.startY;
+    
     setDragState((prev) => ({
       ...prev,
-      currentX: deltaX,
-      currentRotation: rotation,
+      offsetX: deltaX,
+      offsetY: deltaY,
     }));
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!dragState.isDragging) return;
-
-    const cardWidth = draggableRef.current?.offsetWidth || 0;
-    const threshold = cardWidth * SWIPE_THRESHOLD;
-
-    if (Math.abs(dragState.currentX) > threshold) {
-      const action: VoteAction = dragState.currentX > 0 ? 'approve' : 'disapprove';
-      handleVote(action);
-    } else {
-      // Snap back to center
-      setDragState({ isDragging: false, startX: 0, currentX: 0, currentRotation: 0 });
+    
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch (err) {}
+    
+    const { offsetX, offsetY } = dragState;
+    
+    // Check horizontal swipe
+    if (Math.abs(offsetX) > SWIPE_THRESHOLD && Math.abs(offsetX) > Math.abs(offsetY)) {
+      const action = offsetX > 0 ? 'approve' : 'disapprove';
+      triggerFling(action);
+    } 
+    // Check vertical swipe up (skip)
+    else if (offsetY < -SWIPE_THRESHOLD && Math.abs(offsetY) > Math.abs(offsetX)) {
+      triggerFling('skip');
+    } 
+    // Snap back
+    else {
+      setDragState({
+        isDragging: false,
+        startX: 0,
+        startY: 0,
+        offsetX: 0,
+        offsetY: 0,
+      });
     }
   };
 
-  // Touch support
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (voteAction || isLoading) return;
-    const startX = e.touches[0].clientX;
-    setDragState((prev) => ({ ...prev, isDragging: true, startX }));
+  const handlePointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragState.isDragging) return;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch (err) {}
+    setDragState({
+      isDragging: false,
+      startX: 0,
+      startY: 0,
+      offsetX: 0,
+      offsetY: 0,
+    });
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!dragState.isDragging || voteAction || isLoading) return;
-
-    const deltaX = e.touches[0].clientX - dragState.startX;
-    const rotation = deltaX * DRAG_ROTATION_MULTIPLIER;
-
+  const triggerFling = (action: 'approve' | 'disapprove' | 'skip') => {
+    setIsFlinging(true);
+    setFlingAction(action);
+    
+    let targetX = 0;
+    let targetY = 0;
+    if (action === 'approve') {
+      targetX = 600;
+    } else if (action === 'disapprove') {
+      targetX = -600;
+    } else {
+      targetY = -800;
+    }
+    
+    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    
     setDragState((prev) => ({
       ...prev,
-      currentX: deltaX,
-      currentRotation: rotation,
+      isDragging: false,
+      offsetX: targetX,
+      offsetY: targetY,
     }));
-  };
-
-  const handleTouchEnd = () => {
-    if (!dragState.isDragging) return;
-
-    const cardWidth = draggableRef.current?.offsetWidth || 0;
-    const threshold = cardWidth * SWIPE_THRESHOLD;
-
-    if (Math.abs(dragState.currentX) > threshold) {
-      const action: VoteAction = dragState.currentX > 0 ? 'approve' : 'disapprove';
-      handleVote(action);
-    } else {
-      setDragState({ isDragging: false, startX: 0, currentX: 0, currentRotation: 0 });
-    }
+    
+    setTimeout(() => {
+      setVoteAction(action);
+      setShowResults(true);
+      setRevealStage('number');
+      setTimeout(() => setRevealStage('confirmation'), 150);
+      setTimeout(() => setRevealStage('news'), 300);
+      
+      onVote(action);
+      setIsFlinging(false);
+      setFlingAction(null);
+    }, 250);
   };
 
   // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (voteAction || isLoading) return;
+      if (voteAction || isLoading || isFlinging) return;
 
       switch (e.key) {
         case 'ArrowRight':
@@ -144,51 +207,92 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [voteAction, isLoading]);
+  }, [voteAction, isLoading, isFlinging]);
 
   const handleVote = (action: VoteAction) => {
-    if (voteAction || isLoading) return;
-
-    setVoteAction(action);
-
-    // Trigger haptic feedback if available
-    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
-      navigator.vibrate(10);
+    if (voteAction || isLoading || isFlinging) return;
+    if (action) {
+      triggerFling(action);
     }
-
-    // Card exit animation
-    setTimeout(() => {
-      setShowResults(true);
-      // Staggered reveals
-      setRevealStage('number');
-      setTimeout(() => setRevealStage('confirmation'), 150);
-      setTimeout(() => setRevealStage('news'), 300);
-    }, 150);
-
-    // Call the callback
-    onVote(action);
   };
 
-  // Background color based on card type
-  const bgColor = card.type === 'home' ? 'bg-[oklch(0.20_0.02_245)]' : 'bg-[oklch(0.20_0.02_250)]';
+  // Interpolate values for stack animation
+  const offsetX = dragState.offsetX;
+  const offsetY = dragState.offsetY;
+  const dragDistance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+  const maxDragDistance = 150;
+  const interpolationProgress = Math.min(dragDistance / maxDragDistance, 1);
+  
+  const bottomScale = 0.92 + interpolationProgress * 0.08;
+  const bottomTranslateY = 12 - interpolationProgress * 12;
+  const bottomOpacity = 0.5 + interpolationProgress * 0.5;
+  
+  const topRotation = offsetX * 0.08;
+  const topScale = isFlinging ? 1.0 : 1 - Math.min(dragDistance / 1000, 0.04);
 
-  // Approval % color
+  // Overlay badge opacities
+  let approveOpacity = 0;
+  let disapproveOpacity = 0;
+  let skipOpacity = 0;
+
+  if (isFlinging) {
+    if (flingAction === 'approve') approveOpacity = 1;
+    if (flingAction === 'disapprove') disapproveOpacity = 1;
+    if (flingAction === 'skip') skipOpacity = 1;
+  } else if (dragState.isDragging) {
+    if (offsetX > 0 && offsetX > Math.abs(offsetY)) {
+      approveOpacity = Math.min(offsetX / 80, 1);
+    } else if (offsetX < 0 && Math.abs(offsetX) > Math.abs(offsetY)) {
+      disapproveOpacity = Math.min(Math.abs(offsetX) / 80, 1);
+    } else if (offsetY < 0 && Math.abs(offsetY) > Math.abs(offsetX)) {
+      skipOpacity = Math.min(Math.abs(offsetY) / 80, 1);
+    }
+  }
+
+  // Background classes based on card type
+  const topBgColor = card.type === 'home' ? 'bg-[oklch(0.20_0.02_245)]' : 'bg-[oklch(0.20_0.02_250)]';
+  const bottomBgColor = nextCard?.type === 'home' ? 'bg-[oklch(0.20_0.02_245)]' : 'bg-[oklch(0.20_0.02_250)]';
+
+  // Results colors
   const percentColor = card.approvalPercent >= 50 ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]';
+  const trendIcon = card.trend === 'up' ? '↑' : card.trend === 'down' ? '↓' : '→';
+  const trendColor = card.trend === 'up'
+    ? 'text-[oklch(0.62_0.18_142)]'
+    : card.trend === 'down'
+      ? 'text-[oklch(0.55_0.20_25)]'
+      : 'text-[oklch(0.75_0.02_250)]';
 
-  // Trend icon
-  const trendIcon =
-    card.trend === 'up'
-      ? '↑'
-      : card.trend === 'down'
-        ? '↓'
-        : '→';
+  const renderCardContent = (cardData: CardData, isBottom = false) => {
+    return (
+      <div className="h-full flex flex-col justify-between relative">
+        {/* Badge + Country (top-right) */}
+        <div className="absolute top-0 right-0 flex items-center gap-2 text-[oklch(0.75_0.02_250)] text-xs font-medium opacity-60">
+          <span>{cardData.type === 'home' ? '🏠' : '🌍'}</span>
+          <span>{cardData.countryFlag}</span>
+          <span className="text-xs">{cardData.countryName}</span>
+        </div>
 
-  const trendColor =
-    card.trend === 'up'
-      ? 'text-[oklch(0.62_0.18_142)]'
-      : card.trend === 'down'
-        ? 'text-[oklch(0.55_0.20_25)]'
-        : 'text-[oklch(0.75_0.02_250)]';
+        {/* Avatar */}
+        <div className="flex justify-center mb-4 mt-6">
+          <img
+            src={cardData.avatarUrl}
+            alt={cardData.leaderName}
+            className="w-[120px] h-[120px] rounded-full object-cover border-2 border-[oklch(0.28_0.02_250)]"
+          />
+        </div>
+
+        {/* Leader name */}
+        <h2 className="text-center text-2xl font-semibold text-[oklch(0.95_0.02_250)] mb-4 font-['Space_Grotesk'] leading-tight">
+          {cardData.leaderName}
+        </h2>
+
+        {/* Swipe hint */}
+        <p className="text-center text-sm text-[oklch(0.75_0.02_250)] opacity-50 font-['Space_Grotesk']">
+          {isBottom ? 'Up next...' : 'Swipe left or right to vote'}
+        </p>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[oklch(0.15_0.04_250)] p-4">
@@ -196,50 +300,65 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       <div
         className={`transition-all duration-150 ${voteAction ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
       >
-        {/* Draggable card */}
-        <div
-          ref={draggableRef}
-          className={`w-80 ${bgColor} rounded-[12px] p-6 cursor-grab select-none transition-transform ${dragState.isDragging ? 'cursor-grabbing' : ''} ${isLoading ? 'opacity-50' : ''}`}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={() => {
-            if (dragState.isDragging) handleMouseUp();
-          }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          style={{
-            transform: dragState.isDragging
-              ? `translateX(${dragState.currentX}px) rotate(${dragState.currentRotation}deg) scale(${1 - Math.abs(dragState.currentX) / 500})`
-              : 'translateX(0) rotate(0) scale(1)',
-          }}
-        >
-          {/* Badge + Country (top-right) */}
-          <div className="absolute top-4 right-4 flex items-center gap-2 text-[oklch(0.75_0.02_250)] text-xs font-medium opacity-60">
-            <span>{card.type === 'home' ? '🏠' : '🌍'}</span>
-            <span>{card.countryFlag}</span>
-            <span className="text-xs">{card.countryName}</span>
+        {/* Card Z-Stack */}
+        <div className="relative w-80 h-[320px] mb-6">
+          {/* Bottom Card (Next Card) */}
+          {nextCard && (
+            <div
+              className={`absolute inset-0 rounded-[12px] p-6 select-none pointer-events-none ${bottomBgColor} border border-[oklch(0.28_0.02_250)] shadow-xl`}
+              style={{
+                transform: `scale(${bottomScale}) translateY(${bottomTranslateY}px)`,
+                opacity: bottomOpacity,
+                zIndex: 10,
+              }}
+            >
+              {renderCardContent(nextCard, true)}
+            </div>
+          )}
+
+          {/* Top Card (Active Card) */}
+          <div
+            ref={draggableRef}
+            className={`absolute inset-0 rounded-[12px] p-6 cursor-grab select-none ${topBgColor} border border-[oklch(0.28_0.02_250)] shadow-2xl ${
+              dragState.isDragging ? 'cursor-grabbing' : ''
+            } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
+            style={{
+              transform: `translate3d(${offsetX}px, ${offsetY}px, 0) rotate(${topRotation}deg) scale(${topScale})`,
+              transition: dragState.isDragging
+                ? 'none'
+                : isFlinging
+                  ? 'transform 0.25s ease-out'
+                  : 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+              zIndex: 20,
+              touchAction: 'none',
+            }}
+          >
+            {/* Overlay Badges */}
+            <div
+              style={{ opacity: approveOpacity }}
+              className="border-4 border-[oklch(0.62_0.18_142)] text-[oklch(0.62_0.18_142)] text-2xl font-bold uppercase rounded-lg px-3 py-1 tracking-widest absolute top-8 left-6 rotate-[-12deg] pointer-events-none z-30 transition-opacity duration-75"
+            >
+              APPROVE
+            </div>
+            <div
+              style={{ opacity: disapproveOpacity }}
+              className="border-4 border-[oklch(0.55_0.20_25)] text-[oklch(0.55_0.20_25)] text-2xl font-bold uppercase rounded-lg px-3 py-1 tracking-widest absolute top-8 right-6 rotate-[12deg] pointer-events-none z-30 transition-opacity duration-75"
+            >
+              OPPOSE
+            </div>
+            <div
+              style={{ opacity: skipOpacity }}
+              className="border-4 border-[oklch(0.72_0.15_65)] text-[oklch(0.72_0.15_65)] text-2xl font-bold uppercase rounded-lg px-4 py-1 tracking-widest absolute bottom-12 left-1/2 -translate-x-1/2 rotate-0 pointer-events-none z-30 transition-opacity duration-75"
+            >
+              SKIP
+            </div>
+
+            {renderCardContent(card, false)}
           </div>
-
-          {/* Avatar */}
-          <div className="flex justify-center mb-4 mt-2">
-            <img
-              src={card.avatarUrl}
-              alt={card.leaderName}
-              className="w-[120px] h-[120px] rounded-full object-cover border-2 border-[oklch(0.28_0.02_250)]"
-            />
-          </div>
-
-          {/* Leader name */}
-          <h2 className="text-center text-2xl font-semibold text-[oklch(0.95_0.02_250)] mb-6 font-['Space_Grotesk']">
-            {card.leaderName}
-          </h2>
-
-          {/* Swipe hint (first-time users or first-run) */}
-          <p className="text-center text-sm text-[oklch(0.75_0.02_250)] opacity-50 font-['Space_Grotesk']">
-            Swipe left or right to vote
-          </p>
         </div>
 
         {/* Button row (always visible on mobile, appear on hover on desktop) */}
@@ -249,7 +368,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             onClick={() => handleVote('disapprove')}
             onMouseEnter={() => setHoveredButton('disapprove')}
             onMouseLeave={() => setHoveredButton(null)}
-            disabled={isLoading || voteAction !== null}
+            disabled={isLoading || voteAction !== null || isFlinging}
             className={`hidden md:block px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
               hoveredButton === 'disapprove'
                 ? 'bg-[oklch(0.55_0.20_25)] text-white'
@@ -263,7 +382,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {/* Mobile disapprove icon */}
           <button
             onClick={() => handleVote('disapprove')}
-            disabled={isLoading || voteAction !== null}
+            disabled={isLoading || voteAction !== null || isFlinging}
             className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-lg opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Disapprove"
           >
@@ -275,7 +394,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             onClick={() => handleVote('approve')}
             onMouseEnter={() => setHoveredButton('approve')}
             onMouseLeave={() => setHoveredButton(null)}
-            disabled={isLoading || voteAction !== null}
+            disabled={isLoading || voteAction !== null || isFlinging}
             className={`hidden md:block px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
               hoveredButton === 'approve'
                 ? 'bg-[oklch(0.62_0.18_142)] text-white'
@@ -289,7 +408,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {/* Mobile approve icon */}
           <button
             onClick={() => handleVote('approve')}
-            disabled={isLoading || voteAction !== null}
+            disabled={isLoading || voteAction !== null || isFlinging}
             className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-lg opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Approve"
           >
@@ -301,7 +420,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             onClick={() => handleVote('skip')}
             onMouseEnter={() => setHoveredButton('skip')}
             onMouseLeave={() => setHoveredButton(null)}
-            disabled={isLoading || voteAction !== null}
+            disabled={isLoading || voteAction !== null || isFlinging}
             className={`px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
               hoveredButton === 'skip'
                 ? 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)]'
@@ -317,14 +436,16 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       {/* Results card (fades in from center) */}
       {showResults && (
         <div
-          className={`w-80 ${bgColor} rounded-[12px] p-6 transition-all duration-300 ${showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+          className={`w-80 ${topBgColor} rounded-[12px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl transition-all duration-300 ${
+            showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          }`}
         >
           {/* Approval % (appears first) */}
           <div
             className={`transition-all duration-300 ${revealStage === 'idle' ? 'opacity-0' : 'opacity-100'}`}
           >
             <div className="text-center mb-2">
-              <div className={`text-5xl font-bold ${percentColor}`}>
+              <div className={`text-5xl font-bold ${percentColor} font-['Inter']`}>
                 {card.approvalPercent}%
               </div>
               <div className={`text-2xl ${trendColor}`}>{trendIcon}</div>
@@ -378,8 +499,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
           {/* Next affordance */}
           {revealStage === 'news' && (
-            <p className="text-center text-sm text-[oklch(0.75_0.02_250)] opacity-60 mt-4 font-['Space_Grotesk']">
-              Swipe or tap for the next leader
+            <p className="text-center text-xs text-[oklch(0.75_0.02_250)] opacity-40 mt-6 font-['Space_Grotesk']">
+              Swipe or tap next card to advance
             </p>
           )}
         </div>

@@ -86,6 +86,9 @@ export interface SwipeCardProps {
   /** Complete card data to display */
   card: CardData;
 
+  /** Optional card underneath the top card in the stack */
+  nextCard?: CardData;
+
   /** Callback fired when user casts a vote (approve/disapprove/skip) */
   onVote: (action: VoteAction) => void;
 

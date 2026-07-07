@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { LeaderboardEntry, LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
+import { useState, useMemo, useCallback } from 'react';
+import type { LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
 
 export default function Leaderboard({
   entries,

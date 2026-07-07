@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Leaderboard from './Leaderboard';
-import { LeaderboardEntry } from './Leaderboard.types';
+import type { LeaderboardEntry } from './Leaderboard.types';
 
 export function LeaderboardDemo() {
   const [selectedWindow, setSelectedWindow] = useState<'day' | 'week' | 'all'>('day');
@@ -65,7 +65,6 @@ export function LeaderboardDemo() {
   };
 
   const getLastUpdatedTime = () => {
-    const now = new Date();
     const minutes = Math.floor(Math.random() * 5) + 1;
     return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
   };

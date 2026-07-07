@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
 
@@ -17,25 +17,23 @@ export interface OnboardingProps {
 
 export const Onboarding: React.FC<OnboardingProps> = ({
   onComplete,
-  onSkip,
+  onSkip: _onSkip,
   availableCountries = [],
 }) => {
   const [currentScreen, setCurrentScreen] = useState<OnboardingScreen>('intro');
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
 
   // Detect user's geolocation on mount
   useEffect(() => {
     if (navigator.geolocation && availableCountries.length > 0) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        (_position) => {
           // In a real app, use reverse geocoding to get country from coordinates
           // For now, we'll use a simple fallback or IP-based detection
           // Placeholder: assume first country in list as fallback
           const fallback = availableCountries[0];
-          setDetectedCountry(fallback);
           setSelectedCountry(fallback);
         },
         () => {
