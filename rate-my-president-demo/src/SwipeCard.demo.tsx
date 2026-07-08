@@ -43,8 +43,18 @@ function buildHomeCard(countryCode: string): CardData | null {
 }
 
 function buildGlobalCard(id: string, excludeCode?: string, existingCodes: string[] = []): CardData {
-  const pool = availableCountries.filter((c) => c.code !== excludeCode && !existingCodes.includes(c.code));
-  const country = pool.length > 0 ? randomItem(pool) : randomItem(availableCountries.filter((c) => !existingCodes.includes(c.code)));
+  const excludedCodes = [excludeCode, ...existingCodes].filter((code): code is string => Boolean(code));
+  let pool = availableCountries.filter((c) => !excludedCodes.includes(c.code));
+
+  if (pool.length === 0) {
+    pool = availableCountries.filter((c) => !existingCodes.includes(c.code));
+  }
+
+  if (pool.length === 0) {
+    pool = availableCountries;
+  }
+
+  const country = randomItem(pool);
   return {
     id: `${id}-${Math.random().toString(36).slice(2, 8)}`,
     type: 'global',

@@ -77,7 +77,7 @@ export function SwipeCardDemo() {
 
   const [cardsQueue, setCardsQueue] = useState<CardData[]>(initialCards);
 
-  const generateRandomCard = (id: string): CardData => {
+  const generateRandomCard = (id: string, excludedCodes: string[] = []): CardData => {
     const countries = [
       { code: 'US', name: 'United States', flag: '🇺🇸', leaders: ['Donald Trump'] },
       { code: 'DE', name: 'Germany', flag: '🇩🇪', leaders: ['Olaf Scholz'] },
@@ -86,7 +86,10 @@ export function SwipeCardDemo() {
       { code: 'ZA', name: 'South Africa', flag: '🇿🇦', leaders: ['Cyril Ramaphosa'] },
     ];
 
-    const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+    const eligibleCountries = countries.filter((country) => !excludedCodes.includes(country.code));
+    const randomCountry = eligibleCountries.length > 0
+      ? eligibleCountries[Math.floor(Math.random() * eligibleCountries.length)]
+      : countries[Math.floor(Math.random() * countries.length)];
     const leader = randomCountry.leaders[0];
     const seed = leader
       .split(' ')
@@ -128,8 +131,9 @@ export function SwipeCardDemo() {
       setCardsQueue((prev) => {
         const nextQueue = prev.slice(1);
         // Ensure there are always at least 3 cards in the queue to maintain stack visuals
-        if (nextQueue.length < 3) {
-          nextQueue.push(generateRandomCard(`card-${Date.now()}`));
+        while (nextQueue.length < 3) {
+          const existingCodes = nextQueue.map((card) => card.countryCode);
+          nextQueue.push(generateRandomCard(`card-${Date.now()}`, existingCodes));
         }
         return nextQueue;
       });
