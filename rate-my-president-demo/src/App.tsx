@@ -31,6 +31,7 @@ function App() {
   useEffect(() => {
     if (!showHelpTooltip) return;
 
+    const previouslyFocusedElement = document.activeElement as HTMLElement | null;
     helpCloseButtonRef.current?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -40,7 +41,10 @@ function App() {
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      previouslyFocusedElement?.focus();
+    };
   }, [showHelpTooltip]);
 
   const handleOnboardingComplete = (countryCode: string | null) => {

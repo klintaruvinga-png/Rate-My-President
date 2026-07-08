@@ -50,7 +50,6 @@ const FlagImage: React.FC<{
         </span>
       )}
       <img
-        key={code}
         src={flagUrl}
         alt={alt}
         loading="eager"
