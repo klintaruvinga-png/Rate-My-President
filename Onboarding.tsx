@@ -35,30 +35,44 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
+  const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
-  // Detect user's geolocation on mount (only when not pre-populated)
+  // Detect user's geolocation only after explicit consent and with cleanup protection.
   useEffect(() => {
-    if (defaultCountry) return; // already have a saved selection
-    if (navigator.geolocation && availableCountries.length > 0) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // In a real app, use reverse geocoding to get country from coordinates
-          // For now, we'll use a simple fallback or IP-based detection
-          // Placeholder: assume first country in list as fallback
-          const fallback = availableCountries[0];
+    if (defaultCountry || locationConsent !== true) return;
+    if (typeof navigator === 'undefined' || !navigator.geolocation || availableCountries.length === 0) return;
+
+    const abortController = new AbortController();
+    const timeoutId = window.setTimeout(() => abortController.abort(), 8000);
+
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        if (abortController.signal.aborted) return;
+
+        const fallback = availableCountries[0];
+        if (!userMadeExplicitChoice.current) {
           setDetectedCountry(fallback);
           setSelectedCountry(fallback);
-        },
-        () => {
-          // Geolocation failed; use IP-based detection or no default
+          setCountryConfirmed(true);
+          userMadeExplicitChoice.current = true;
+        }
+      },
+      () => {
+        if (!abortController.signal.aborted) {
           console.log('Geolocation permission denied or unavailable');
         }
-      );
-    }
-  }, [availableCountries]);
+      },
+      { timeout: 8000 }
+    );
+
+    return () => {
+      clearTimeout(timeoutId);
+      abortController.abort();
+    };
+  }, [availableCountries, defaultCountry, locationConsent]);
 
   const handleAdvanceScreen = () => {
     switch (currentScreen) {
@@ -110,6 +124,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setSelectedCountry(null);
     setCountryConfirmed(false);
     setCurrentScreen('confirmation');
+  };
+
+  const handleClearCountry = () => {
+    setCountryConfirmed(false);
+    setSelectedCountry(null);
+    setSearchQuery('');
+    setLocationConsent(null);
+    userMadeExplicitChoice.current = false;
   };
 
   const handleComplete = () => {
@@ -348,25 +370,45 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 )}
               </div>
               <button
-                onClick={() => {
-                  setCountryConfirmed(false);
-                  setSelectedCountry(null);
-                  setSearchQuery('');
-                }}
+                onClick={handleClearCountry}
                 className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] text-xs font-semibold font-['Space_Grotesk'] hover:border-[oklch(0.95_0.02_250)/0.6] hover:text-[oklch(0.95_0.02_250)] transition-colors"
               >
                 Change
               </button>
             </div>
           ) : (
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search countries..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
-              />
+            <div className="space-y-3">
+              {locationConsent === null && !defaultCountry && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
+                <div className="rounded-xl border border-[oklch(0.62_0.18_142)/0.25] bg-[oklch(0.24_0.02_250)] p-4 text-left">
+                  <p className="text-sm font-semibold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Use your location to prefill your country?</p>
+                  <p className="mt-1 text-xs text-[oklch(0.75_0.02_250)] font-['Inter']">We can try to match your country once, then you can adjust it manually.</p>
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setLocationConsent(true)}
+                      className="rounded-lg bg-[oklch(0.62_0.18_142)] px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                    >
+                      Yes, use location
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLocationConsent(false)}
+                      className="rounded-lg border border-[oklch(0.75_0.02_250)/0.4] px-3 py-2 text-sm font-semibold text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]"
+                    >
+                      No thanks
+                    </button>
+                  </div>
+                </div>
+              )}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search countries..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
+                />
+              </div>
             </div>
           )}
 

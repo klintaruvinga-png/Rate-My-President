@@ -42,9 +42,9 @@ function buildHomeCard(countryCode: string): CardData | null {
   };
 }
 
-function buildGlobalCard(id: string, excludeCode?: string): CardData {
-  const pool = availableCountries.filter((c) => c.code !== excludeCode);
-  const country = pool.length > 0 ? randomItem(pool) : randomItem(availableCountries);
+function buildGlobalCard(id: string, excludeCode?: string, existingCodes: string[] = []): CardData {
+  const pool = availableCountries.filter((c) => c.code !== excludeCode && !existingCodes.includes(c.code));
+  const country = pool.length > 0 ? randomItem(pool) : randomItem(availableCountries.filter((c) => !existingCodes.includes(c.code)));
   return {
     id: `${id}-${Math.random().toString(36).slice(2, 8)}`,
     type: 'global',
@@ -78,7 +78,11 @@ function buildInitialQueue(homeCode: string | null): CardData[] {
   // Fill to at least 3 cards with global picks
   while (queue.length < 3) {
     queue.push(
-      buildGlobalCard(`global-${Date.now()}-${queue.length}`, homeCode ?? undefined)
+      buildGlobalCard(
+        `global-${Date.now()}-${queue.length}`,
+        homeCode ?? undefined,
+        queue.map((card) => card.countryCode)
+      )
     );
   }
 
@@ -106,7 +110,8 @@ export function SwipeCardDemo() {
           nextQueue.push(
             buildGlobalCard(
               `global-${Date.now()}-${nextQueue.length}`,
-              savedCountryCode ?? undefined
+              savedCountryCode ?? undefined,
+              nextQueue.map((card) => card.countryCode)
             )
           );
         }

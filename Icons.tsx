@@ -25,24 +25,28 @@ const IconBase = ({
   label,
   children,
   ...props
-}: IconBaseProps) => (
-  <svg
-    viewBox="0 0 24 24"
-    className={className ?? 'w-6 h-6'}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden={ariaHidden}
-    aria-label={ariaHidden ? undefined : ariaLabel ?? label}
-    role={ariaHidden ? undefined : 'img'}
-    focusable="false"
-    {...props}
-  >
-    {children}
-  </svg>
-);
+}: IconBaseProps) => {
+  const isHidden = ariaHidden === true || ariaHidden === 'true';
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className ?? 'w-6 h-6'}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden={isHidden ? true : undefined}
+      aria-label={isHidden ? undefined : ariaLabel ?? label}
+      role={isHidden ? undefined : 'img'}
+      focusable="false"
+      {...props}
+    >
+      {children}
+    </svg>
+  );
+};
 
 // Navigation Icons
 export const HomeIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
