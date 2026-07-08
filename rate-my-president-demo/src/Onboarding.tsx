@@ -8,7 +8,6 @@ import {
   SkipIcon,
 } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
-import NewsTicker from './NewsTicker';
 import SwipeTutorial from './SwipeTutorial';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
@@ -213,9 +212,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   return (
     <div className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
       <div className="w-full">
-        {/* Full-width ticker bar — matches swipe page exactly */}
-        <NewsTicker />
-
         <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
@@ -435,10 +431,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <>
                 <div>
                   <h2 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Got it!</h2>
-                  <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] flex items-center justify-center gap-2">
+                  <div className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] flex items-center justify-center gap-2">
                     <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-8 h-8" />
                     {selectedCountry.name}
-                  </p>
+                  </div>
                 </div>
                 <div className={`${cardColor} rounded-lg p-6 space-y-3`}>
                   <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Your head of state</p>

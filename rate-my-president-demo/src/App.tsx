@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import OnboardingDemo from './Onboarding.demo';
 import SwipeCardDemo from './SwipeCard.demo';
@@ -7,6 +7,8 @@ import headerImage from '../../assets/Obama Header No BG.png';
 import NewsTicker from './NewsTicker';
 import LeaderTicker from './LeaderTicker';
 import { getHasCompletedOnboarding, setHasCompletedOnboarding, setUserCountry } from './onboardingStorage';
+import { availableCountries } from './countries';
+import { preloadFlags } from './flagPreloader';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'swipe' | 'onboarding' | 'leaderboard'>(() => {
@@ -18,6 +20,12 @@ function App() {
   });
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Warm the browser HTTP cache for all flag images immediately on app boot.
+  // This ensures flags are ready before SwipeCard mounts after onboarding.
+  useEffect(() => {
+    preloadFlags(availableCountries.map((c) => c.code));
+  }, []);
 
   const handleOnboardingComplete = (countryCode: string | null) => {
     setHasCompletedOnboarding(true);
@@ -138,21 +146,15 @@ function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-h-0">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 min-h-0 flex flex-col">
+        {activeTab === 'onboarding' && <NewsTicker />}
+        {activeTab === 'swipe' && <NewsTicker />}
+        {activeTab === 'leaderboard' && <LeaderTicker />}
+        
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex-1">
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
-          {activeTab === 'swipe' && (
-            <>
-              <NewsTicker />
-              <SwipeCardDemo />
-            </>
-          )}
-          {activeTab === 'leaderboard' && (
-            <>
-              <LeaderTicker />
-              <LeaderboardDemo />
-            </>
-          )}
+          {activeTab === 'swipe' && <SwipeCardDemo />}
+          {activeTab === 'leaderboard' && <LeaderboardDemo />}
         </div>
       </main>
 

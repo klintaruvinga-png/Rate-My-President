@@ -18,21 +18,24 @@ export const AnimatedFlag: React.FC<AnimatedFlagProps> = ({
   className = 'w-5 h-5',
   alt,
 }) => {
-  const [hasError, setHasError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
-  // Reset status if countryCode changes
+  // Reset when the country changes so stale state from a previous card never shows
   useEffect(() => {
-    setHasError(false);
-    setIsLoading(true);
+    setStatus('loading');
   }, [countryCode]);
 
   const flagAltText = alt ?? (countryCode ? `${countryCode} flag` : 'Country flag');
 
-  if (!countryCode || hasError) {
+  // ── No country code, or remote image failed ──────────────────────────────
+  if (!countryCode || status === 'error') {
     if (fallbackFlag) {
       return (
-        <span className={`${className} inline-flex items-center justify-center font-['Inter'] leading-none select-none`} role="img" aria-label={flagAltText}>
+        <span
+          className={`${className} inline-flex items-center justify-center leading-none select-none`}
+          role="img"
+          aria-label={flagAltText}
+        >
           {fallbackFlag}
         </span>
       );
@@ -44,21 +47,35 @@ export const AnimatedFlag: React.FC<AnimatedFlagProps> = ({
   const flagUrl = `https://animated-country-flags.malith.dev/webp/${code}.webp`;
 
   return (
-    <div className={`relative inline-flex items-center justify-center overflow-hidden flex-shrink-0 ${className}`}>
-      {isLoading && (
-        <div className="absolute inset-0 bg-white/10 rounded animate-pulse" />
+    <div
+      className={`relative inline-flex items-center justify-center overflow-hidden flex-shrink-0 ${className}`}
+    >
+      {/* ── Immediate emoji fallback: visible while the remote image loads ── */}
+      {fallbackFlag && status !== 'ready' && (
+        <span
+          className="absolute inset-0 flex items-center justify-center leading-none select-none"
+          // Fill ~80% of the container regardless of size.
+          // Using a percentage of width is more reliable than container queries
+          // across Tailwind's Vite pipeline.
+          style={{ fontSize: '80%', lineHeight: 1 }}
+          role="img"
+          aria-label={flagAltText}
+        >
+          {fallbackFlag}
+        </span>
       )}
+
+      {/* ── Remote animated WebP; fades in once loaded ── */}
       <img
         src={flagUrl}
         alt={flagAltText}
-        className={`${className} object-contain transition-opacity duration-300 ${
-          isLoading ? 'opacity-0' : 'opacity-100'
+        loading="eager"
+        decoding="async"
+        className={`w-full h-full object-contain transition-opacity duration-200 ${
+          status === 'ready' ? 'opacity-100' : 'opacity-0'
         }`}
-        onLoad={() => setIsLoading(false)}
-        onError={() => {
-          setHasError(true);
-          setIsLoading(false);
-        }}
+        onLoad={() => setStatus('ready')}
+        onError={() => setStatus('error')}
       />
     </div>
   );
