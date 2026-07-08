@@ -151,8 +151,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setCountryConfirmed(false);
     setSelectedCountry(null);
     setSearchQuery('');
-    setLocationConsent(null);
-    userMadeExplicitChoice.current = false;
   };
 
   const handleComplete = () => {
