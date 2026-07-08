@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import SwipeCard from './SwipeCard';
-import type { CardData } from './SwipeCard.types';
+import type { CardData, VoteAction } from './SwipeCard.types';
 import { getUserCountry } from './onboardingStorage';
 import { availableCountries } from './countries';
 
@@ -89,15 +89,15 @@ function buildInitialQueue(homeCode: string | null): CardData[] {
 
 export function SwipeCardDemo() {
   const savedCountryCode = getUserCountry();
-  const [voteHistory, setVoteHistory] = useState<string[]>([]);
+  const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
   const [cardsQueue, setCardsQueue] = useState<CardData[]>(() =>
     buildInitialQueue(savedCountryCode)
   );
 
-  const handleVote = (action: string | null) => {
-    const voteStr = action || 'skip';
-    setVoteHistory((prev) => [...prev, voteStr]);
-    console.log('Vote recorded:', voteStr);
+  const handleVote = (action: VoteAction) => {
+    const voteAction = action ?? 'skip';
+    setVoteHistory((prev) => [...prev, voteAction]);
+    console.log('Vote recorded:', voteAction);
 
     setTimeout(() => {
       setCardsQueue((prev) => {
@@ -142,25 +142,30 @@ export function SwipeCardDemo() {
           <p className="opacity-60 text-xs">No votes yet. Try swiping!</p>
         ) : (
           <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
-            {voteHistory.map((vote, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between gap-4 border-b border-[oklch(0.28_0.02_250)] pb-1 text-xs"
-              >
-                <span>Leader {idx + 1}:</span>
-                <span
-                  className={`font-semibold ${
-                    vote === 'like'
-                      ? 'text-[oklch(0.62_0.18_142)]'
-                      : vote === 'nolike'
-                        ? 'text-[oklch(0.55_0.20_25)]'
-                        : 'text-[oklch(0.72_0.15_65)]'
-                  }`}
+            {voteHistory.map((vote, idx) => {
+              const voteLabel = vote === 'approve'
+                ? 'APPROVE'
+                : vote === 'disapprove'
+                  ? 'OPPOSE'
+                  : 'SKIP';
+              const voteColor = vote === 'approve'
+                ? 'text-[oklch(0.62_0.18_142)]'
+                : vote === 'disapprove'
+                  ? 'text-[oklch(0.55_0.20_25)]'
+                  : 'text-[oklch(0.72_0.15_65)]';
+
+              return (
+                <div
+                  key={idx}
+                  className="flex justify-between gap-4 border-b border-[oklch(0.28_0.02_250)] pb-1 text-xs"
                 >
-                  {vote.toUpperCase()}
-                </span>
-              </div>
-            ))}
+                  <span>Leader {idx + 1}:</span>
+                  <span className={`font-semibold ${voteColor}`}>
+                    {voteLabel}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
