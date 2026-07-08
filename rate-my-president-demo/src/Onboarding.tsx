@@ -6,6 +6,8 @@ import {
   ApproveIcon,
   DisapproveIcon,
   SkipIcon,
+  BadgeIcon,
+  CountryIcon,
 } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 import SwipeTutorial from './SwipeTutorial';
@@ -226,6 +228,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'intro' && (
           <div className="w-full space-y-6 text-center">
             <div>
+              <div className="text-6xl mb-4 inline-block w-16 h-16">
+                <GlobeIcon aria-label="Global" />
+              </div>
               <h1 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">Rate My President</h1>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Your daily swipes on global leaders</p>
             </div>
@@ -241,6 +246,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'mechanic-home' && (
           <div className="w-full space-y-8">
             <div className="text-center space-y-1">
+              <div className="text-6xl mb-4 inline-block w-16 h-16">
+                <HomeIcon aria-label="Home" />
+              </div>
               <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Swipe 1: Your home leader</h2>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Swipe on the leader of your country.</p>
               <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
@@ -272,7 +280,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'mechanic-global' && (
           <div className="w-full space-y-8">
             <div className="text-center space-y-1">
-              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2 whitespace-normal break-words">Swipe 2: A random global leader</h2>
+              <div className="text-6xl mb-4 inline-block w-16 h-16">
+                <GlobeIcon aria-label="Global" />
+              </div>
+              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Swipe 2: A random global leader</h2>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Then meet someone from anywhere in the world.</p>
             </div>
             <div className={`${cardColor} rounded-lg p-6 text-center space-y-4`}>
@@ -280,7 +291,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 <GlobeIcon aria-label="Global" className="h-10 w-10 text-[oklch(0.95_0.02_250)]" />
               </div>
               <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Random leader here</p>
-              <div className="flex justify-center gap-4 text-xl"><span>👎</span><span>👍</span><span>⊘</span></div>
+              <div className="flex justify-center gap-4 text-xl">
+                <span className="inline-block w-6 h-6" aria-hidden="true">
+                  <DisapproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-6 h-6" aria-hidden="true">
+                  <ApproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-6 h-6" aria-hidden="true">
+                  <SkipIcon className="w-full h-full" />
+                </span>
+              </div>
             </div>
             <div className="flex gap-3">
               <button onClick={handleBackScreen} className="flex-1 py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors">Back</button>
@@ -291,30 +312,16 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
         {currentScreen === 'mechanic-summary' && (
           <div className="w-full space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">One swipe, two perspectives</h2>
-              <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Every day, you swipe on your leader + a random one from around the world.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4 items-stretch">
-              <div className={`${cardColor} rounded-lg p-5 flex flex-col items-center justify-between text-center space-y-4`}>
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[oklch(0.17_0.02_250)]">
-                  <HomeIcon aria-label="Home" className="h-6 w-6 text-[oklch(0.95_0.02_250)]" />
-                </div>
-                <p className="text-xs uppercase tracking-[0.18em] text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
-                <div className="flex justify-center gap-2 text-lg">
-                  <span className="inline-block w-5 h-5" aria-hidden="true"><DisapproveIcon /></span>
-                  <span className="inline-block w-5 h-5" aria-hidden="true"><ApproveIcon /></span>
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
+                <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
+                <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><DisapproveIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><ApproveIcon /></span></div>
               </div>
-              <div className={`${cardColor} rounded-lg p-5 flex flex-col items-center justify-between text-center space-y-4`}>
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[oklch(0.17_0.02_250)]">
-                  <GlobeIcon aria-label="Global" className="h-6 w-6 text-[oklch(0.95_0.02_250)]" />
-                </div>
-                <p className="text-xs uppercase tracking-[0.18em] text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
-                <div className="flex justify-center gap-2 text-lg">
-                  <span className="inline-block w-5 h-5" aria-hidden="true"><DisapproveIcon /></span>
-                  <span className="inline-block w-5 h-5" aria-hidden="true"><ApproveIcon /></span>
-                </div>
+              <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
+                <div className="text-3xl inline-block w-10 h-10"><GlobeIcon aria-label="Global" /></div>
+                <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><DisapproveIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><ApproveIcon /></span></div>
               </div>
             </div>
             <div className="flex gap-3">

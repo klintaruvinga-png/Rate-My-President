@@ -58,12 +58,11 @@ function App() {
           >
             <span className="text-lg">☰</span>
           </button>
-        </div>
 
         <nav className="hidden flex-wrap gap-2 items-center sm:flex sm:flex-nowrap sm:justify-end sm:pr-8">
           <button
-            onClick={() => setActiveTab('onboarding')}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] transition-all ${
+            onClick={() => handleTabChange('onboarding')}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
               activeTab === 'onboarding'
                 ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
                 : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
@@ -72,8 +71,8 @@ function App() {
             👋 Onboarding
           </button>
           <button
-            onClick={() => setActiveTab('swipe')}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] transition-all ${
+            onClick={() => handleTabChange('swipe')}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
               activeTab === 'swipe'
                 ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
                 : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
@@ -82,8 +81,8 @@ function App() {
             🔥 Swipe
           </button>
           <button
-            onClick={() => setActiveTab('leaderboard')}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] transition-all ${
+            onClick={() => handleTabChange('leaderboard')}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
               activeTab === 'leaderboard'
                 ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
                 : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
@@ -149,8 +148,7 @@ function App() {
       <main className="flex-1 min-h-0 flex flex-col">
         {activeTab === 'onboarding' && <NewsTicker />}
         {activeTab === 'swipe' && <NewsTicker />}
-        {activeTab === 'leaderboard' && <LeaderTicker />}
-        
+
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex-1">
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && <SwipeCardDemo />}

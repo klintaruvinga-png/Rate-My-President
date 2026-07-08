@@ -133,7 +133,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       {currentScreen === 'intro' && (
         <div className="w-full max-w-md space-y-8 text-center">
           <div>
-            <div className="text-6xl mb-4">🌍</div>
+            <div className="text-6xl mb-4 inline-block w-16 h-16">
+              <GlobeIcon aria-label="Global" />
+            </div>
             <h1 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">
               Rate My President
             </h1>
@@ -163,7 +165,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       {/* Screen 2: Mechanic - Home Card */}
       {currentScreen === 'mechanic-home' && (
         <div className="w-full max-w-md space-y-8">
-          <div className="text-center space-y-1">
+          <div className="text-center">
             <div className="text-6xl mb-4 inline-block w-16 h-16">
               <HomeIcon aria-label="Home" />
             </div>
@@ -183,9 +185,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <div className="w-20 h-20 bg-[oklch(0.28_0.02_250)] rounded-full mx-auto"></div>
             <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Your leader here</p>
             <div className="flex justify-center gap-4 text-xl">
-              <span>👎</span>
-              <span>👍</span>
-              <span>⊘</span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <DisapproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <ApproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <SkipIcon className="w-full h-full" />
+              </span>
             </div>
           </div>
 
@@ -209,12 +217,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       {/* Screen 3: Mechanic - Global Card */}
       {currentScreen === 'mechanic-global' && (
         <div className="w-full max-w-md space-y-8">
-          <div className="text-center space-y-1">
+          <div className="text-center">
             <div className="text-6xl mb-4 inline-block w-16 h-16">
               <GlobeIcon aria-label="Global" />
             </div>
-            <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2 whitespace-nowrap">
-              Swipe 2: A random global leader
+            <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
+              A random global leader
             </h2>
             <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
               Then meet someone from anywhere in the world.
@@ -223,13 +231,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
           {/* Card mockup */}
           <div className={`${cardColor} rounded-lg p-8 text-center space-y-4`}>
-            <div className="text-2xl mb-2">🇯🇵</div>
+            <div className="text-2xl mb-2"><CountryIcon aria-label="Example country" /></div>
             <div className="w-20 h-20 bg-[oklch(0.28_0.02_250)] rounded-full mx-auto"></div>
             <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Random leader here</p>
             <div className="flex justify-center gap-4 text-xl">
-              <span>👎</span>
-              <span>👍</span>
-              <span>⊘</span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <DisapproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <ApproveIcon className="w-full h-full" />
+              </span>
+              <span className="inline-block w-6 h-6" aria-hidden="true">
+                <SkipIcon className="w-full h-full" />
+              </span>
             </div>
           </div>
 
@@ -265,19 +279,27 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           {/* Side-by-side cards */}
           <div className="grid grid-cols-2 gap-4">
             <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
-              <div className="text-3xl">🏠</div>
+              <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
               <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
               <div className="flex justify-center gap-2 text-lg">
-                <span>👎</span>
-                <span>👍</span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <DisapproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <ApproveIcon className="w-full h-full" />
+                </span>
               </div>
             </div>
             <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
-              <div className="text-3xl">🌍</div>
+              <div className="text-3xl inline-block w-10 h-10"><GlobeIcon aria-label="Global" /></div>
               <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
               <div className="flex justify-center gap-2 text-lg">
-                <span>👎</span>
-                <span>👍</span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <DisapproveIcon className="w-full h-full" />
+                </span>
+                <span className="inline-block w-5 h-5" aria-hidden="true">
+                  <ApproveIcon className="w-full h-full" />
+                </span>
               </div>
             </div>
           </div>
@@ -367,7 +389,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                   {country.name}
                 </span>
                 {selectedCountry?.code === country.code && (
-                  <span className="float-right text-[oklch(0.62_0.18_142)]">✓</span>
+                  <BadgeIcon className="inline-block w-4 h-4 float-right text-[oklch(0.62_0.18_142)]" aria-label="Selected" />
                 )}
               </button>
             ))}
