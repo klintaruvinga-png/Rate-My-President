@@ -59,10 +59,16 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     if (!navigator.geolocation || availableCountries.length === 0) return;
 
     const abortController = new AbortController();
-    const timeoutId = setTimeout(() => abortController.abort(), 8000);
+    let isCancelled = false;
+    const timeoutId = setTimeout(() => {
+      isCancelled = true;
+      abortController.abort();
+    }, 8000);
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        if (isCancelled || abortController.signal.aborted) return;
+
         try {
           const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
@@ -74,7 +80,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             (country) => country.code.toUpperCase() === countryCode
           );
 
-          if (matchedCountry && !userMadeExplicitChoice.current) {
+          if (!isCancelled && !abortController.signal.aborted && matchedCountry && !userMadeExplicitChoice.current) {
             setSelectedCountry(matchedCountry);
             setCountryConfirmed(true);
             userMadeExplicitChoice.current = true;
@@ -93,6 +99,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     );
 
     return () => {
+      isCancelled = true;
       clearTimeout(timeoutId);
       abortController.abort();
     };

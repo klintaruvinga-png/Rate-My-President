@@ -46,11 +46,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     if (typeof navigator === 'undefined' || !navigator.geolocation || availableCountries.length === 0) return;
 
     const abortController = new AbortController();
-    const timeoutId = window.setTimeout(() => abortController.abort(), 8000);
+    let isCancelled = false;
+    const timeoutId = window.setTimeout(() => {
+      isCancelled = true;
+      abortController.abort();
+    }, 8000);
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        if (abortController.signal.aborted) return;
+        if (isCancelled || abortController.signal.aborted) return;
 
         try {
           const response = await fetch(
@@ -64,7 +68,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           );
 
           const selected = matchedCountry ?? availableCountries[0];
-          if (!userMadeExplicitChoice.current) {
+          if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
             setDetectedCountry(selected);
             setSelectedCountry(selected);
             setCountryConfirmed(true);
@@ -85,6 +89,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     );
 
     return () => {
+      isCancelled = true;
       clearTimeout(timeoutId);
       abortController.abort();
     };

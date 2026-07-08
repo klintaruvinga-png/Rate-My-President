@@ -18,6 +18,8 @@ interface IconBaseProps extends IconProps {
   children: ReactNode;
 }
 
+const normalizeAriaHidden = (value: IconProps['aria-hidden']) => value === true || value === 'true';
+
 const IconBase = ({
   className,
   'aria-label': ariaLabel,
@@ -26,7 +28,7 @@ const IconBase = ({
   children,
   ...props
 }: IconBaseProps) => {
-  const isHidden = ariaHidden === true || ariaHidden === 'true';
+  const isHidden = normalizeAriaHidden(ariaHidden);
 
   return (
     <svg
