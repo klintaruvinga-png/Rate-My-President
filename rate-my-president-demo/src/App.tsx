@@ -5,7 +5,7 @@ import SwipeCardDemo from './SwipeCard.demo';
 import LeaderboardDemo from './Leaderboard.demo';
 import headerImage from '../../assets/Obama Header No BG.png';
 import NewsTicker from './NewsTicker';
-import LeaderTicker from './LeaderTicker';
+// LeaderTicker not used in this demo shell
 import { getHasCompletedOnboarding, setHasCompletedOnboarding, setUserCountry } from './onboardingStorage';
 import { availableCountries } from './countries';
 import { preloadFlags } from './flagPreloader';

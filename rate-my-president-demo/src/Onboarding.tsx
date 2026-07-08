@@ -6,8 +6,7 @@ import {
   ApproveIcon,
   DisapproveIcon,
   SkipIcon,
-  BadgeIcon,
-  CountryIcon,
+  
 } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 import SwipeTutorial from './SwipeTutorial';

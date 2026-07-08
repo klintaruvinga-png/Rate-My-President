@@ -143,14 +143,14 @@ export function SwipeCardDemo() {
         ) : (
           <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
             {voteHistory.map((vote, idx) => {
-              const voteLabel = vote === 'approve'
+              const voteLabel = vote === 'like'
                 ? 'APPROVE'
-                : vote === 'disapprove'
+                : vote === 'nolike'
                   ? 'OPPOSE'
                   : 'SKIP';
-              const voteColor = vote === 'approve'
+              const voteColor = vote === 'like'
                 ? 'text-[oklch(0.62_0.18_142)]'
-                : vote === 'disapprove'
+                : vote === 'nolike'
                   ? 'text-[oklch(0.55_0.20_25)]'
                   : 'text-[oklch(0.72_0.15_65)]';
 

@@ -2,6 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   HomeIcon,
   GlobeIcon,
+  ApproveIcon,
+  DisapproveIcon,
+  SkipIcon,
+  TrendUpIcon,
+  TrendDownIcon,
 } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 
