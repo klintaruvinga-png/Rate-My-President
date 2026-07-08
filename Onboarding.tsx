@@ -49,17 +49,31 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     const timeoutId = window.setTimeout(() => abortController.abort(), 8000);
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         if (abortController.signal.aborted) return;
 
-        // TODO: Implement reverse geocoding to convert position.coords.latitude/longitude to country code.
-        // For now, we fall back to the first available country as this demo lacks a geocoding service.
-        const fallback = availableCountries[0];
-        if (!userMadeExplicitChoice.current) {
-          setDetectedCountry(fallback);
-          setSelectedCountry(fallback);
-          setCountryConfirmed(true);
-          userMadeExplicitChoice.current = true;
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
+            { signal: abortController.signal }
+          );
+          const data = await response.json();
+          const countryCode = data?.address?.country_code?.toUpperCase();
+          const matchedCountry = availableCountries.find(
+            (country) => country.code.toUpperCase() === countryCode
+          );
+
+          const selected = matchedCountry ?? availableCountries[0];
+          if (!userMadeExplicitChoice.current) {
+            setDetectedCountry(selected);
+            setSelectedCountry(selected);
+            setCountryConfirmed(true);
+            userMadeExplicitChoice.current = true;
+          }
+        } catch {
+          if (!abortController.signal.aborted) {
+            console.log('Geolocation permission denied or unavailable');
+          }
         }
       },
       () => {
