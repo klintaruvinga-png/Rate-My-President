@@ -49,9 +49,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     const timeoutId = window.setTimeout(() => abortController.abort(), 8000);
 
     navigator.geolocation.getCurrentPosition(
-      () => {
+      (position) => {
         if (abortController.signal.aborted) return;
 
+        // TODO: Implement reverse geocoding to convert position.coords.latitude/longitude to country code.
+        // For now, we fall back to the first available country as this demo lacks a geocoding service.
         const fallback = availableCountries[0];
         if (!userMadeExplicitChoice.current) {
           setDetectedCountry(fallback);
