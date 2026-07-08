@@ -59,6 +59,8 @@ function App() {
             <span className="text-lg">☰</span>
           </button>
 
+        </div>
+
         <nav className="hidden flex-wrap gap-2 items-center sm:flex sm:flex-nowrap sm:justify-end sm:pr-8">
           <button
             onClick={() => handleTabChange('onboarding')}
