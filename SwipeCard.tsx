@@ -9,6 +9,7 @@ import {
   TrendDownIcon,
   BadgeIcon,
 } from './Icons';
+import AnimatedFlag from './AnimatedFlag';
 
 type CardType = 'home' | 'global';
 type VoteAction = 'like' | 'nolike' | 'skip' | null;
@@ -283,7 +284,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               <GlobeIcon aria-label="Global" />
             )}
           </div>
-          <span>{cardData.countryFlag}</span>
+          <AnimatedFlag countryCode={cardData.countryCode} fallbackFlag={cardData.countryFlag} className="w-5 h-5" />
           <span className="text-xs">{cardData.countryName}</span>
         </div>
 

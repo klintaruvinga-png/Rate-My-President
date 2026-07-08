@@ -1,0 +1,117 @@
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.d.ts' does not exist.
+Found 'package.json' at 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react'.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/AnimatedFlag.tsx'. ========
+Loading module 'react' from 'node_modules' folder, target file types: TypeScript, JavaScript, Declaration.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json' exists according to earlier cached lookups.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+======== Resolving module './' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts'. ========
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/', target file types: TypeScript, JavaScript, Declaration.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+======== Resolving module 'csstype' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+Directory 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/node_modules' does not exist, skipping all lookups in it.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/AnimatedGlobe.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/App.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Icons.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Leaderboard.demo.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Leaderboard.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Onboarding.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeCard.demo.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeCard.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeTutorial.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/main.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/client.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/client.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/client.d.ts' does not exist.
+Found 'package.json' at 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+Found peerDependency '@types/react' with '19.2.17' version.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts'.
+======== Module name 'react-dom/client' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts' with Package ID '@types/react-dom/client.d.ts@19.2.3+@types/react@19.2.17'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+Loading module 'react' from 'node_modules' folder, target file types: TypeScript, JavaScript, Declaration.
+Directory 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/node_modules' does not exist, skipping all lookups in it.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json' exists according to earlier cached lookups.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/jsx-runtime.d.ts' with Package ID '@types/react/jsx-runtime.d.ts@19.2.17'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+'package.json' has 'types' field 'index.d.ts' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'.
+======== Type reference directive 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17', primary: true. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+'package.json' has 'types' field 'index.d.ts' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts'.
+======== Type reference directive 'react-dom' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts' with Package ID '@types/react-dom/index.d.ts@19.2.3+@types/react@19.2.17', primary: true. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+Loading module 'react' from 'node_modules' folder, target file types: TypeScript, JavaScript, Declaration.
+Directory 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/node_modules' does not exist, skipping all lookups in it.
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17'. ========

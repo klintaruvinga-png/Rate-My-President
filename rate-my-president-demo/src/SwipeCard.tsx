@@ -2,12 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   HomeIcon,
   GlobeIcon,
-  DisapproveIcon,
   ApproveIcon,
+  DisapproveIcon,
   SkipIcon,
   TrendUpIcon,
   TrendDownIcon,
-} from './Icons';
+} from '@root/Icons';
+import AnimatedFlag from '@root/AnimatedFlag';
 
 type CardType = 'home' | 'global';
 type VoteAction = 'like' | 'nolike' | 'skip' | null;
@@ -285,17 +286,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               <GlobeIcon aria-label="Global" />
             )}
           </div>
-          <span>{cardData.countryFlag}</span>
-          <span className="text-xs">{cardData.countryName}</span>
-        </div>
-
-        <div className="flex justify-center mb-4 mt-6">
+          <AnimatedFlag countryCode={cardData.countryCode} fallbackFlag={cardData.countryFlag} className="w-5 h-5" />
           <img
-            src={cardData.avatarUrl}
-            alt={cardData.leaderName}
-            onError={(event) => {
-              event.currentTarget.src = fallbackAvatar;
-            }}
+            src={cardData.avatarUrl || fallbackAvatar}
+            alt={`${cardData.leaderName} avatar`}
+            onError={(event) => { (event.currentTarget as HTMLImageElement).src = fallbackAvatar; }}
             className="w-[120px] h-[120px] rounded-avatar-hero object-cover border-2 border-[oklch(0.28_0.02_250)]"
           />
         </div>

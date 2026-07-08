@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
-import { TrendUpIcon, TrendDownIcon } from './Icons';
+import AnimatedFlag from '@root/AnimatedFlag';
+import { TrendUpIcon, TrendDownIcon } from '@root/Icons';
 
 export default function Leaderboard({
   entries,
@@ -288,7 +289,14 @@ export default function Leaderboard({
                             }}
                             className="h-10 w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0"
                           />
-                          {/* Name */}
+                          {/* Flag + Name */}
+                          {(entry.countryCode || entry.countryFlag) && (
+                            <AnimatedFlag
+                              countryCode={entry.countryCode}
+                              fallbackFlag={entry.countryFlag}
+                              className="w-5 h-5 flex-shrink-0"
+                            />
+                          )}
                           <span className="font-['Space_Grotesk'] font-600 text-sm hover:text-[oklch(0.62_0.18_142)] transition-colors truncate">
                             {entry.name}
                           </span>

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GlobeIcon, HomeIcon, ApproveIcon, DisapproveIcon, SkipIcon, CountryIcon, BadgeIcon } from './Icons';
+import AnimatedFlag from './AnimatedFlag';
 
 type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
 
@@ -14,38 +15,85 @@ interface OnboardingProps {
   onComplete: (countryCode: string | null) => void;
   onSkip?: () => void;
   availableCountries: CountryData[];
+  /** Pre-populate the country picker from a previously saved selection */
+  defaultCountryCode?: string | null;
 }
 
 export const Onboarding: React.FC<OnboardingProps> = ({
   onComplete,
   onSkip,
   availableCountries = [],
+  defaultCountryCode,
 }) => {
   const [currentScreen, setCurrentScreen] = useState<OnboardingScreen>('intro');
-  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
+
+  const defaultCountry = defaultCountryCode
+    ? availableCountries.find((c) => c.code === defaultCountryCode) ?? null
+    : null;
+
+  const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(defaultCountry);
   const [searchQuery, setSearchQuery] = useState('');
   const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
+  const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const userMadeExplicitChoice = useRef(defaultCountry !== null);
+  // When true, hide the search UI and show the selected-country preview card
+  const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
-  // Detect user's geolocation on mount
+  // Detect user's geolocation only after explicit consent and with cleanup protection.
   useEffect(() => {
-    if (navigator.geolocation && availableCountries.length > 0) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // In a real app, use reverse geocoding to get country from coordinates
-          // For now, we'll use a simple fallback or IP-based detection
-          // Placeholder: assume first country in list as fallback
-          const fallback = availableCountries[0];
-          setDetectedCountry(fallback);
-          setSelectedCountry(fallback);
-        },
-        () => {
-          // Geolocation failed; use IP-based detection or no default
+    if (defaultCountry || locationConsent !== true) return;
+    if (typeof navigator === 'undefined' || !navigator.geolocation || availableCountries.length === 0) return;
+
+    const abortController = new AbortController();
+    let isCancelled = false;
+    const timeoutId = window.setTimeout(() => {
+      isCancelled = true;
+      abortController.abort();
+    }, 8000);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        if (isCancelled || abortController.signal.aborted) return;
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
+            { signal: abortController.signal }
+          );
+          const data = await response.json();
+          const countryCode = data?.address?.country_code?.toUpperCase();
+          const matchedCountry = availableCountries.find(
+            (country) => country.code.toUpperCase() === countryCode
+          );
+
+          const selected = matchedCountry ?? availableCountries[0];
+          if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            setDetectedCountry(selected);
+            setSelectedCountry(selected);
+            setCountryConfirmed(true);
+            userMadeExplicitChoice.current = true;
+          }
+        } catch {
+          if (!abortController.signal.aborted) {
+            console.log('Geolocation permission denied or unavailable');
+          }
+        }
+      },
+      () => {
+        if (!abortController.signal.aborted) {
           console.log('Geolocation permission denied or unavailable');
         }
-      );
-    }
-  }, [availableCountries]);
+      },
+      { timeout: 8000 }
+    );
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timeoutId);
+      abortController.abort();
+    };
+  }, [availableCountries, defaultCountry, locationConsent]);
 
   const handleAdvanceScreen = () => {
     switch (currentScreen) {
@@ -95,7 +143,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   const handleSkipCountry = () => {
     setSelectedCountry(null);
+    setCountryConfirmed(false);
     setCurrentScreen('confirmation');
+  };
+
+  const handleClearCountry = () => {
+    setCountryConfirmed(false);
+    setSelectedCountry(null);
+    setSearchQuery('');
   };
 
   const handleComplete = () => {
@@ -131,9 +186,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </p>
           </div>
 
-          <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 leading-relaxed font-['Space_Grotesk']">
-            In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 leading-relaxed font-['Space_Grotesk']">
+              In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.
+            </p>
+            <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">
+              You can opt out from home swipes later on this page.
+            </p>
+          </div>
 
           <button
             onClick={handleAdvanceScreen}
@@ -152,10 +212,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <HomeIcon aria-label="Home" />
             </div>
             <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
-              Your home leader
+              Swipe 1: Your home leader
             </h2>
             <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-              Swipe on the leader of your country
+              Swipe on the leader of your country.
+            </p>
+            <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">
+              You can opt out from home swipes later on this page.
             </p>
           </div>
 
@@ -204,7 +267,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               A random global leader
             </h2>
             <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-              Then meet someone from anywhere
+              Then meet someone from anywhere in the world.
             </p>
           </div>
 
@@ -312,30 +375,80 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </p>
           </div>
 
-          {/* Search input */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search countries..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
-            />
-          </div>
-
-          {/* Country list */}
-          <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto space-y-0`}>
-            {filteredCountries.slice(0, 10).map((country) => (
+          {/* Search input — only shown when no country is confirmed yet */}
+          {countryConfirmed && selectedCountry ? (
+            <div className="rounded-xl bg-[oklch(0.20_0.02_250)] border border-[oklch(0.62_0.18_142)/0.4] p-5 flex items-center gap-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)]">
+              <div className="flex-shrink-0">
+                <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-10 h-10" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs uppercase tracking-[0.18em] text-[oklch(0.72_0.15_65)] font-['Space_Grotesk'] mb-0.5">Your home country</p>
+                <p className="text-xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] truncate">{selectedCountry.name}</p>
+                {selectedCountry.leader && (
+                  <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mt-0.5 truncate">{selectedCountry.leader}</p>
+                )}
+              </div>
               <button
+                onClick={handleClearCountry}
+                className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] text-xs font-semibold font-['Space_Grotesk'] hover:border-[oklch(0.95_0.02_250)/0.6] hover:text-[oklch(0.95_0.02_250)] transition-colors"
+              >
+                Change
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {locationConsent === null && !defaultCountry && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
+                <div className="rounded-xl border border-[oklch(0.62_0.18_142)/0.25] bg-[oklch(0.24_0.02_250)] p-4 text-left">
+                  <p className="text-sm font-semibold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Use your location to prefill your country?</p>
+                  <p className="mt-1 text-xs text-[oklch(0.75_0.02_250)] font-['Inter']">We can try to match your country once, then you can adjust it manually.</p>
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setLocationConsent(true)}
+                      className="rounded-lg bg-[oklch(0.62_0.18_142)] px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                    >
+                      Yes, use location
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLocationConsent(false)}
+                      className="rounded-lg border border-[oklch(0.75_0.02_250)/0.4] px-3 py-2 text-sm font-semibold text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]"
+                    >
+                      No thanks
+                    </button>
+                  </div>
+                </div>
+              )}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search countries..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Country list — hidden when a selection is confirmed */}
+          {!countryConfirmed && (
+            <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto space-y-0`}>
+            {filteredCountries.slice(0, 10).map((country) => (
+                <button
                 key={country.code}
-                onClick={() => setSelectedCountry(country)}
+                onClick={() => {
+                userMadeExplicitChoice.current = true;
+                setSelectedCountry(country);
+                setCountryConfirmed(true);
+              }}
                 className={`w-full px-4 py-3 text-left transition-colors ${
                   selectedCountry?.code === country.code
                     ? 'bg-[oklch(0.28_0.02_250)]'
                     : 'hover:bg-[oklch(0.28_0.02_250)]'
                 } border-b border-[oklch(0.28_0.02_250)] last:border-b-0`}
               >
-                <span className="text-xl mr-3">{country.flag}</span>
+                <AnimatedFlag countryCode={country.code} fallbackFlag={country.flag} className="w-6 h-6 inline-flex mr-3" />
                 <span className="text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] text-sm">
                   {country.name}
                 </span>
@@ -345,6 +458,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </button>
             ))}
           </div>
+          )}
 
           {/* Action buttons */}
           <div className="space-y-2">
@@ -378,8 +492,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 <h2 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
                   Got it!
                 </h2>
-                <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-                  {selectedCountry.flag} {selectedCountry.name}
+                <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] flex items-center justify-center gap-2">
+                  <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-8 h-8" />
+                  {selectedCountry.name}
                 </p>
               </div>
 

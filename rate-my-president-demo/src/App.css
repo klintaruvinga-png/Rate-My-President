@@ -1,5 +1,157 @@
 /* Tailwind CSS handles all styling */
 
+@keyframes welcome-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.welcome-marquee {
+  display: inline-flex;
+  /* Must be exactly 2× the content so the loop resets invisibly */
+  width: max-content;
+  animation: welcome-marquee 16s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.welcome-marquee span {
+  display: inline-block;
+  /* Use padding-right instead of margin so spacing is part of the box,
+     keeping both halves identical in width for a seamless -50% reset */
+  padding-right: 3rem;
+}
+
+/* ─── Shared ticker polish ───────────────────────── */
+@keyframes news-ticker {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.ticker-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid oklch(0.28 0.02 250);
+  background: oklch(0.17 0.03 250);
+  padding: 0.6rem 1rem;
+}
+
+.ticker-divider {
+  width: 1px;
+  height: 1.25rem;
+  flex-shrink: 0;
+  background: oklch(0.32 0.02 250);
+}
+
+.ticker-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+  font-family: 'Space Grotesk', Inter, sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: oklch(0.62 0.18 142);
+}
+
+.ticker-track {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.news-ticker {
+  display: inline-flex;
+  width: max-content;
+  align-items: center;
+  animation: news-ticker 90s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.ticker-row {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: oklch(0.88 0.02 250);
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-right: 0.35rem;
+}
+
+.ticker-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ticker-country,
+.ticker-person {
+  color: oklch(0.90 0.02 250);
+  font-weight: 600;
+}
+
+.ticker-copy {
+  color: oklch(0.72 0.02 250);
+}
+
+.ticker-delta {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ticker-sep {
+  color: oklch(0.40 0.02 250);
+  padding: 0 0.2rem;
+}
+
+.ticker-live-dot {
+  display: inline-block;
+  height: 0.375rem;
+  width: 0.375rem;
+  border-radius: 999px;
+  background: oklch(0.62 0.18 142);
+  animation: live-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-ticker {
+    animation: none;
+  }
+
+  .ticker-live-dot {
+    animation: none;
+  }
+
+  .welcome-marquee {
+    animation: none;
+  }
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+.news-live-dot {
+  animation: live-pulse 1.4s ease-in-out infinite;
+}
 
 .hero {
   position: relative;

@@ -4,9 +4,21 @@
     "target": "es2023",
     "lib": ["ES2023", "DOM"],
     "module": "esnext",
-    "types": ["vite/client"],
+    "types": ["react", "react-dom"],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
+    "baseUrl": "./",
+    "paths": {
+      "@root/*": ["../*"],
+      "vite/client": ["./node_modules/vite/client.d.ts"],
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"],
+      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"],
+      "react/jsx-dev-runtime": ["./node_modules/@types/react/jsx-dev-runtime.d.ts"]
+    },
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "ignoreDeprecations": "6.0",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -15,6 +27,8 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "isolatedModules": true,
+    "preserveConstEnums": true,
 
     /* Linting */
     "noUnusedLocals": true,
@@ -22,5 +36,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "vite-env.d.ts", "../AnimatedFlag.tsx", "../Icons.tsx"]
 }
