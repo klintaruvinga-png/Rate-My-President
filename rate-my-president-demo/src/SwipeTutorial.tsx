@@ -1,4 +1,5 @@
 import React from 'react';
+import headerImage from './assets/obama-header.png';
 
 export const SwipeTutorial: React.FC = () => {
   return (
@@ -6,32 +7,32 @@ export const SwipeTutorial: React.FC = () => {
       {/* Self-contained CSS Keyframes */}
       <style>{`
         @keyframes tutorial-card {
-          /* 0s - 4s: Swipe Right */
+          /* 0s - 2s: Swipe Right */
           0% {
             transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
             opacity: 1;
           }
-          /* Approach (0.4s) */
+          /* Approach (0.2s) */
           5% {
             transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
             opacity: 1;
           }
-          /* Press (0.6s) */
+          /* Press (0.3s) */
           7.5% {
             transform: translate3d(0, 0, 0) scale(0.98) rotate(0deg);
             opacity: 1;
           }
-          /* Motion (1.0s): Translate right + rotate */
+          /* Motion (0.5s): Translate right + rotate */
           12.5% {
             transform: translate3d(70px, 0, 0) scale(0.98) rotate(4deg);
             opacity: 1;
           }
-          /* Release & Slide Off (1.3s) */
+          /* Release & Slide Off (0.65s) */
           16.25% {
             transform: translate3d(240px, -10px, 0) scale(1) rotate(12deg);
             opacity: 0;
           }
-          /* Reset (1.6s) */
+          /* Reset (0.8s) */
           20% {
             transform: translate3d(0, 20px, 0) scale(0.9);
             opacity: 0;
@@ -46,27 +47,27 @@ export const SwipeTutorial: React.FC = () => {
             opacity: 1;
           }
 
-          /* 4s - 8s: Swipe Left */
+          /* 2s - 4s: Swipe Left */
           55% {
             transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
             opacity: 1;
           }
-          /* Press (4.6s) */
+          /* Press (2.3s) */
           57.5% {
             transform: translate3d(0, 0, 0) scale(0.98) rotate(0deg);
             opacity: 1;
           }
-          /* Motion (5.0s): Translate left + rotate */
+          /* Motion (2.5s): Translate left + rotate */
           62.5% {
             transform: translate3d(-70px, 0, 0) scale(0.98) rotate(-4deg);
             opacity: 1;
           }
-          /* Release & Slide Off (5.3s) */
+          /* Release & Slide Off (2.65s) */
           66.25% {
             transform: translate3d(-240px, -10px, 0) scale(1) rotate(-12deg);
             opacity: 0;
           }
-          /* Reset (5.6s) */
+          /* Reset (2.8s) */
           70% {
             transform: translate3d(0, 20px, 0) scale(0.9);
             opacity: 0;
@@ -82,7 +83,7 @@ export const SwipeTutorial: React.FC = () => {
         }
 
         @keyframes tutorial-hand {
-          /* 0s - 4s: Swipe Right */
+          /* 0s - 2s: Swipe Right */
           0% {
             transform: translate3d(-40px, 20px, 0) scale(1.1);
             opacity: 0;
@@ -114,7 +115,7 @@ export const SwipeTutorial: React.FC = () => {
             opacity: 0;
           }
 
-          /* 4s - 8s: Swipe Left */
+          /* 2s - 4s: Swipe Left */
           50% {
             transform: translate3d(180px, 20px, 0) scale(1.1);
             opacity: 0;
@@ -241,31 +242,31 @@ export const SwipeTutorial: React.FC = () => {
         }
 
         .animate-tutorial-card {
-          animation: tutorial-card 8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+          animation: tutorial-card 4s cubic-bezier(0.25, 1, 0.5, 1) infinite;
         }
 
         .animate-tutorial-hand {
-          animation: tutorial-hand 8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+          animation: tutorial-hand 4s cubic-bezier(0.25, 1, 0.5, 1) infinite;
         }
 
         .animate-tutorial-ripple {
-          animation: tutorial-ripple 8s ease-out infinite;
+          animation: tutorial-ripple 4s ease-out infinite;
         }
 
         .animate-badge-approve {
-          animation: tutorial-badge-approve 8s ease-out infinite;
+          animation: tutorial-badge-approve 4s ease-out infinite;
         }
 
         .animate-badge-disapprove {
-          animation: tutorial-badge-disapprove 8s ease-out infinite;
+          animation: tutorial-badge-disapprove 4s ease-out infinite;
         }
 
         .animate-prompt-right {
-          animation: tutorial-prompt-right 8s ease-in-out infinite;
+          animation: tutorial-prompt-right 4s ease-in-out infinite;
         }
 
         .animate-prompt-left {
-          animation: tutorial-prompt-left 8s ease-in-out infinite;
+          animation: tutorial-prompt-left 4s ease-in-out infinite;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -284,40 +285,37 @@ export const SwipeTutorial: React.FC = () => {
       {/* Track & Guidelines */}
       <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex items-center justify-between px-2 pointer-events-none z-0">
         <span className="text-[oklch(0.55_0.20_25)] text-[10px] font-bold uppercase tracking-wider bg-[oklch(0.15_0.04_250)] px-1.5 py-0.5 rounded border border-[oklch(0.55_0.20_25)]/20">
-          ✕ Disapprove
+          ✕ No Like
         </span>
         <div className="flex-1 mx-2 border-t border-dashed border-[oklch(0.28_0.02_250)] h-0"></div>
         <span className="text-[oklch(0.62_0.18_142)] text-[10px] font-bold uppercase tracking-wider bg-[oklch(0.15_0.04_250)] px-1.5 py-0.5 rounded border border-[oklch(0.62_0.18_142)]/20">
-          Approve ✓
+          Like ✓
         </span>
       </div>
 
       {/* Core Animation Wrapper */}
       <div className="w-[200px] h-[190px] relative overflow-visible flex items-center justify-center z-10">
         {/* Mock Card */}
-        <div className="w-[140px] h-[170px] bg-[oklch(0.20_0.02_250)] border border-[oklch(0.28_0.02_250)] rounded-2xl p-4 flex flex-col items-center justify-between text-center shadow-lg relative animate-tutorial-card will-change-transform">
-          {/* Flag Stamp */}
-          <div className="w-8 h-8 rounded-full bg-[oklch(0.28_0.02_250)] flex items-center justify-center text-sm shadow-inner">
-            🌎
-          </div>
-
-          {/* Profile Circle */}
-          <div className="w-14 h-14 rounded-full bg-[oklch(0.15_0.04_250)] border border-[oklch(0.28_0.02_250)] flex items-center justify-center overflow-hidden shadow-inner">
-            <svg viewBox="0 0 24 24" className="w-8 h-8 text-[oklch(0.75_0.02_250)] opacity-60" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
+        <div className="w-[140px] h-[170px] bg-[oklch(0.20_0.02_250)] border border-[oklch(0.28_0.02_250)] rounded-2xl overflow-hidden shadow-lg relative animate-tutorial-card will-change-transform">
+          {/* Branded Header Image */}
+          <div className="w-full h-[100px] flex items-center justify-center bg-[oklch(0.18_0.02_250)]">
+            <img 
+              src={headerImage} 
+              alt="Rate My President" 
+              className="w-16 h-16 object-contain rounded-lg"
+            />
           </div>
 
           {/* Label */}
-          <div className="space-y-1">
-            <div className="h-2 w-16 bg-[oklch(0.75_0.02_250)]/40 rounded mx-auto"></div>
-            <div className="h-1.5 w-10 bg-[oklch(0.75_0.02_250)]/20 rounded mx-auto"></div>
+          <div className="p-3 space-y-2">
+            <div className="h-2 w-full bg-[oklch(0.75_0.02_250)]/40 rounded"></div>
+            <div className="h-1.5 w-3/4 bg-[oklch(0.75_0.02_250)]/20 rounded"></div>
           </div>
 
           {/* Stamp Overlays */}
           {/* Approve Overlay */}
           <div className="absolute top-6 left-2 border-2 border-[oklch(0.62_0.18_142)] text-[oklch(0.62_0.18_142)] text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-md opacity-0 animate-badge-approve pointer-events-none select-none">
-            Approve
+            Like
           </div>
 
           {/* Disapprove Overlay */}
@@ -352,10 +350,10 @@ export const SwipeTutorial: React.FC = () => {
       {/* Floating Synchronized Text Prompts */}
       <div className="relative h-6 w-full text-center mt-3 text-xs font-semibold uppercase tracking-widest font-['Space_Grotesk'] text-[oklch(0.72_0.15_65)]">
         <span className="absolute inset-x-0 mx-auto opacity-0 animate-prompt-right">
-          👉 Swipe Right to Approve
+          👉 Swipe Right to Like
         </span>
         <span className="absolute inset-x-0 mx-auto opacity-0 animate-prompt-left">
-          👈 Swipe Left to Disapprove
+          👈 Swipe Left to No Like
         </span>
       </div>
     </div>
