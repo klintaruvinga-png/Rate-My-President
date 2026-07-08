@@ -138,6 +138,10 @@
   .ticker-live-dot {
     animation: none;
   }
+
+  .welcome-marquee {
+    animation: none;
+  }
 }
 
 @keyframes live-pulse {

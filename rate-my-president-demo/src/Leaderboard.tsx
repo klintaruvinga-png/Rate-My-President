@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
-import AnimatedFlag from './AnimatedFlag';
-import { TrendUpIcon, TrendDownIcon } from './Icons';
+import AnimatedFlag from '@root/AnimatedFlag';
+import { TrendUpIcon, TrendDownIcon } from '@root/Icons';
 
 export default function Leaderboard({
   entries,

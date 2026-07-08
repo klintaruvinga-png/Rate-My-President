@@ -1,5 +1,5 @@
-import AnimatedFlag from './AnimatedFlag';
-import newGlobeImage from '../../assets/New Globe.png';
+import AnimatedFlag from '@root/AnimatedFlag';
+import newGlobeImage from '@root/assets/New Globe.png';
 
 interface NewsItem {
   country: string;

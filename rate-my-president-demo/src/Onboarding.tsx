@@ -6,9 +6,8 @@ import {
   ApproveIcon,
   DisapproveIcon,
   SkipIcon,
-  
-} from './Icons';
-import AnimatedFlag from './AnimatedFlag';
+} from '@root/Icons';
+import AnimatedFlag from '@root/AnimatedFlag';
 import SwipeTutorial from './SwipeTutorial';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';

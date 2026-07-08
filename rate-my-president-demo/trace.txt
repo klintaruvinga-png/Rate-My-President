@@ -1,0 +1,429 @@
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/AnimatedGlobe.tsx'. ========
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react/jsx-runtime'.
+'paths' option is specified, looking for a pattern to match module name 'react/jsx-runtime'.
+Module name 'react/jsx-runtime', matched pattern 'react/jsx-runtime'.
+Trying substitution './node_modules/react/jsx-runtime', candidate module location: './node_modules/react/jsx-runtime'.
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime', target file types: TypeScript, JavaScript, Declaration, JSON.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' exists - use it as a name resolution result.
+Found 'package.json' at 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json'.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/AnimatedGlobe.tsx'. ========
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react'.
+'paths' option is specified, looking for a pattern to match module name 'react'.
+Module name 'react', matched pattern 'react'.
+Trying substitution './node_modules/react', candidate module location: './node_modules/react'.
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react', target file types: TypeScript, JavaScript, Declaration, JSON.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.js' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.jsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json' exists according to earlier cached lookups.
+'package.json' has 'main' field 'index.js' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+File name 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' has a '.js' extension - stripping it.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/App.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/App.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Onboarding.demo.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/onboardingStorage.ts'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/countries.ts'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Onboarding.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Onboarding.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/Icons.tsx'. ========
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react/jsx-runtime'.
+'paths' option is specified, looking for a pattern to match module name 'react/jsx-runtime'.
+Module name 'react/jsx-runtime', matched pattern 'react/jsx-runtime'.
+Trying substitution './node_modules/react/jsx-runtime', candidate module location: './node_modules/react/jsx-runtime'.
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime', target file types: TypeScript, JavaScript, Declaration, JSON.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' exists - use it as a name resolution result.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json' exists according to earlier cached lookups.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/Icons.tsx'. ========
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react'.
+'paths' option is specified, looking for a pattern to match module name 'react'.
+Module name 'react', matched pattern 'react'.
+Trying substitution './node_modules/react', candidate module location: './node_modules/react'.
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react', target file types: TypeScript, JavaScript, Declaration, JSON.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.js' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.jsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json' exists according to earlier cached lookups.
+'package.json' has 'main' field 'index.js' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+File name 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' has a '.js' extension - stripping it.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/AnimatedFlag.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/AnimatedFlag.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeTutorial.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeTutorial.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeCard.demo.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeCard.demo.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeCard.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeCard.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/SwipeCard.types.ts'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Leaderboard.demo.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Leaderboard.demo.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Leaderboard.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Leaderboard.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Leaderboard.types.ts'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/NewsTicker.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/flagPreloader.ts'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/LeaderTicker.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/Onboarding.types.ts'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react/jsx-runtime' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/main.tsx'. ========
+Resolution for module 'react/jsx-runtime' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react/jsx-runtime' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' with Package ID 'react/jsx-runtime.js@19.2.7'. ========
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/main.tsx'. ========
+Resolution for module 'react' was found in cache from location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving module 'react-dom/client' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/src/main.tsx'. ========
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react-dom/client'.
+'paths' option is specified, looking for a pattern to match module name 'react-dom/client'.
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react-dom/client'.
+Resolving module name 'react-dom/client' relative to base url 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo' - 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/react-dom/client'.
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/react-dom/client', target file types: TypeScript, JavaScript, Declaration, JSON.
+Loading module 'react-dom/client' from 'node_modules' folder, target file types: TypeScript, JavaScript, Declaration, JSON.
+Found 'package.json' at 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/package.json'.
+Saw non-matching condition 'react-server'.
+File name 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/client.js' has a '.js' extension - stripping it.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/client.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/client.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom/client.d.ts' does not exist.
+Export specifier './client' does not exist in package.json scope at path 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react-dom'.
+Found 'package.json' at 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom'.
+Found 'package.json' at 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json'.
+Found peerDependency '@types/react' with '19.2.17' version.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts'.
+======== Module name 'react-dom/client' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts' with Package ID '@types/react-dom/client.d.ts@19.2.3+@types/react@19.2.17'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/client.d.ts'. ========
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react'.
+'paths' option is specified, looking for a pattern to match module name 'react'.
+Module name 'react', matched pattern 'react'.
+Trying substitution './node_modules/react', candidate module location: './node_modules/react'.
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react', target file types: TypeScript, JavaScript, Declaration, JSON.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.js' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.jsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json' exists according to earlier cached lookups.
+'package.json' has 'main' field 'index.js' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+File name 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' has a '.js' extension - stripping it.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+======== Resolving type reference directive 'react', containing file 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/__inferred type names__.ts', root directory 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types,C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/node_modules/@types,C:/Users/Kudzie/OneDrive/SS - Apps & Software/node_modules/@types,C:/Users/Kudzie/OneDrive/node_modules/@types,C:/Users/Kudzie/node_modules/@types,C:/Users/node_modules/@types,C:/node_modules/@types'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+'package.json' has 'types' field 'index.d.ts' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react'.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'.
+======== Type reference directive 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts' with Package ID '@types/react/index.d.ts@19.2.17', primary: true. ========
+======== Resolving type reference directive 'react-dom', containing file 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/__inferred type names__.ts', root directory 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types,C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/node_modules/@types,C:/Users/Kudzie/OneDrive/SS - Apps & Software/node_modules/@types,C:/Users/Kudzie/OneDrive/node_modules/@types,C:/Users/Kudzie/node_modules/@types,C:/Users/node_modules/@types,C:/node_modules/@types'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+'package.json' has 'types' field 'index.d.ts' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts'.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts'.
+======== Type reference directive 'react-dom' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts' with Package ID '@types/react-dom/index.d.ts@19.2.3+@types/react@19.2.17', primary: true. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+======== Resolving module 'csstype' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/index.d.ts'. ========
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/package.json' exists according to earlier cached lookups.
+Directory 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react/node_modules' does not exist, skipping all lookups in it.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/package.json' exists according to earlier cached lookups.
+======== Resolving module 'react' from 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/@types/react-dom/index.d.ts'. ========
+'baseUrl' option is set to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo', using this value to resolve non-relative module name 'react'.
+'paths' option is specified, looking for a pattern to match module name 'react'.
+Module name 'react', matched pattern 'react'.
+Trying substitution './node_modules/react', candidate module location: './node_modules/react'.
+Loading module as file / folder, candidate module location 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react', target file types: TypeScript, JavaScript, Declaration, JSON.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.js' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react.jsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/package.json' exists according to earlier cached lookups.
+'package.json' has 'main' field 'index.js' that references 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+File name 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' has a '.js' extension - stripping it.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.tsx' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.d.ts' does not exist.
+File 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' exists - use it as a name resolution result.
+Resolving real path for 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js', result 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js'.
+======== Module name 'react' was successfully resolved to 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' with Package ID 'react/index.js@19.2.7'. ========
+../AnimatedFlag.tsx(1,33): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+../AnimatedFlag.tsx(27,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(27,9): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+../AnimatedFlag.tsx(33,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(41,5): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(43,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(50,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(52,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(64,5): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(80,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../AnimatedFlag.tsx(86,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+../Icons.tsx(1,42): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+../Icons.tsx(29,3): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/AnimatedGlobe.tsx(1,35): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/AnimatedGlobe.tsx(5,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/App.tsx(1,45): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/App.tsx(58,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/Leaderboard.demo.tsx(1,37): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/Leaderboard.demo.tsx(73,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/Leaderboard.tsx(1,59): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/Leaderboard.tsx(2,36): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/Leaderboard.tsx(142,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/LeaderTicker.tsx(42,7): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/main.tsx(1,28): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/main.tsx(7,3): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/NewsTicker.tsx(27,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/Onboarding.demo.tsx(19,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/Onboarding.tsx(1,54): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/Onboarding.tsx(2,58): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/Onboarding.tsx(214,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/SwipeCard.demo.tsx(1,26): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/SwipeCard.demo.tsx(123,7): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/SwipeCard.tsx(1,52): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/SwipeCard.tsx(280,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(281,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(282,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(288,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(290,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(296,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(298,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(300,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(302,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(304,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(305,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(312,5): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(312,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/SwipeCard.tsx(314,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(315,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(317,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(326,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(329,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(344,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(349,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(350,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(355,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(356,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(361,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(364,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(365,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(367,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(369,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(370,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(378,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(380,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(382,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(383,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(389,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(391,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(392,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(393,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(401,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(403,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(405,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(406,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(412,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(414,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(415,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(416,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(418,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(426,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(428,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(430,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(431,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(432,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(434,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(435,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(439,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(440,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(441,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(442,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(442,107): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(443,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(449,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(449,51): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(451,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(452,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(453,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(456,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(458,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(462,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(464,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(466,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(468,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(470,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(472,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(474,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(476,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(478,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(480,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(484,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(486,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(493,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(493,64): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(494,19): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(494,105): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(495,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(498,17): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(498,143): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(500,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(504,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(504,148): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(506,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeCard.tsx(508,5): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(1,19): error TS7016: Could not find a declaration file for module 'react'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react';`
+src/SwipeTutorial.tsx(5,5): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(5,5): error TS7016: Could not find a declaration file for module 'react/jsx-runtime'. 'C:/Users/Kudzie/OneDrive/SS - Apps & Software/Rate My President/rate-my-president-demo/node_modules/react/jsx-runtime.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/react` if it exists or add a new declaration (.d.ts) file containing `declare module 'react/jsx-runtime';`
+src/SwipeTutorial.tsx(7,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(282,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(285,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(286,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(288,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(289,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(289,95): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(290,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(292,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(293,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(296,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(298,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(300,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(302,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(305,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(306,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(307,15): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(308,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(309,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(312,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(313,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(313,84): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(314,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(314,86): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(315,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(319,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(321,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(324,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(326,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(327,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(330,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(332,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(332,220): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(335,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(344,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(345,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(346,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(347,13): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(348,11): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(349,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(350,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(353,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(354,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(356,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(357,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(359,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(360,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+src/SwipeTutorial.tsx(361,5): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.

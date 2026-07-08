@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import OnboardingDemo from './Onboarding.demo';
 import SwipeCardDemo from './SwipeCard.demo';
 import LeaderboardDemo from './Leaderboard.demo';
-import headerImage from '../../assets/Obama Header No BG.png';
+import headerImage from '@root/assets/Obama Header No BG.png';
 import NewsTicker from './NewsTicker';
 // LeaderTicker not used in this demo shell
 import { getHasCompletedOnboarding, setHasCompletedOnboarding, setUserCountry } from './onboardingStorage';
@@ -20,12 +20,28 @@ function App() {
   });
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const helpCloseButtonRef = useRef<HTMLButtonElement | null>(null);
 
   // Warm the browser HTTP cache for all flag images immediately on app boot.
   // This ensures flags are ready before SwipeCard mounts after onboarding.
   useEffect(() => {
     preloadFlags(availableCountries.map((c) => c.code));
   }, []);
+
+  useEffect(() => {
+    if (!showHelpTooltip) return;
+
+    helpCloseButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowHelpTooltip(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showHelpTooltip]);
 
   const handleOnboardingComplete = (countryCode: string | null) => {
     setHasCompletedOnboarding(true);
@@ -160,13 +176,21 @@ function App() {
 
       {showHelpTooltip && (
         <div onClick={() => setShowHelpTooltip(false)} className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div onClick={(event) => event.stopPropagation()} className="w-full max-w-2xl rounded-[28px] border border-[oklch(0.28_0.02_250)] bg-[oklch(0.15_0.04_250)] p-6 shadow-[0_40px_120px_rgba(0,0,0,0.35)] text-[oklch(0.95_0.02_250)]">
+          <div
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="help-dialog-title"
+            aria-describedby="help-dialog-description"
+            className="w-full max-w-2xl rounded-[28px] border border-[oklch(0.28_0.02_250)] bg-[oklch(0.15_0.04_250)] p-6 shadow-[0_40px_120px_rgba(0,0,0,0.35)] text-[oklch(0.95_0.02_250)]"
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm uppercase tracking-[0.26em] text-[oklch(0.75_0.02_250)] font-semibold">Help</p>
-                <h2 className="mt-2 text-3xl font-bold font-['Space_Grotesk']">Need a quick tour?</h2>
+                <h2 id="help-dialog-title" className="mt-2 text-3xl font-bold font-['Space_Grotesk']">Need a quick tour?</h2>
               </div>
               <button
+                ref={helpCloseButtonRef}
                 onClick={() => setShowHelpTooltip(false)}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] text-[oklch(0.95_0.02_250)] transition-colors hover:bg-[oklch(0.22_0.02_250)]"
                 aria-label="Close help panel"
@@ -174,7 +198,7 @@ function App() {
                 ✕
               </button>
             </div>
-            <div className="mt-6 space-y-5 text-sm leading-7 text-[oklch(0.80_0.02_250)]">
+            <div id="help-dialog-description" className="mt-6 space-y-5 text-sm leading-7 text-[oklch(0.80_0.02_250)]">
               <p>The help panel stays on top of the app and keeps the current page visible underneath.</p>
               <ul className="space-y-3">
                 <li className="rounded-2xl bg-[oklch(0.18_0.03_250)] p-4">

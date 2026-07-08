@@ -1,4 +1,4 @@
-import AnimatedFlag from './AnimatedFlag';
+import AnimatedFlag from '@root/AnimatedFlag';
 
 interface LeaderTickerEntry {
   countryCode: string;
@@ -9,9 +9,7 @@ interface LeaderTickerEntry {
   delta: number; // percentage point change
 }
 
-// Seeded with the same mock data used in Leaderboard.demo.tsx
 const LEADERS: LeaderTickerEntry[] = [
-  { countryCode: 'GB', fallbackFlag: '🇬🇧', name: 'Keir Starmer', trend: 'up', approvalPercent: 68, delta: 3.2 },
   { countryCode: 'FR', fallbackFlag: '🇫🇷', name: 'Emmanuel Macron', trend: 'up', approvalPercent: 64, delta: 1.8 },
   { countryCode: 'DE', fallbackFlag: '🇩🇪', name: 'Ursula von der Leyen', trend: 'down', approvalPercent: 58, delta: -2.4 },
   { countryCode: 'US', fallbackFlag: '🇺🇸', name: 'Joe Biden', trend: 'up', approvalPercent: 54, delta: 0.9 },

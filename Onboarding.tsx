@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GlobeIcon, HomeIcon, ApproveIcon, DisapproveIcon, SkipIcon, CountryIcon, BadgeIcon } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 
@@ -35,6 +35,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
+  const userMadeExplicitChoice = useRef(defaultCountry !== null);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
@@ -336,7 +337,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           {/* Search input — only shown when no country is confirmed yet */}
           {countryConfirmed && selectedCountry ? (
             <div className="rounded-xl bg-[oklch(0.20_0.02_250)] border border-[oklch(0.62_0.18_142)/0.4] p-5 flex items-center gap-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)]">
-              <div className="flex-shrink-0 text-4xl">{selectedCountry.flag}</div>
+              <div className="flex-shrink-0">
+                <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-10 h-10" />
+              </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs uppercase tracking-[0.18em] text-[oklch(0.72_0.15_65)] font-['Space_Grotesk'] mb-0.5">Your home country</p>
                 <p className="text-xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] truncate">{selectedCountry.name}</p>

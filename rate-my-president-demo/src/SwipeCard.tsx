@@ -7,8 +7,8 @@ import {
   SkipIcon,
   TrendUpIcon,
   TrendDownIcon,
-} from './Icons';
-import AnimatedFlag from './AnimatedFlag';
+} from '@root/Icons';
+import AnimatedFlag from '@root/AnimatedFlag';
 
 type CardType = 'home' | 'global';
 type VoteAction = 'like' | 'nolike' | 'skip' | null;

@@ -267,6 +267,18 @@ export const SwipeTutorial: React.FC = () => {
         .animate-prompt-left {
           animation: tutorial-prompt-left 8s ease-in-out infinite;
         }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-tutorial-card,
+          .animate-tutorial-hand,
+          .animate-tutorial-ripple,
+          .animate-badge-approve,
+          .animate-badge-disapprove,
+          .animate-prompt-right,
+          .animate-prompt-left {
+            animation: none !important;
+          }
+        }
       `}</style>
 
       {/* Track & Guidelines */}

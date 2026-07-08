@@ -190,6 +190,7 @@ export const BadgeIcon = ({ className, 'aria-label': ariaLabel, ...props }: Icon
   </IconBase>
 );
 
+// Additional Icons
 export const TipJarIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
   <IconBase className={className} aria-label={ariaLabel} label="Tip jar" {...props}>
     <path d="M3 11l1 12h16l1-12M8 7c0-1.657 1.343-3 3-3h2c1.657 0 3 1.343 3 3M9 5h6M5 15h14" />

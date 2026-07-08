@@ -22,7 +22,7 @@ export interface CountryData {
 
 export const availableCountries: CountryData[] = [
   { code: 'GB', name: 'United Kingdom',  flag: '🇬🇧', leader: 'Keir Starmer',                    avatarSeed: 'KS', avatarColor: '2f4f4f' },
-  { code: 'US', name: 'United States',   flag: '🇺🇸', leader: 'Donald Trump',                     avatarSeed: 'DT', avatarColor: '4682b4' },
+  { code: 'US', name: 'United States',   flag: '🇺🇸', leader: 'Donald Trump',                     avatarSeed: 'DTU', avatarColor: '4682b4' },
   { code: 'FR', name: 'France',          flag: '🇫🇷', leader: 'Emmanuel Macron',                  avatarSeed: 'EM', avatarColor: '4b0082' },
   { code: 'DE', name: 'Germany',         flag: '🇩🇪', leader: 'Friedrich Merz',                   avatarSeed: 'FM', avatarColor: '556b2f' },
   { code: 'JP', name: 'Japan',           flag: '🇯🇵', leader: 'Shigeru Ishiba',                   avatarSeed: 'SI', avatarColor: '8b0000' },
@@ -44,7 +44,7 @@ export const availableCountries: CountryData[] = [
   { code: 'SE', name: 'Sweden',          flag: '🇸🇪', leader: 'Ulf Kristersson',                  avatarSeed: 'UK', avatarColor: '1a6b8a' },
   { code: 'NO', name: 'Norway',          flag: '🇳🇴', leader: 'Jonas Gahr Støre',                 avatarSeed: 'JG', avatarColor: '154360' },
   { code: 'NL', name: 'Netherlands',     flag: '🇳🇱', leader: 'Dick Schoof',                      avatarSeed: 'DS', avatarColor: 'f39c12' },
-  { code: 'PL', name: 'Poland',          flag: '🇵🇱', leader: 'Donald Tusk',                      avatarSeed: 'DT', avatarColor: 'c0392b' },
+  { code: 'PL', name: 'Poland',          flag: '🇵🇱', leader: 'Donald Tusk',                      avatarSeed: 'DTU2', avatarColor: 'c0392b' },
   { code: 'UA', name: 'Ukraine',         flag: '🇺🇦', leader: 'Volodymyr Zelensky',               avatarSeed: 'VZ', avatarColor: '1f618d' },
-  { code: 'ZW', name: 'Zimbabwe',        flag: '🇿🇼', leader: 'Emmerson Mnangagwa',               avatarSeed: 'EM', avatarColor: '117a65' },
+  { code: 'ZW', name: 'Zimbabwe',        flag: '🇿🇼', leader: 'Emmerson Mnangagwa',               avatarSeed: 'EMN', avatarColor: '117a65' },
 ];
