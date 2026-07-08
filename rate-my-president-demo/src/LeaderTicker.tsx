@@ -1,25 +1,5 @@
 import AnimatedFlag from '@root/AnimatedFlag';
-
-interface LeaderTickerEntry {
-  countryCode: string;
-  fallbackFlag: string;
-  name: string;
-  trend: 'up' | 'down' | 'neutral';
-  approvalPercent: number;
-  delta: number; // percentage point change
-}
-
-const LEADERS: LeaderTickerEntry[] = [
-  { countryCode: 'FR', fallbackFlag: '🇫🇷', name: 'Emmanuel Macron', trend: 'up', approvalPercent: 64, delta: 1.8 },
-  { countryCode: 'DE', fallbackFlag: '🇩🇪', name: 'Ursula von der Leyen', trend: 'down', approvalPercent: 58, delta: -2.4 },
-  { countryCode: 'US', fallbackFlag: '🇺🇸', name: 'Joe Biden', trend: 'up', approvalPercent: 54, delta: 0.9 },
-  { countryCode: 'US', fallbackFlag: '🇺🇸', name: 'Donald Trump', trend: 'down', approvalPercent: 48, delta: -1.5 },
-  { countryCode: 'CA', fallbackFlag: '🇨🇦', name: 'Justin Trudeau', trend: 'down', approvalPercent: 42, delta: -3.1 },
-  { countryCode: 'IN', fallbackFlag: '🇮🇳', name: 'Narendra Modi', trend: 'up', approvalPercent: 71, delta: 4.6 },
-  { countryCode: 'CN', fallbackFlag: '🇨🇳', name: 'Xi Jinping', trend: 'up', approvalPercent: 62, delta: 0.7 },
-  { countryCode: 'BR', fallbackFlag: '🇧🇷', name: 'Lula da Silva', trend: 'neutral', approvalPercent: 51, delta: 0.0 },
-  { countryCode: 'ZA', fallbackFlag: '🇿🇦', name: 'Cyril Ramaphosa', trend: 'down', approvalPercent: 39, delta: -2.0 },
-];
+import { tickerLeaders } from './mockData';
 
 function formatDelta(trend: 'up' | 'down' | 'neutral', delta: number): string {
   if (trend === 'neutral' || delta === 0) return '→ 0.0%';
@@ -27,7 +7,7 @@ function formatDelta(trend: 'up' | 'down' | 'neutral', delta: number): string {
   return `${arrow} ${Math.abs(delta).toFixed(1)}%`;
 }
 
-function buildItems(leaders: LeaderTickerEntry[]) {
+function buildItems(leaders: typeof tickerLeaders) {
   const doubled = [...leaders, ...leaders];
   return doubled.map((entry, i) => {
     const isUp = entry.trend === 'up';
@@ -75,7 +55,7 @@ export function LeaderTicker() {
 
       <div className="ticker-track">
         <div className="news-ticker ticker-row">
-          {buildItems(LEADERS)}
+          {buildItems(tickerLeaders)}
         </div>
       </div>
     </div>
