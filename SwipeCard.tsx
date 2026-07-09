@@ -10,23 +10,7 @@ import {
   BadgeIcon,
 } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
-
-type CardType = 'home' | 'global';
-type VoteAction = 'like' | 'nolike' | 'skip' | null;
-
-interface CardData {
-  id: string;
-  type: CardType;
-  countryCode: string;
-  countryName: string;
-  countryFlag: string;
-  leaderName: string;
-  avatarUrl: string;
-  approvalPercent: number;
-  trend: 'up' | 'down' | 'neutral';
-  headlines: Array<{ title: string; source: string; date: string; url: string }>;
-  yesterdayVote?: 'like' | 'nolike' | 'skip';
-}
+import type { CardData, VoteAction } from './SwipeCard.types';
 
 interface SwipeCardProps {
   card: CardData;
@@ -34,6 +18,8 @@ interface SwipeCardProps {
   onVote: (action: VoteAction) => void;
   isLoading?: boolean;
   showMicroHistory?: boolean;
+  headerImageUrl?: string;
+  totalRated?: number;
 }
 
 export const SwipeCard: React.FC<SwipeCardProps> = ({
@@ -42,6 +28,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   onVote,
   isLoading = false,
   showMicroHistory = true,
+  headerImageUrl,
+  totalRated,
 }) => {
   const [dragState, setDragState] = useState<{
     isDragging: boolean;
@@ -273,51 +261,132 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       : 'text-[oklch(0.75_0.02_250)]';
 
   const renderCardContent = (cardData: CardData, isBottom = false) => {
+    const headerImage = cardData.headerImageUrl || headerImageUrl || cardData.avatarUrl || './assets/Obama Header No BG.png';
+    const fallbackAvatar = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="60" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
+    
     return (
-      <div className="h-full flex flex-col justify-between relative">
-        {/* Badge + Country (top-right) */}
-        <div className="absolute top-0 right-0 flex items-center gap-2 text-[oklch(0.75_0.02_250)] text-xs font-medium opacity-60">
-          <div className="w-4 h-4 text-[oklch(0.75_0.02_250)]">
+      <div className="h-full flex flex-col relative overflow-hidden rounded-t-[20px]">
+        {/* Full Bleed Header Image (60-70% of card) */}
+        <div className="relative h-[65%] w-full">
+          <img
+            src={headerImage}
+            alt={cardData.leaderName}
+            className="w-full h-full object-cover"
+            onError={(event) => { (event.currentTarget as HTMLImageElement).src = fallbackAvatar; }}
+          />
+          
+          {/* Gradient Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.15_0.04_250)] via-transparent to-transparent" />
+          
+          {/* Top Left: Home/Global Icon Badge */}
+          <div className="absolute top-4 left-4 w-4 h-4 text-[oklch(0.75_0.02_250)]">
             {cardData.type === 'home' ? (
               <HomeIcon aria-label="Home" />
             ) : (
               <GlobeIcon aria-label="Global" />
             )}
           </div>
-          <AnimatedFlag countryCode={cardData.countryCode} fallbackFlag={cardData.countryFlag} className="w-5 h-5" />
-          <span className="text-xs">{cardData.countryName}</span>
+
+          {/* Top Right: Country Badge */}
+          <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-3 py-1.5 flex items-center gap-2">
+            <AnimatedFlag countryCode={cardData.countryCode} fallbackFlag={cardData.countryFlag} className="w-5 h-5" />
+            <span className="text-white text-sm font-medium font-['Inter']">{cardData.countryName}</span>
+          </div>
+
+          {/* Overlay Information on Image */}
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-['Space_Grotesk'] leading-tight drop-shadow-lg">
+              {cardData.leaderName}
+            </h2>
+            {cardData.officeTitle && (
+              <p className="text-white/90 text-base md:text-lg font-['Inter'] mb-1">{cardData.officeTitle}</p>
+            )}
+            {cardData.party && (
+              <p className="text-white/70 text-sm md:text-base font-['Inter']">{cardData.party}</p>
+            )}
+          </div>
         </div>
 
-        {/* Avatar */}
-        <div className="flex justify-center mb-4 mt-6">
-          <img
-            src={cardData.avatarUrl}
-            alt={cardData.leaderName}
-            className="w-[120px] h-[120px] rounded-avatar-hero object-cover border-2 border-[oklch(0.28_0.02_250)]"
-          />
+        {/* Bottom Section - Buttons */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-4">
+          <div className="flex justify-center gap-4">
+            {/* No Like button */}
+            <button
+              onClick={() => handleVote('nolike')}
+              onMouseEnter={() => setHoveredButton('nolike')}
+              onMouseLeave={() => setHoveredButton(null)}
+              disabled={isLoading || voteAction !== null || isFlinging}
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+                hoveredButton === 'nolike'
+                  ? 'bg-[oklch(0.55_0.20_25)] text-white scale-110'
+                  : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] border-2 border-[oklch(0.55_0.20_25)] hover:scale-105'
+              }`}
+              aria-label="No Like"
+            >
+              <span aria-hidden="true" className="inline-flex">
+                <NoLikeIcon className="w-5 h-5 md:w-8 md:h-8" />
+              </span>
+            </button>
+
+            {/* Skip button */}
+            <button
+              onClick={() => handleVote('skip')}
+              onMouseEnter={() => setHoveredButton('skip')}
+              onMouseLeave={() => setHoveredButton(null)}
+              disabled={isLoading || voteAction !== null || isFlinging}
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+                hoveredButton === 'skip'
+                  ? 'bg-[oklch(0.72_0.15_65)] text-white scale-110'
+                  : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.72_0.15_65)] border-2 border-[oklch(0.72_0.15_65)] opacity-70 hover:opacity-100 hover:scale-105'
+              }`}
+              aria-label="Skip"
+            >
+              <span aria-hidden="true" className="inline-flex">
+                <SkipIcon className="w-5 h-5 md:w-8 md:h-8" />
+              </span>
+            </button>
+
+            {/* Like button */}
+            <button
+              onClick={() => handleVote('like')}
+              onMouseEnter={() => setHoveredButton('like')}
+              onMouseLeave={() => setHoveredButton(null)}
+              disabled={isLoading || voteAction !== null || isFlinging}
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+                hoveredButton === 'like'
+                  ? 'bg-[oklch(0.62_0.18_142)] text-white scale-110'
+                  : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] border-2 border-[oklch(0.62_0.18_142)] hover:scale-105'
+              }`}
+              aria-label="Like"
+            >
+              <span aria-hidden="true" className="inline-flex">
+                <LikeIcon className="w-5 h-5 md:w-8 md:h-8" />
+              </span>
+            </button>
+          </div>
+          <p className="mt-2 text-center text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">
+            {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
+          </p>
         </div>
-
-        {/* Leader name */}
-        <h2 className="text-center text-2xl font-semibold text-[oklch(0.95_0.02_250)] mb-4 font-['Space_Grotesk'] leading-tight">
-          {cardData.leaderName}
-        </h2>
-
-        {/* Swipe hint */}
-        <p className="text-center text-sm text-[oklch(0.75_0.02_250)] opacity-50 font-['Space_Grotesk']">
-          {isBottom ? 'Up next...' : 'Swipe left or right to Like or No Like'}
-        </p>
       </div>
     );
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[oklch(0.15_0.04_250)] p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[oklch(0.15_0.04_250)] relative" style={{ paddingTop: 'env(safe-area-inset-top, 16px)', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
+      {/* Vote History Pill */}
+      {totalRated !== undefined && totalRated > 0 && (
+        <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-[oklch(0.20_0.02_250)]/80 backdrop-blur-sm border border-[oklch(0.28_0.02_250)] rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] flex items-center gap-2">
+          <span>🗳️</span>
+          <span>{totalRated} Rated</span>
+        </div>
+      )}
+
       {/* Voted card container (exits, fades out) */}
-      <div
-        className={`transition-all duration-150 ${voteAction ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
-      >
+      {!showResults && (
+        <div className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
         {/* Card Z-Stack */}
-        <div className="relative w-80 h-[320px] mb-6">
+        <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[60vh] md:h-[650px] mx-auto" style={{ boxSizing: 'border-box' }}>
           {/* Bottom Card (Next Card) */}
           {nextCard && (
             <div
@@ -335,7 +404,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {/* Top Card (Active Card) */}
           <div
             ref={draggableRef}
-            className={`absolute inset-0 rounded-[12px] p-6 cursor-grab select-none ${topBgColor} border border-[oklch(0.28_0.02_250)] shadow-2xl ${
+            className={`absolute inset-0 rounded-[20px] cursor-grab select-none overflow-hidden ${topBgColor} border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm ${
               dragState.isDragging ? 'cursor-grabbing' : ''
             } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
             onPointerDown={handlePointerDown}
@@ -376,97 +445,12 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             {renderCardContent(card, false)}
           </div>
         </div>
-
-        {/* Button row (always visible on mobile, appear on hover on desktop) */}
-        <div className="flex justify-center gap-4 mt-6">
-
-
-          {/* No Like button */}
-          <button
-            onClick={() => handleVote('nolike')}
-            onMouseEnter={() => setHoveredButton('nolike')}
-            onMouseLeave={() => setHoveredButton(null)}
-            disabled={isLoading || voteAction !== null || isFlinging}
-            className={`hidden md:flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
-              hoveredButton === 'nolike'
-                ? 'bg-[oklch(0.55_0.20_25)] text-white'
-                : 'bg-transparent text-[oklch(0.55_0.20_25)] border border-[oklch(0.55_0.20_25)]'
-            }`}
-            aria-label="No Like"
-          >
-            <span aria-hidden="true" className="inline-flex">
-              <NoLikeIcon className="w-4 h-4" />
-            </span>
-            No Like
-          </button>
-          {/* Mobile No Like icon */}
-          <button
-            onClick={() => handleVote('nolike')}
-            disabled={isLoading || voteAction !== null || isFlinging}
-            className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] opacity-60 hover:opacity-100 transition-opacity"
-            aria-label="No Like"
-          >
-            <span aria-hidden="true" className="inline-flex">
-              <NoLikeIcon className="w-6 h-6" />
-            </span>
-          </button>
-
-          {/* Like button */}
-          <button
-            onClick={() => handleVote('like')}
-            onMouseEnter={() => setHoveredButton('like')}
-            onMouseLeave={() => setHoveredButton(null)}
-            disabled={isLoading || voteAction !== null || isFlinging}
-            className={`hidden md:flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
-              hoveredButton === 'like'
-                ? 'bg-[oklch(0.62_0.18_142)] text-white'
-                : 'bg-transparent text-[oklch(0.62_0.18_142)] border border-[oklch(0.62_0.18_142)]'
-            }`}
-            aria-label="Like"
-          >
-            <span aria-hidden="true" className="inline-flex">
-              <LikeIcon className="w-4 h-4" />
-            </span>
-            Like
-          </button>
-
-          {/* Mobile Like icon */}
-          <button
-            onClick={() => handleVote('like')}
-            disabled={isLoading || voteAction !== null || isFlinging}
-            className="md:hidden w-12 h-12 flex items-center justify-center rounded-lg bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] opacity-60 hover:opacity-100 transition-opacity"
-            aria-label="Like"
-          >
-            <span aria-hidden="true" className="inline-flex">
-              <LikeIcon className="w-6 h-6" />
-            </span>
-          </button>
-
-          {/* Skip button (muted) */}
-          <button
-            onClick={() => handleVote('skip')}
-            onMouseEnter={() => setHoveredButton('skip')}
-            onMouseLeave={() => setHoveredButton(null)}
-            disabled={isLoading || voteAction !== null || isFlinging}
-            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm transition-all duration-100 font-['Space_Grotesk'] ${
-              hoveredButton === 'skip'
-                ? 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)]'
-                : 'bg-transparent text-[oklch(0.75_0.02_250)] opacity-50'
-            }`}
-            aria-label="Skip"
-          >
-            <span aria-hidden="true" className="inline-flex">
-              <SkipIcon className="w-4 h-4" />
-            </span>
-            Skip
-          </button>
-        </div>
       </div>
 
       {/* Results card (fades in from center) */}
       {showResults && (
         <div
-          className={`w-80 ${topBgColor} rounded-[12px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl transition-all duration-300 ${
+          className={`w-[450px] max-w-[420px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${
             showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
           }`}
         >

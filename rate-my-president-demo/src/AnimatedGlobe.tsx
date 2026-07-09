@@ -87,7 +87,7 @@ export default function AnimatedGlobe() {
   }, []);
 
   return (
-    <div className="mx-auto my-4 flex w-full max-w-[130px] items-center justify-center">
+    <div className="mx-auto my-0 flex w-full max-w-[130px] items-center justify-center">
       <svg
         viewBox="0 0 260 260"
         className="h-[90px] w-[90px] drop-shadow-[0_20px_40px_rgba(0,0,0,0.22)] sm:h-[110px] sm:w-[110px]"

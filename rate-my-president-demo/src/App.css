@@ -38,7 +38,7 @@
   gap: 0.75rem;
   border-bottom: 1px solid oklch(0.28 0.02 250);
   background: oklch(0.17 0.03 250);
-  padding: 0.6rem 1rem;
+  padding: 0.25rem 1rem;
 }
 
 .ticker-divider {
