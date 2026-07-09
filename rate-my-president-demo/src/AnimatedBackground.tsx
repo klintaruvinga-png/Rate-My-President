@@ -50,8 +50,8 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
 
     for (let i = 0; i < particleCount; i++) {
       newParticles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * (window.innerWidth || canvas.width),
+        y: Math.random() * (window.innerHeight || canvas.height),
         vx: (Math.random() - 0.5) * 0.3,
         vy: (Math.random() - 0.5) * 0.3,
         size: Math.random() * 2 + 1,
