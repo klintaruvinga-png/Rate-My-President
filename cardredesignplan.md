@@ -1,4 +1,4 @@
-devi## Redesign the Swipe Experience (Tinder-Inspired)
+# Redesign the Swipe Experience (Tinder-Inspired)
 The current swipe card feels like a dialog box rather than an interactive swipe interface. Redesign it into a premium, modern swipe experience inspired by Tinder, while keeping the Rate My President branding and dark theme.
 
 ### Overall Goals
