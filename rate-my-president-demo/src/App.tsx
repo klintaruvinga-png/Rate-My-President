@@ -174,7 +174,11 @@ function App() {
 
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex-1">
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
-          {activeTab === 'swipe' && <SwipeCardDemo />}
+          {activeTab === 'swipe' && (
+            <div className="flex-1 flex flex-col justify-center py-2">
+              <SwipeCardDemo />
+            </div>
+          )}
           {activeTab === 'leaderboard' && <LeaderboardDemo />}
         </div>
       </main>
