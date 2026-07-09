@@ -22,7 +22,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number | null>(null);
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   // Check for reduced motion preference
@@ -38,33 +38,47 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  // Initialize particles
+  // Size canvas and initialize particles
   useEffect(() => {
-    if (!enableParticles || reducedMotion) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const particleCount = 30; // Conservative count for performance
-    const newParticles: Particle[] = [];
+    // Size canvas first
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
 
-    for (let i = 0; i < particleCount; i++) {
-      newParticles.push({
-        x: Math.random() * (window.innerWidth || canvas.width),
-        y: Math.random() * (window.innerHeight || canvas.height),
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        size: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.3 + 0.1,
-      });
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initialize particles after canvas is sized
+    if (enableParticles && !reducedMotion) {
+      const particleCount = 30; // Conservative count for performance
+      const newParticles: Particle[] = [];
+
+      for (let i = 0; i < particleCount; i++) {
+        newParticles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          size: Math.random() * 2 + 1,
+          opacity: Math.random() * 0.3 + 0.1,
+        });
+      }
+
+      particlesRef.current = newParticles;
+    } else {
+      particlesRef.current = [];
     }
 
-    setParticles(newParticles);
+    return () => window.removeEventListener('resize', resizeCanvas);
   }, [enableParticles, reducedMotion]);
 
   // Animation loop
   useEffect(() => {
-    if (!enableParticles || reducedMotion || particles.length === 0) return;
+    if (!enableParticles || reducedMotion || particlesRef.current.length === 0) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -76,7 +90,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw particles
-      particles.forEach((particle) => {
+      particlesRef.current.forEach((particle) => {
         particle.x += particle.vx;
         particle.y += particle.vy;
 
@@ -102,23 +116,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [enableParticles, reducedMotion, particles]);
-
-  // Handle resize
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-
-    return () => window.removeEventListener('resize', resize);
-  }, []);
+  }, [enableParticles, reducedMotion]);
 
   return (
     <div className={`fixed inset-0 -z-10 ${className}`}>
