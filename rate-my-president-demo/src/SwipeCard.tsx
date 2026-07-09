@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   HomeIcon,
   GlobeIcon,
-  ApproveIcon,
-  DisapproveIcon,
+  LikeIcon,
+  NoLikeIcon,
   SkipIcon,
   TrendUpIcon,
   TrendDownIcon,
@@ -300,7 +300,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </h2>
 
         <p className="text-center text-sm text-[oklch(0.75_0.02_250)] opacity-50 font-['Space_Grotesk']">
-          {isBottom ? 'Up next...' : 'Swipe left or right to vote'}
+          {isBottom ? 'Up next...' : 'Swipe left or right to Like or No Like'}
         </p>
       </div>
     );
@@ -376,7 +376,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
                 aria-label="No Like"
               >
                 <span aria-hidden="true" className="inline-flex">
-                  <DisapproveIcon className="w-4 h-4" />
+                  <NoLikeIcon className="w-4 h-4" />
                 </span>
                 No Like
               </button>
@@ -387,7 +387,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
                 aria-label="No Like"
               >
                 <span aria-hidden="true" className="inline-flex">
-                  <DisapproveIcon className="w-6 h-6" />
+                  <NoLikeIcon className="w-6 h-6" />
                 </span>
               </button>
               <button
@@ -399,7 +399,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
                 aria-label="Like"
               >
                 <span aria-hidden="true" className="inline-flex">
-                  <ApproveIcon className="w-4 h-4" />
+                  <LikeIcon className="w-4 h-4" />
                 </span>
                 Like
               </button>
@@ -410,7 +410,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
                 aria-label="Like"
               >
                 <span aria-hidden="true" className="inline-flex">
-                  <ApproveIcon className="w-6 h-6" />
+                  <LikeIcon className="w-6 h-6" />
                 </span>
               </button>
             </div>
@@ -464,11 +464,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               <span className="inline-block w-4 h-4 align-text-bottom">
                 {card.yesterdayVote === 'like' ? (
                   <span aria-hidden="true" className="inline-flex">
-                    <ApproveIcon />
+                    <LikeIcon />
                   </span>
                 ) : card.yesterdayVote === 'nolike' ? (
                   <span aria-hidden="true" className="inline-flex">
-                    <DisapproveIcon />
+                    <NoLikeIcon />
                   </span>
                 ) : (
                   <span aria-hidden="true" className="inline-flex">

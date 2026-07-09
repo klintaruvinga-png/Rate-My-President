@@ -91,14 +91,14 @@ export const ProfileIcon = ({ className, 'aria-label': ariaLabel, ...props }: Ic
 );
 
 // Action Icons
-export const ApproveIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
-  <IconBase className={className} aria-label={ariaLabel} label="Approve" {...props}>
+export const LikeIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Like" {...props}>
     <polyline points="20 6 9 17 4 12" />
   </IconBase>
 );
 
-export const DisapproveIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
-  <IconBase className={className} aria-label={ariaLabel} label="Disapprove" {...props}>
+export const NoLikeIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="No Like" {...props}>
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </IconBase>
@@ -163,15 +163,15 @@ export const TrendDownIcon = ({ className, 'aria-label': ariaLabel, ...props }: 
   </IconBase>
 );
 
-export const ApprovalIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
-  <IconBase className={className} aria-label={ariaLabel} label="Approval" {...props}>
+export const LikesIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Likes" {...props}>
     <path d="M9 11l3 3L22 4" />
     <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
   </IconBase>
 );
 
-export const VoteIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
-  <IconBase className={className} aria-label={ariaLabel} label="Vote count" {...props}>
+export const SwipeIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Swipe count" {...props}>
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
   </IconBase>
 );
@@ -216,8 +216,15 @@ export const CalendarIcon = ({ className, 'aria-label': ariaLabel, ...props }: I
   </IconBase>
 );
 
-export const DailyVoteIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
-  <IconBase className={className} aria-label={ariaLabel} label="Daily vote" {...props}>
+export const DailySwipeIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Daily swipe" {...props}>
     <path d="M6 9l6-6 6 6M6 15l6 6 6-6" />
+  </IconBase>
+);
+
+export const MapPinIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Location pin" {...props}>
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <circle cx="12" cy="10" r="3" />
   </IconBase>
 );

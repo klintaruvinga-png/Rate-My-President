@@ -3,9 +3,10 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import {
   GlobeIcon,
   HomeIcon,
-  ApproveIcon,
-  DisapproveIcon,
+  LikeIcon,
+  NoLikeIcon,
   SkipIcon,
+  MapPinIcon,
 } from '@root/Icons';
 import AnimatedFlag from '@root/AnimatedFlag';
 import SwipeTutorial from './SwipeTutorial';
@@ -232,9 +233,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {currentScreen === 'intro' && (
           <div className="w-full space-y-6 text-center">
             <div>
-              <div className="text-6xl mb-4 inline-block w-16 h-16">
-                <GlobeIcon aria-label="Global" />
-              </div>
               <h1 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">Rate My President</h1>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Your daily swipes on global leaders</p>
             </div>
@@ -248,11 +246,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         )}
 
         {currentScreen === 'mechanic-home' && (
-          <div className="w-full space-y-8">
-            <div className="text-center space-y-1">
-              <div className="text-6xl mb-4 inline-block w-16 h-16">
-                <HomeIcon aria-label="Home" />
-              </div>
+          <div className="w-full space-y-6 text-center">
+            <div className="space-y-1">
               <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Swipe 1: Your home leader</h2>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Swipe on the leader of your country.</p>
               <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
@@ -264,10 +259,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Your leader here</p>
               <div className="flex justify-center gap-4 text-xl">
                 <span className="inline-block w-6 h-6" aria-hidden="true">
-                  <DisapproveIcon className="w-full h-full" />
+                  <NoLikeIcon className="w-full h-full" />
                 </span>
                 <span className="inline-block w-6 h-6" aria-hidden="true">
-                  <ApproveIcon className="w-full h-full" />
+                  <LikeIcon className="w-full h-full" />
                 </span>
                 <span className="inline-block w-6 h-6" aria-hidden="true">
                   <SkipIcon className="w-full h-full" />
@@ -282,11 +277,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         )}
 
         {currentScreen === 'mechanic-global' && (
-          <div className="w-full space-y-8">
-            <div className="text-center space-y-1">
-              <div className="text-6xl mb-4 inline-block w-16 h-16">
-                <GlobeIcon aria-label="Global" />
-              </div>
+          <div className="w-full space-y-6 text-center">
+            <div className="space-y-1">
               <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Swipe 2: A random global leader</h2>
               <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Then meet someone from anywhere in the world.</p>
             </div>
@@ -297,10 +289,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Random leader here</p>
               <div className="flex justify-center gap-4 text-xl">
                 <span className="inline-block w-6 h-6" aria-hidden="true">
-                  <DisapproveIcon className="w-full h-full" />
+                  <NoLikeIcon className="w-full h-full" />
                 </span>
                 <span className="inline-block w-6 h-6" aria-hidden="true">
-                  <ApproveIcon className="w-full h-full" />
+                  <LikeIcon className="w-full h-full" />
                 </span>
                 <span className="inline-block w-6 h-6" aria-hidden="true">
                   <SkipIcon className="w-full h-full" />
@@ -315,18 +307,26 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         )}
 
         {currentScreen === 'mechanic-summary' && (
-          <div className="w-full space-y-8">
+          <div className="w-full space-y-6 text-center">
+            <div className="space-y-1">
+              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Your daily swipes</h2>
+              <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Two leaders. One from home. One from anywhere.</p>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
                 <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
-                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><DisapproveIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><ApproveIcon /></span></div>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon /></span></div>
               </div>
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
                 <div className="text-3xl inline-block w-10 h-10"><GlobeIcon aria-label="Global" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
-                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><DisapproveIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><ApproveIcon /></span></div>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon /></span></div>
               </div>
+            </div>
+            <div className="space-y-2 text-center">
+              <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 leading-relaxed font-['Space_Grotesk']">In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.</p>
+              <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
             </div>
             <div className="flex gap-3">
               <button onClick={handleBackScreen} className="flex-1 py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors">Back</button>
@@ -336,8 +336,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         )}
 
         {currentScreen === 'country-select' && (
-          <div className="w-full space-y-6">
-            <div className="text-center">
+          <div className="w-full space-y-6 text-center">
+            <div className="space-y-1">
               <h2 className="text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Where are you from?</h2>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. (You can change this later.)</p>
             </div>
@@ -437,10 +437,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         )}
 
         {currentScreen === 'confirmation' && (
-          <div className="w-full space-y-8 text-center animate-fade-in">
+          <div className="w-full space-y-6 text-center animate-fade-in">
             {selectedCountry ? (
               <>
-                <div>
+                <div className="space-y-1">
                   <h2 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Got it!</h2>
                   <div className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] flex items-center justify-center gap-2">
                     <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-8 h-8" />
@@ -455,7 +455,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </>
             ) : (
               <>
-                <div>
+                <div className="space-y-1">
+                  <div className="text-6xl mb-4 inline-block w-16 h-16">
+                    <MapPinIcon aria-label="Location" />
+                  </div>
                   <h2 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">No problem</h2>
                   <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">You'll get Global cards only—for now</p>
                 </div>

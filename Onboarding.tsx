@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GlobeIcon, HomeIcon, ApproveIcon, DisapproveIcon, SkipIcon, CountryIcon, BadgeIcon } from './Icons';
+import { GlobeIcon, HomeIcon, LikeIcon, NoLikeIcon, SkipIcon, CountryIcon, BadgeIcon } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 
 type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
@@ -228,10 +228,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Your leader here</p>
             <div className="flex justify-center gap-4 text-xl">
               <span className="inline-block w-6 h-6" aria-hidden="true">
-                <DisapproveIcon className="w-full h-full" />
+                <NoLikeIcon className="w-full h-full" />
               </span>
               <span className="inline-block w-6 h-6" aria-hidden="true">
-                <ApproveIcon className="w-full h-full" />
+                <LikeIcon className="w-full h-full" />
               </span>
               <span className="inline-block w-6 h-6" aria-hidden="true">
                 <SkipIcon className="w-full h-full" />
@@ -278,10 +278,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <p className="text-[oklch(0.75_0.02_250)] text-sm font-['Inter']">Random leader here</p>
             <div className="flex justify-center gap-4 text-xl">
               <span className="inline-block w-6 h-6" aria-hidden="true">
-                <DisapproveIcon className="w-full h-full" />
+                <NoLikeIcon className="w-full h-full" />
               </span>
               <span className="inline-block w-6 h-6" aria-hidden="true">
-                <ApproveIcon className="w-full h-full" />
+                <LikeIcon className="w-full h-full" />
               </span>
               <span className="inline-block w-6 h-6" aria-hidden="true">
                 <SkipIcon className="w-full h-full" />
@@ -325,10 +325,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
               <div className="flex justify-center gap-2 text-lg">
                 <span className="inline-block w-5 h-5" aria-hidden="true">
-                  <DisapproveIcon className="w-full h-full" />
+                  <NoLikeIcon className="w-full h-full" />
                 </span>
                 <span className="inline-block w-5 h-5" aria-hidden="true">
-                  <ApproveIcon className="w-full h-full" />
+                  <LikeIcon className="w-full h-full" />
                 </span>
               </div>
             </div>
@@ -337,10 +337,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
               <div className="flex justify-center gap-2 text-lg">
                 <span className="inline-block w-5 h-5" aria-hidden="true">
-                  <DisapproveIcon className="w-full h-full" />
+                  <NoLikeIcon className="w-full h-full" />
                 </span>
                 <span className="inline-block w-5 h-5" aria-hidden="true">
-                  <ApproveIcon className="w-full h-full" />
+                  <LikeIcon className="w-full h-full" />
                 </span>
               </div>
             </div>
