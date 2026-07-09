@@ -135,14 +135,14 @@ export function SwipeCardDemo() {
 
   if (!currentCard) {
     return (
-      <div className="bg-[oklch(0.15_0.04_250)] min-h-screen flex items-center justify-center">
+      <div className="bg-[oklch(0.15_0.04_250)] flex items-center justify-center">
         <p className="text-white opacity-60">Loading stack...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[oklch(0.15_0.04_250)] min-h-screen">
+    <div className="bg-[oklch(0.15_0.04_250)]">
       <SwipeCard
         card={currentCard}
         nextCard={nextCard}
