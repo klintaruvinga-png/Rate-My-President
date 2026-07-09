@@ -22,7 +22,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>();
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   // Check for reduced motion preference
@@ -59,12 +59,12 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
       });
     }
 
-    setParticles(newParticles);
+    particlesRef.current = newParticles;
   }, [enableParticles, reducedMotion]);
 
   // Animation loop
   useEffect(() => {
-    if (!enableParticles || reducedMotion || particles.length === 0) return;
+    if (!enableParticles || reducedMotion || particlesRef.current.length === 0) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -76,7 +76,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw particles
-      particles.forEach((particle) => {
+      particlesRef.current.forEach((particle) => {
         particle.x += particle.vx;
         particle.y += particle.vy;
 
@@ -102,7 +102,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [enableParticles, reducedMotion, particles]);
+  }, [enableParticles, reducedMotion]);
 
   // Handle resize
   useEffect(() => {
