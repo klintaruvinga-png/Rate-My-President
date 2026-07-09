@@ -311,7 +311,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
         {/* Bottom Section - Buttons */}
         <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 py-4">
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
               onClick={() => handleVote('nolike')}
@@ -377,7 +377,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const cardTransitionStyle = prefersReducedMotion ? 'none' : dragState.isDragging ? 'none' : isFlinging ? 'transform 0.25s ease-out' : 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
   return (
-    <div className="flex flex-col items-center relative">
+    <div className="flex flex-col items-center relative h-full">
       {/* Vote History Pill */}
       {totalRated !== undefined && totalRated > 0 && (
         <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-[oklch(0.20_0.02_250)]/80 backdrop-blur-sm border border-[oklch(0.28_0.02_250)] rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] flex items-center gap-2">
@@ -388,7 +388,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
       {!showResults && (
         <div className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
-          <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[45vh] sm:h-[50vh] md:h-[620px] mx-auto" style={{ boxSizing: 'border-box' }}>
+          <div className="relative w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] max-w-[460px] aspect-[3/4] mx-auto" style={{ boxSizing: 'border-box' }}>
             {nextCard && (
               <div
                 className={`absolute inset-0 rounded-[20px] select-none pointer-events-none ${bottomBgColor} border border-[oklch(0.28_0.02_250)] shadow-xl`}

@@ -142,7 +142,7 @@ export function SwipeCardDemo() {
   }
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <SwipeCard
         card={currentCard}
         nextCard={nextCard}
