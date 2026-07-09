@@ -388,7 +388,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
       {!showResults && (
         <div className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
-          <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[52vh] md:h-[620px] mx-auto" style={{ boxSizing: 'border-box' }}>
+          <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[45vh] sm:h-[50vh] md:h-[620px] mx-auto" style={{ boxSizing: 'border-box' }}>
             {nextCard && (
               <div
                 className={`absolute inset-0 rounded-[20px] select-none pointer-events-none ${bottomBgColor} border border-[oklch(0.28_0.02_250)] shadow-xl`}
