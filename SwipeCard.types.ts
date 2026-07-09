@@ -62,6 +62,15 @@ export interface CardData {
   /** URL to leader avatar image (SVG or raster, 120×120px recommended) */
   avatarUrl: string;
 
+  /** URL to full-bleed header image (for redesigned card layout) */
+  headerImageUrl?: string;
+
+  /** Office/role title (e.g., 'President', 'Prime Minister', 'Chancellor') */
+  officeTitle?: string;
+
+  /** Political party (optional) */
+  party?: string;
+
   /** Approval rating as integer percentage (0–100) */
   approvalPercent: number;
 
@@ -77,6 +86,12 @@ export interface CardData {
    * If not provided, micro-history is not shown.
    */
   yesterdayVote?: 'approve' | 'disapprove' | 'skip';
+
+  /**
+   * Optional: Total number of leaders rated by user.
+   * Used for simplified history pill display ("🗳️ 12 Rated")
+   */
+  totalRated?: number;
 }
 
 /**
