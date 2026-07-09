@@ -308,7 +308,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 py-4">
+        <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 py-4">
           <div className="flex justify-center gap-4">
             {/* No Like button */}
             <button
@@ -373,7 +373,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[oklch(0.15_0.04_250)] relative" style={{ paddingTop: 'env(safe-area-inset-top, 16px)', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
+    <div className="flex flex-col items-center justify-start pt-1 pb-1 bg-[oklch(0.15_0.04_250)] relative" style={{ paddingTop: 'env(safe-area-inset-top, 4px)', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
       {/* Vote History Pill */}
       {totalRated !== undefined && totalRated > 0 && (
         <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-[oklch(0.20_0.02_250)]/80 backdrop-blur-sm border border-[oklch(0.28_0.02_250)] rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] flex items-center gap-2">
@@ -386,7 +386,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       {!showResults && (
         <div className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
         {/* Card Z-Stack */}
-        <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[60vh] md:h-[650px] mx-auto" style={{ boxSizing: 'border-box' }}>
+        <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[52vh] md:h-[620px] mx-auto" style={{ boxSizing: 'border-box' }}>
           {/* Bottom Card (Next Card) */}
           {nextCard && (
             <div
