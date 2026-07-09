@@ -279,14 +279,12 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.15_0.04_250)] via-transparent to-transparent" />
           
           {/* Top Left: Home/Global Icon Badge */}
-          <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-[oklch(0.28_0.02_250)] flex items-center justify-center flex-shrink-0">
-            <div className="w-3 h-3 text-[oklch(0.95_0.02_250)]">
-              {cardData.type === 'home' ? (
-                <HomeIcon aria-label="Home" />
-              ) : (
-                <GlobeIcon aria-label="Global" />
-              )}
-            </div>
+          <div className="absolute top-4 left-4 w-4 h-4 text-[oklch(0.75_0.02_250)]">
+            {cardData.type === 'home' ? (
+              <HomeIcon aria-label="Home" />
+            ) : (
+              <GlobeIcon aria-label="Global" />
+            )}
           </div>
 
           {/* Top Right: Country Badge */}
