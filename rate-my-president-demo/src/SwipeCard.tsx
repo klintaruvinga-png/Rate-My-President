@@ -377,7 +377,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const cardTransitionStyle = prefersReducedMotion ? 'none' : dragState.isDragging ? 'none' : isFlinging ? 'transform 0.25s ease-out' : 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
   return (
-    <div className="flex flex-col items-center justify-start pt-1 pb-1 bg-[oklch(0.15_0.04_250)] relative" style={{ paddingTop: 'env(safe-area-inset-top, 4px)', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
+    <div className="flex flex-col items-center justify-start bg-[oklch(0.15_0.04_250)] relative" style={{ paddingTop: 'env(safe-area-inset-top, 4px)', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
       {/* Vote History Pill */}
       {totalRated !== undefined && totalRated > 0 && (
         <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-[oklch(0.20_0.02_250)]/80 backdrop-blur-sm border border-[oklch(0.28_0.02_250)] rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] flex items-center gap-2">
