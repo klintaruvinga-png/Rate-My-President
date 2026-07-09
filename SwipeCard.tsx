@@ -383,9 +383,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       )}
 
       {/* Voted card container (exits, fades out) */}
-      <div
-        className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
-      >
+      {!showResults && (
+        <div className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
         {/* Card Z-Stack */}
         <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[60vh] md:h-[650px] mx-auto" style={{ boxSizing: 'border-box' }}>
           {/* Bottom Card (Next Card) */}
