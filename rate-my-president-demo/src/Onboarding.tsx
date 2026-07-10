@@ -85,12 +85,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             (country) => country.code.toUpperCase() === countryCode
           );
 
-          if (!isCancelled && !abortController.signal.aborted && matchedCountry && !userMadeExplicitChoice.current) {
-            setSelectedCountry(matchedCountry);
-            setCountryConfirmed(true);
-            userMadeExplicitChoice.current = true;
+          if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            if (matchedCountry) {
+              setSelectedCountry(matchedCountry);
+              setCountryConfirmed(true);
+              userMadeExplicitChoice.current = true;
+              setCurrentScreen('confirmation');
+            }
             setIsDetectingLocation(false);
-            setCurrentScreen('confirmation');
           }
         } catch {
           // Reverse geocoding failed or was aborted; fallback to manual selection.
@@ -406,7 +408,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                         onClick={() => {
                           setLocationConsent(false);
                           userMadeExplicitChoice.current = true;
-                          handleSkipCountry();
                         }}
                         className="flex-1 py-2 bg-transparent border border-[oklch(0.75_0.02_250)] rounded-md"
                       >

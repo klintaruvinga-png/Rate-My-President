@@ -102,9 +102,6 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     if (voteAction || isLoading || isFlinging) return;
     if (isInteractiveTarget(e.target)) return;
 
-    const target = e.target as HTMLElement;
-    if (target.closest('button, a, input, textarea, select, [role="button"]')) return;
-
     setDragState({ isDragging: true, startX: e.clientX, startY: e.clientY, offsetX: 0, offsetY: 0 });
     clearHoldTimer();
 

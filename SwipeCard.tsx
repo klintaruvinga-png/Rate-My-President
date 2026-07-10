@@ -106,11 +106,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!dragState.isDragging) return;
-    
+
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch (err) {}
-    
+
     const { offsetX, offsetY } = dragState;
     
     // Check horizontal swipe
@@ -132,6 +132,10 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         offsetY: 0,
       });
     }
+  };
+
+  const stopCardGesture = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
   };
 
   const handlePointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {

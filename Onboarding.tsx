@@ -82,7 +82,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             setCurrentScreen('confirmation');
           }
         } catch {
-          if (isCancelled || abortController.signal.aborted) return;
+          if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) return;
           console.log('Geolocation permission denied or unavailable');
           setIsDetectingLocation(false);
           setSelectedCountry(null);
@@ -90,7 +90,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         }
       },
       () => {
-        if (isCancelled || abortController.signal.aborted) return;
+        if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) return;
         console.log('Geolocation permission denied or unavailable');
         setIsDetectingLocation(false);
         setSelectedCountry(null);
@@ -506,8 +506,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             >
               <span className="inline-flex items-center justify-center gap-2">
                 <AnimatedFlag
-                  countryCode={selectedCountry.code}
-                  fallbackFlag={selectedCountry.flag}
+                  countryCode={selectedCountry?.code}
+                  fallbackFlag={selectedCountry?.flag}
                   className="w-5 h-5"
                 />
                 <span>Continue with {selectedCountry?.name || '...'}</span>
