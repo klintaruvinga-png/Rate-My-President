@@ -241,7 +241,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   return (
     <div className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
       <div className="w-full">
-        <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-2xl space-y-4 px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
               <span>Setup</span>
@@ -253,28 +253,28 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           </div>
 
         {currentScreen === 'intro' && (
-          <div className="w-full space-y-6 text-center">
-            <div>
-              <h1 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">Rate My President</h1>
-              <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Your daily swipes on global leaders</p>
+          <div className="w-full space-y-5 text-center">
+            <div className="space-y-2">
+              <h1 className="mb-3 text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:text-4xl">Rate My President</h1>
+              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Your daily swipes on global leaders</p>
             </div>
             <SwipeTutorial />
             <div className="space-y-2">
-              <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 leading-relaxed font-['Space_Grotesk']">In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.</p>
+              <p className="text-sm leading-relaxed text-[oklch(0.75_0.02_250)]/80 font-['Space_Grotesk']">In 20 seconds, you'll have swiped on two leaders. One from home. One from anywhere.</p>
               <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
             </div>
-            <button onClick={handleAdvanceScreen} className="w-full py-3 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity">Let's go</button>
+            <button onClick={handleAdvanceScreen} className="min-h-12 w-full rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90">Let's go</button>
           </div>
         )}
 
         {currentScreen === 'mechanic-home' && (
-          <div className="w-full space-y-6 text-center">
+          <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
-              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Swipe 1: Your home leader</h2>
-              <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Swipe on the leader of your country.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:text-3xl">Swipe 1: Your home leader</h2>
+              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Swipe on the leader of your country.</p>
               <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
             </div>
-            <div className={`${cardColor} rounded-lg p-6 text-center space-y-4`}>
+            <div className={`${cardColor} rounded-2xl p-5 text-center space-y-4 sm:p-6`}>
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[oklch(0.28_0.02_250)]">
                 <HomeIcon aria-label="Home" className="h-10 w-10 text-[oklch(0.95_0.02_250)]" />
               </div>
@@ -292,19 +292,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </div>
             </div>
             <div className="flex gap-3">
-              <button onClick={handleBackScreen} className="flex-1 py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors">Back</button>
-              <button onClick={handleAdvanceScreen} className="flex-1 py-3 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity">Next</button>
+              <button onClick={handleBackScreen} className="flex-1 min-h-12 rounded-xl border border-[oklch(0.75_0.02_250)] bg-transparent px-4 py-3 font-semibold font-['Space_Grotesk'] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]">Back</button>
+              <button onClick={handleAdvanceScreen} className="flex-1 min-h-12 rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90">Next</button>
             </div>
           </div>
         )}
 
         {currentScreen === 'mechanic-global' && (
-          <div className="w-full space-y-6 text-center">
+          <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
-              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Swipe 2: A random global leader</h2>
-              <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Then meet someone from anywhere in the world.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:text-3xl">Swipe 2: A random global leader</h2>
+              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Then meet someone from anywhere in the world.</p>
             </div>
-            <div className={`${cardColor} rounded-lg p-6 text-center space-y-4`}>
+            <div className={`${cardColor} rounded-2xl p-5 text-center space-y-4 sm:p-6`}>
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[oklch(0.28_0.02_250)]">
                 <GlobeIcon aria-label="Global" className="h-10 w-10 text-[oklch(0.95_0.02_250)]" />
               </div>
@@ -322,19 +322,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </div>
             </div>
             <div className="flex gap-3">
-              <button onClick={handleBackScreen} className="flex-1 py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors">Back</button>
-              <button onClick={handleAdvanceScreen} className="flex-1 py-3 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity">Next</button>
+              <button onClick={handleBackScreen} className="flex-1 min-h-12 rounded-xl border border-[oklch(0.75_0.02_250)] bg-transparent px-4 py-3 font-semibold font-['Space_Grotesk'] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]">Back</button>
+              <button onClick={handleAdvanceScreen} className="flex-1 min-h-12 rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90">Next</button>
             </div>
           </div>
         )}
 
         {currentScreen === 'mechanic-summary' && (
-          <div className="w-full space-y-6 text-center">
+          <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
-              <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Your daily swipes</h2>
-              <p className="text-lg text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Two leaders. One from home. One from anywhere.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:text-3xl">Your daily swipes</h2>
+              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Two leaders. One from home. One from anywhere.</p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
                 <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
@@ -351,22 +351,22 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
             </div>
             <div className="flex gap-3">
-              <button onClick={handleBackScreen} className="flex-1 py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors">Back</button>
-              <button onClick={handleAdvanceScreen} className="flex-1 py-3 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity">Select your country</button>
+              <button onClick={handleBackScreen} className="flex-1 min-h-12 rounded-xl border border-[oklch(0.75_0.02_250)] bg-transparent px-4 py-3 font-semibold font-['Space_Grotesk'] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]">Back</button>
+              <button onClick={handleAdvanceScreen} className="flex-1 min-h-12 rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90">Select your country</button>
             </div>
           </div>
         )}
 
         {currentScreen === 'country-select' && (
-          <div className="w-full space-y-6 text-center">
+          <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
-              <h2 className="text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Where are you from?</h2>
+              <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Where are you from?</h2>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. (You can change this later.)</p>
             </div>
 
             {/* ── Selected-country preview card ── */}
             {countryConfirmed && selectedCountry ? (
-              <div className="rounded-xl bg-[oklch(0.20_0.02_250)] border border-[oklch(0.62_0.18_142)/0.4] p-5 flex items-center gap-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)]">
+              <div className="flex items-center gap-4 rounded-2xl border border-[oklch(0.62_0.18_142)/0.4] bg-[oklch(0.20_0.02_250)] p-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)] sm:p-5">
                 <div className="flex-shrink-0">
                   <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-14 h-14" />
                 </div>
@@ -424,11 +424,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     placeholder="Search countries..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-3 bg-[oklch(0.28_0.02_250)] text-[oklch(0.95_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] focus:border-[oklch(0.62_0.18_142)] outline-none transition-colors font-['Space_Grotesk']"
+                    className="w-full rounded-xl border border-[oklch(0.28_0.02_250)] bg-[oklch(0.28_0.02_250)] px-4 py-3 font-['Space_Grotesk'] text-[oklch(0.95_0.02_250)] outline-none transition-colors focus:border-[oklch(0.62_0.18_142)]"
                   />
                 </div>
                 {filteredCountries.length > 10 && <p className="text-xs text-[oklch(0.75_0.02_250)]">Showing the first 10 matching countries. Narrow your search for more results.</p>}
-                <div className={`${cardColor} rounded-lg overflow-hidden max-h-64 overflow-y-auto`} role="listbox" aria-label="Country list">
+                <div className={`${cardColor} max-h-[min(45vh,320px)] overflow-hidden overflow-y-auto rounded-2xl`} role="listbox" aria-label="Country list">
                   {visibleCountries.map((country, index) => (
                     <button
                       key={country.code}
@@ -454,13 +454,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <button
                 onClick={handleAdvanceScreen}
                 disabled={!selectedCountry}
-                className={`w-full py-3 rounded-lg font-semibold font-['Space_Grotesk'] transition-all ${selectedCountry ? 'bg-[oklch(0.62_0.18_142)] text-white hover:opacity-90' : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] opacity-50 cursor-not-allowed'}`}
+                className={`min-h-12 w-full rounded-xl px-4 py-3 font-semibold font-['Space_Grotesk'] transition-all ${selectedCountry ? 'bg-[oklch(0.62_0.18_142)] text-white hover:opacity-90' : 'cursor-not-allowed bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] opacity-50'}`}
               >
                 Continue with {selectedCountry?.flag} {selectedCountry?.name || '...'}
               </button>
               <button
                 onClick={handleSkipCountry}
-                className="w-full py-3 bg-transparent border border-[oklch(0.75_0.02_250)] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors"
+                className="min-h-12 w-full rounded-xl border border-[oklch(0.75_0.02_250)] bg-transparent px-4 py-3 font-semibold font-['Space_Grotesk'] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]"
               >
                 Prefer not to say
               </button>
@@ -469,7 +469,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         )}
 
         {currentScreen === 'confirmation' && (
-          <div className="w-full space-y-6 text-center animate-fade-in">
+          <div className="w-full space-y-5 text-center animate-fade-in">
             {selectedCountry ? (
               <>
                 <div className="space-y-1">
@@ -479,7 +479,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     {selectedCountry.name}
                   </div>
                 </div>
-                <div className={`${cardColor} rounded-lg p-6 space-y-3`}>
+                <div className={`${cardColor} rounded-2xl p-5 space-y-3 sm:p-6`}>
                   <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Your head of state</p>
                   {selectedCountry.leader && <p className="text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">{selectedCountry.leader}</p>}
                 </div>
@@ -497,7 +497,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 font-['Space_Grotesk']">Add your country anytime in settings</p>
               </>
             )}
-            <button onClick={handleComplete} className="w-full py-3 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity">Start swiping</button>
+            <button onClick={handleComplete} className="min-h-12 w-full rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90">Start swiping</button>
           </div>
         )}
         </div>{/* /space-y-4 p-4 pr-8 */}
