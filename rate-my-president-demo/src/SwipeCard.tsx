@@ -276,7 +276,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           <img
             src={headerImage}
             alt={cardData.leaderName}
-            className="w-full h-full object-cover transform scale-[1.02] origin-center"
+            className="w-full h-full object-cover scale-[1.02] origin-center"
             onError={(event) => { (event.currentTarget as HTMLImageElement).src = fallbackAvatar; }}
           />
           

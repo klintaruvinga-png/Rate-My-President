@@ -94,22 +94,25 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           }
         } catch {
           // Reverse geocoding failed or was aborted; fallback to manual selection.
-          if (!abortController.signal.aborted) {
-            setIsDetectingLocation(false);
-            setSelectedCountry(null);
-            setCurrentScreen('confirmation');
+          if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+            clearTimeout(timeoutId);
+            return;
           }
-        } finally {
+          setIsDetectingLocation(false);
+          setSelectedCountry(null);
+          setCurrentScreen('confirmation');
           clearTimeout(timeoutId);
         }
       },
       () => {
         // Geolocation permission denied or unavailable.
-        if (!abortController.signal.aborted) {
-          setIsDetectingLocation(false);
-          setSelectedCountry(null);
-          setCurrentScreen('confirmation');
+        if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+          clearTimeout(timeoutId);
+          return;
         }
+        setIsDetectingLocation(false);
+        setSelectedCountry(null);
+        setCurrentScreen('confirmation');
         clearTimeout(timeoutId);
       },
       { timeout: 8000 }

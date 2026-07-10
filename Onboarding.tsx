@@ -81,18 +81,16 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             setCurrentScreen('confirmation');
           }
         } catch {
-          if (!abortController.signal.aborted) {
-            console.log('Geolocation permission denied or unavailable');
-          }
+          if (isCancelled || abortController.signal.aborted) return;
+          console.log('Geolocation permission denied or unavailable');
           setIsDetectingLocation(false);
           setSelectedCountry(null);
           setCurrentScreen('confirmation');
         }
       },
       () => {
-        if (!abortController.signal.aborted) {
-          console.log('Geolocation permission denied or unavailable');
-        }
+        if (isCancelled || abortController.signal.aborted) return;
+        console.log('Geolocation permission denied or unavailable');
         setIsDetectingLocation(false);
         setSelectedCountry(null);
         setCurrentScreen('confirmation');
@@ -154,6 +152,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleSkipCountry = () => {
+    userMadeExplicitChoice.current = true;
     setSelectedCountry(null);
     setCountryConfirmed(false);
     setCurrentScreen('confirmation');
@@ -420,7 +419,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               ) : locationConsent === null && !defaultCountry && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
                 <div className="rounded-xl border border-[oklch(0.62_0.18_142)/0.25] bg-[oklch(0.24_0.02_250)] p-4 text-left">
                   <p className="text-sm font-semibold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Use your location to prefill your country?</p>
-                  <p className="mt-1 text-xs text-[oklch(0.75_0.02_250)] font-['Inter']">We can try to match your country once, then you can adjust it manually.</p>
+                  <p className="mt-1 text-xs text-[oklch(0.75_0.02_250)] font-['Inter']">Your precise latitude/longitude coordinates will be sent to Nominatim (OpenStreetMap) to match your country. You can adjust it manually afterwards.</p>
                   <div className="mt-3 flex gap-2">
                     <button
                       type="button"
