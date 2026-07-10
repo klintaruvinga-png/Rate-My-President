@@ -8,7 +8,7 @@
 /**
  * Vote action type
  */
-export type VoteAction = 'approve' | 'disapprove' | 'skip' | null;
+export type VoteAction = 'like' | 'nolike' | 'skip' | null;
 
 /**
  * Card type (Home = user's own country, Global = randomly assigned)
@@ -82,10 +82,10 @@ export interface CardData {
 
   /**
    * Optional: User's vote on this leader yesterday.
-   * Used for micro-history display ("Yesterday: Approve ✓")
+   * Used for micro-history display ("Yesterday: Like ✓")
    * If not provided, micro-history is not shown.
    */
-  yesterdayVote?: 'approve' | 'disapprove' | 'skip';
+  yesterdayVote?: 'like' | 'nolike' | 'skip';
 
   /**
    * Optional: Total number of leaders rated by user.
@@ -104,7 +104,7 @@ export interface SwipeCardProps {
   /** Optional card underneath the top card in the stack */
   nextCard?: CardData;
 
-  /** Callback fired when user casts a vote (approve/disapprove/skip) */
+  /** Callback fired when user casts a vote (like/nolike/skip) */
   onVote: (action: VoteAction) => void;
 
   /**
@@ -154,7 +154,7 @@ export interface VoteRecord {
   /** Country code of the voted leader */
   countryCode: string;
 
-  /** Vote action (approve/disapprove/skip) */
+  /** Vote action (like/nolike/skip) */
   action: VoteAction;
 
   /** Timestamp of when vote was cast */

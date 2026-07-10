@@ -33,7 +33,7 @@ export function SwipeCardDemo() {
           url: 'https://theguardian.com',
         },
       ],
-      yesterdayVote: 'approve',
+      yesterdayVote: 'like',
     },
     {
       id: 'fr-2026-07-06',
@@ -54,7 +54,7 @@ export function SwipeCardDemo() {
           url: 'https://lemonde.fr',
         },
       ],
-      yesterdayVote: 'disapprove',
+      yesterdayVote: 'nolike',
     },
     {
       id: 'in-2026-07-06',
@@ -114,7 +114,7 @@ export function SwipeCardDemo() {
           url: 'https://reuters.com',
         },
       ],
-      yesterdayVote: (['approve', 'disapprove', 'skip'][Math.floor(Math.random() * 3)] as any),
+      yesterdayVote: (['like', 'nolike', 'skip'][Math.floor(Math.random() * 3)] as any),
     };
   };
 
@@ -169,9 +169,9 @@ export function SwipeCardDemo() {
               <div key={idx} className="flex justify-between gap-4 border-b border-[oklch(0.28_0.02_250)] pb-1">
                 <span>Leader {idx + 1}:</span>
                 <span className={`font-semibold ${
-                  vote === 'approve' 
+                  vote === 'like' 
                     ? 'text-[oklch(0.62_0.18_142)]' 
-                    : vote === 'disapprove' 
+                    : vote === 'nolike' 
                       ? 'text-[oklch(0.55_0.20_25)]' 
                       : 'text-[oklch(0.72_0.15_65)]'
                 }`}>
@@ -189,8 +189,8 @@ export function SwipeCardDemo() {
         <ul className="space-y-1 opacity-80 text-xs">
           <li>• Swipe left/right (pointer gestures)</li>
           <li>• Swipe up to Skip</li>
-          <li>• Keyboard: D/Right = Approve</li>
-          <li>• Keyboard: A/Left = Disapprove</li>
+          <li>• Keyboard: D/Right = Like</li>
+          <li>• Keyboard: A/Left = No Like</li>
           <li>• Keyboard: S/Up = Skip</li>
           <li>• Mobile: Haptic feedback on vote</li>
         </ul>

@@ -17,6 +17,9 @@ export interface CountryData {
 
   /** Optional: leader name to display on confirmation screen */
   leader?: string;
+
+  /** Optional: URL to leader avatar image */
+  avatarUrl?: string;
 }
 
 /**

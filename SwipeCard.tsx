@@ -67,10 +67,16 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     setFlingAction(null);
   }, [card.id]);
 
+  const isInteractiveTarget = (target: EventTarget | null) => {
+    if (!(target instanceof Element)) return false;
+    return Boolean(target.closest('button, a, input, select, textarea, [role="button"], [data-interactive="true"]'));
+  };
+
   // Pointer drag event handlers
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (voteAction || isLoading || isFlinging) return;
-    
+    if (isInteractiveTarget(e.target)) return;
+
     const startX = e.clientX;
     const startY = e.clientY;
     
@@ -100,11 +106,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!dragState.isDragging) return;
-    
+
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch (err) {}
-    
+
     const { offsetX, offsetY } = dragState;
     
     // Check horizontal swipe
@@ -126,6 +132,10 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         offsetY: 0,
       });
     }
+  };
+
+  const stopCardGesture = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
   };
 
   const handlePointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -265,9 +275,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     const fallbackAvatar = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="60" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
     
     return (
-      <div className="h-full flex flex-col relative overflow-hidden rounded-t-[20px]">
-        {/* Full Bleed Header Image (60-70% of card) */}
-        <div className="relative h-[65%] w-full">
+      <div className="flex flex-col relative overflow-hidden rounded-t-[20px]">
+        {/* Full Bleed Header Image */}
+        <div className="relative w-full h-[395px] shrink-0">
           <img
             src={headerImage}
             alt={cardData.leaderName}
@@ -308,15 +318,22 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 py-4">
+        <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 pt-4 pb-2 shrink-0">
           <div className="flex justify-center gap-4">
             {/* No Like button */}
             <button
-              onClick={() => handleVote('nolike')}
+              type="button"
+              onClick={(event) => {
+                stopCardGesture(event);
+                handleVote('nolike');
+              }}
+              onPointerDown={stopCardGesture}
+              onMouseDown={stopCardGesture}
+              onTouchStart={stopCardGesture}
               onMouseEnter={() => setHoveredButton('nolike')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
                 hoveredButton === 'nolike'
                   ? 'bg-[oklch(0.55_0.20_25)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] border-2 border-[oklch(0.55_0.20_25)] hover:scale-105'
@@ -330,11 +347,18 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
             {/* Skip button */}
             <button
-              onClick={() => handleVote('skip')}
+              type="button"
+              onClick={(event) => {
+                stopCardGesture(event);
+                handleVote('skip');
+              }}
+              onPointerDown={stopCardGesture}
+              onMouseDown={stopCardGesture}
+              onTouchStart={stopCardGesture}
               onMouseEnter={() => setHoveredButton('skip')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
                 hoveredButton === 'skip'
                   ? 'bg-[oklch(0.72_0.15_65)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.72_0.15_65)] border-2 border-[oklch(0.72_0.15_65)] opacity-70 hover:opacity-100 hover:scale-105'
@@ -348,11 +372,18 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
             {/* Like button */}
             <button
-              onClick={() => handleVote('like')}
+              type="button"
+              onClick={(event) => {
+                stopCardGesture(event);
+                handleVote('like');
+              }}
+              onPointerDown={stopCardGesture}
+              onMouseDown={stopCardGesture}
+              onTouchStart={stopCardGesture}
               onMouseEnter={() => setHoveredButton('like')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
                 hoveredButton === 'like'
                   ? 'bg-[oklch(0.62_0.18_142)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] border-2 border-[oklch(0.62_0.18_142)] hover:scale-105'

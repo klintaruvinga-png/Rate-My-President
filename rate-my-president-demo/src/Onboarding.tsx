@@ -10,6 +10,7 @@ import {
 } from '@root/Icons';
 import AnimatedFlag from '@root/AnimatedFlag';
 import SwipeTutorial from './SwipeTutorial';
+import { setUserCountry } from './onboardingStorage';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
 
@@ -44,6 +45,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(defaultCountry);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [focusedCountryIndex, setFocusedCountryIndex] = useState(0);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
@@ -66,6 +68,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       abortController.abort();
     }, 8000);
 
+    setIsDetectingLocation(true);
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         if (isCancelled || abortController.signal.aborted) return;
@@ -81,19 +85,36 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             (country) => country.code.toUpperCase() === countryCode
           );
 
-          if (!isCancelled && !abortController.signal.aborted && matchedCountry && !userMadeExplicitChoice.current) {
-            setSelectedCountry(matchedCountry);
-            setCountryConfirmed(true);
-            userMadeExplicitChoice.current = true;
+          if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            if (matchedCountry) {
+              setSelectedCountry(matchedCountry);
+              setCountryConfirmed(true);
+              userMadeExplicitChoice.current = true;
+              setCurrentScreen('confirmation');
+            }
+            setIsDetectingLocation(false);
           }
         } catch {
           // Reverse geocoding failed or was aborted; fallback to manual selection.
-        } finally {
+          if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+            clearTimeout(timeoutId);
+            return;
+          }
+          setIsDetectingLocation(false);
+          setSelectedCountry(null);
+          setCurrentScreen('confirmation');
           clearTimeout(timeoutId);
         }
       },
       () => {
         // Geolocation permission denied or unavailable.
+        if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+          clearTimeout(timeoutId);
+          return;
+        }
+        setIsDetectingLocation(false);
+        setSelectedCountry(null);
+        setCurrentScreen('confirmation');
         clearTimeout(timeoutId);
       },
       { timeout: 8000 }
@@ -158,6 +179,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleComplete = () => {
+    setUserCountry(selectedCountry?.code || null);
     setIsAutoAdvancing(true);
     setTimeout(() => {
       onComplete(selectedCountry?.code || null);
@@ -365,7 +387,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             ) : (
               <>
                 {/* Location consent prompt: only show when we haven't asked yet */}
-                {locationConsent === null && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
+                {isDetectingLocation ? (
+                  <div className="p-3 rounded-lg bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] space-y-2">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-2 border-[oklch(0.62_0.18_142)] border-t-transparent rounded-full animate-spin"></div>
+                      <p className="text-sm font-semibold">Detecting location…</p>
+                    </div>
+                  </div>
+                ) : locationConsent === null && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
                   <div className="p-3 rounded-lg bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] space-y-2">
                     <p className="text-sm">Allow using your location to preselect your country? This sends coordinates to a reverse-geocoding provider.</p>
                     <div className="flex gap-2">
@@ -376,7 +405,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                         Yes, use my location
                       </button>
                       <button
-                        onClick={() => { setLocationConsent(false); userMadeExplicitChoice.current = true; }}
+                        onClick={() => {
+                          setLocationConsent(false);
+                          userMadeExplicitChoice.current = true;
+                        }}
                         className="flex-1 py-2 bg-transparent border border-[oklch(0.75_0.02_250)] rounded-md"
                       >
                         No thanks

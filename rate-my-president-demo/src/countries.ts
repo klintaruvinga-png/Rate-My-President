@@ -46,7 +46,7 @@ export const availableCountries: CountryData[] = [
   { code: 'SE', name: 'Sweden',          flag: '🇸🇪', leader: 'Ulf Kristersson',                  avatarSeed: 'UK', avatarColor: '1a6b8a' },
   { code: 'NO', name: 'Norway',          flag: '🇳🇴', leader: 'Jonas Gahr Støre',                 avatarSeed: 'JG', avatarColor: '154360' },
   { code: 'NL', name: 'Netherlands',     flag: '🇳🇱', leader: 'Dick Schoof',                      avatarSeed: 'DS', avatarColor: 'f39c12' },
-  { code: 'PL', name: 'Poland',          flag: '🇵🇱', leader: 'Donald Tusk',                      avatarSeed: 'DTU2', avatarColor: 'c0392b' },
-  { code: 'UA', name: 'Ukraine',         flag: '🇺🇦', leader: 'Volodymyr Zelensky',               avatarSeed: 'VZ', avatarColor: '1f618d' },
-  { code: 'ZW', name: 'Zimbabwe',        flag: '🇿🇼', leader: 'Emmerson Mnangagwa',               avatarSeed: 'EMN', avatarColor: '117a65' },
+  { code: 'PL', name: 'Poland',          flag: '🇵🇱', leader: 'Donald Tusk',                      avatarSeed: 'DTU2', avatarColor: 'c0392b', avatarUrl: '/avatars/donald-tusk.png' },
+  { code: 'UA', name: 'Ukraine',         flag: '🇺🇦', leader: 'Volodymyr Zelensky',               avatarSeed: 'VZ', avatarColor: '1f618d', avatarUrl: '/avatars/volodymyr-zelensky.png' },
+  { code: 'ZW', name: 'Zimbabwe',        flag: '🇿🇼', leader: 'Emmerson Mnangagwa',               avatarSeed: 'EMN', avatarColor: '117a65', avatarUrl: '/avatars/emmerson-mnangagwa.png' },
 ];
