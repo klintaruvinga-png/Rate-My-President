@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GlobeIcon, HomeIcon, LikeIcon, NoLikeIcon, SkipIcon, CountryIcon, BadgeIcon } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
+import { setUserCountry } from './onboardingStorage';
 
 type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
 
@@ -35,6 +36,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   // When true, hide the search UI and show the selected-country preview card
@@ -51,6 +53,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       isCancelled = true;
       abortController.abort();
     }, 8000);
+
+    setIsDetectingLocation(true);
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -73,17 +77,25 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             setSelectedCountry(selected);
             setCountryConfirmed(true);
             userMadeExplicitChoice.current = true;
+            setIsDetectingLocation(false);
+            setCurrentScreen('confirmation');
           }
         } catch {
           if (!abortController.signal.aborted) {
             console.log('Geolocation permission denied or unavailable');
           }
+          setIsDetectingLocation(false);
+          setSelectedCountry(null);
+          setCurrentScreen('confirmation');
         }
       },
       () => {
         if (!abortController.signal.aborted) {
           console.log('Geolocation permission denied or unavailable');
         }
+        setIsDetectingLocation(false);
+        setSelectedCountry(null);
+        setCurrentScreen('confirmation');
       },
       { timeout: 8000 }
     );
@@ -154,6 +166,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleComplete = () => {
+    setUserCountry(selectedCountry?.code || null);
     setIsAutoAdvancing(true);
     setTimeout(() => {
       onComplete(selectedCountry?.code || null);
@@ -397,7 +410,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </div>
           ) : (
             <div className="space-y-3">
-              {locationConsent === null && !defaultCountry && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
+              {isDetectingLocation ? (
+                <div className="rounded-xl border border-[oklch(0.62_0.18_142)/0.25] bg-[oklch(0.24_0.02_250)] p-4 text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-[oklch(0.62_0.18_142)] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-sm font-semibold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Detecting location…</p>
+                  </div>
+                </div>
+              ) : locationConsent === null && !defaultCountry && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
                 <div className="rounded-xl border border-[oklch(0.62_0.18_142)/0.25] bg-[oklch(0.24_0.02_250)] p-4 text-left">
                   <p className="text-sm font-semibold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Use your location to prefill your country?</p>
                   <p className="mt-1 text-xs text-[oklch(0.75_0.02_250)] font-['Inter']">We can try to match your country once, then you can adjust it manually.</p>

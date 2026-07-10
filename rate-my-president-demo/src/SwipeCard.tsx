@@ -96,6 +96,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (voteAction || isLoading || isFlinging) return;
 
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a, input, textarea, select, [role="button"]')) return;
+
     setDragState({ isDragging: true, startX: e.clientX, startY: e.clientY, offsetX: 0, offsetY: 0 });
     clearHoldTimer();
 
@@ -273,7 +276,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           <img
             src={headerImage}
             alt={cardData.leaderName}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transform scale-[1.02] origin-center"
             onError={(event) => { (event.currentTarget as HTMLImageElement).src = fallbackAvatar; }}
           />
           
@@ -296,8 +299,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-0 left-0 right-0 p-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-['Space_Grotesk'] leading-tight drop-shadow-lg">
+          <div className="absolute bottom-0 left-0 right-0 px-6 pt-2 pb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-['Space_Grotesk'] leading-snug drop-shadow-lg">
               {cardData.leaderName}
             </h2>
             {cardData.officeTitle && (
