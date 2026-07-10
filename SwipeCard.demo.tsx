@@ -153,7 +153,7 @@ export function SwipeCardDemo() {
   }
 
   return (
-    <div className="bg-[oklch(0.15_0.04_250)] min-h-screen flex flex-col items-center justify-center">
+    <div className="bg-[oklch(0.15_0.04_250)] h-full flex flex-col items-center justify-center">
       <SwipeCard
         card={currentCard}
         nextCard={nextCard}
