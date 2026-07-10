@@ -272,7 +272,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     return (
       <div className="h-full flex flex-col relative overflow-hidden rounded-t-[20px]">
         {/* Full Bleed Header Image (60-70% of card) */}
-        <div className="relative h-[65%] w-full">
+        <div className="relative flex-1 w-full">
           <img
             src={headerImage}
             alt={cardData.leaderName}
@@ -313,7 +313,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 py-4">
+        <div className="flex-none flex flex-col items-center justify-center px-4 py-4">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
