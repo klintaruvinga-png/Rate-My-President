@@ -65,7 +65,7 @@ module.exports = {
             transform: 'translateX(var(--tw-translate-x))',
           },
           '70%': {
-            transform: 'translateX(0) scale(1.02)',
+            transform: 'translateX(0) scale(1)',
           },
           '100%': {
             transform: 'translateX(0) scale(1)',

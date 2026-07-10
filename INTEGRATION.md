@@ -363,15 +363,15 @@ describe('SwipeCard', () => {
     fireEvent.mouseMove(cardElement, { clientX: 150 });
     fireEvent.mouseUp(cardElement);
 
-    expect(handleVote).toHaveBeenCalledWith('approve');
+    expect(handleVote).toHaveBeenCalledWith('like');
   });
 
   it('should show results after vote', async () => {
     const card = { /* test data */ };
     render(<SwipeCard card={card} onVote={() => {}} />);
 
-    const approveBtn = screen.getByLabelText('Approve');
-    fireEvent.click(approveBtn);
+    const likeBtn = screen.getByLabelText('Like');
+    fireEvent.click(likeBtn);
 
     await screen.findByText(/Your opinion has been counted/);
   });

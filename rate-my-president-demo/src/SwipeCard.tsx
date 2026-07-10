@@ -93,8 +93,14 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     }
   };
 
+  const isInteractiveTarget = (target: EventTarget | null) => {
+    if (!(target instanceof Element)) return false;
+    return Boolean(target.closest('button, a, input, select, textarea, [role="button"], [data-interactive="true"]'));
+  };
+
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (voteAction || isLoading || isFlinging) return;
+    if (isInteractiveTarget(e.target)) return;
 
     const target = e.target as HTMLElement;
     if (target.closest('button, a, input, textarea, select, [role="button"]')) return;
@@ -226,6 +232,10 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     }
   };
 
+  const stopCardGesture = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
+  };
+
   const offsetX = dragState.offsetX;
   const offsetY = dragState.offsetY;
   const dragDistance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
@@ -270,13 +280,13 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     const headerImage = cardData.headerImageUrl || headerImageUrl || cardData.avatarUrl || '/assets/Obama Header No BG.png';
     
     return (
-      <div className="h-full flex flex-col relative overflow-hidden rounded-t-[20px]">
-        {/* Full Bleed Header Image (60-70% of card) */}
-        <div className="relative flex-1 w-full">
+      <div className="flex flex-col relative overflow-hidden rounded-t-[20px]">
+        {/* Full Bleed Header Image */}
+        <div className="relative w-full h-[395px] shrink-0">
           <img
             src={headerImage}
             alt={cardData.leaderName}
-            className="w-full h-full object-cover scale-[1.02] origin-center"
+            className="w-full h-full object-cover"
             onError={(event) => { (event.currentTarget as HTMLImageElement).src = fallbackAvatar; }}
           />
           
@@ -313,15 +323,22 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex flex-col items-center justify-center px-4 py-4">
+        <div className="flex-none flex flex-col items-center justify-center px-4 pt-4 pb-2">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
-              onClick={() => handleVote('nolike')}
+              type="button"
+              onClick={(event) => {
+                stopCardGesture(event);
+                handleVote('nolike');
+              }}
+              onPointerDown={stopCardGesture}
+              onMouseDown={stopCardGesture}
+              onTouchStart={stopCardGesture}
               onMouseEnter={() => setHoveredButton('nolike')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
                 hoveredButton === 'nolike'
                   ? 'bg-[oklch(0.55_0.20_25)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] border-2 border-[oklch(0.55_0.20_25)] hover:scale-105'
@@ -335,11 +352,18 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
             {/* Skip button */}
             <button
-              onClick={() => handleVote('skip')}
+              type="button"
+              onClick={(event) => {
+                stopCardGesture(event);
+                handleVote('skip');
+              }}
+              onPointerDown={stopCardGesture}
+              onMouseDown={stopCardGesture}
+              onTouchStart={stopCardGesture}
               onMouseEnter={() => setHoveredButton('skip')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
                 hoveredButton === 'skip'
                   ? 'bg-[oklch(0.72_0.15_65)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.72_0.15_65)] border-2 border-[oklch(0.72_0.15_65)] opacity-70 hover:opacity-100 hover:scale-105'
@@ -353,11 +377,18 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
             {/* Like button */}
             <button
-              onClick={() => handleVote('like')}
+              type="button"
+              onClick={(event) => {
+                stopCardGesture(event);
+                handleVote('like');
+              }}
+              onPointerDown={stopCardGesture}
+              onMouseDown={stopCardGesture}
+              onTouchStart={stopCardGesture}
               onMouseEnter={() => setHoveredButton('like')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 font-['Space_Grotesk'] ${
+              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
                 hoveredButton === 'like'
                   ? 'bg-[oklch(0.62_0.18_142)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] border-2 border-[oklch(0.62_0.18_142)] hover:scale-105'

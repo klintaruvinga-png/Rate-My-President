@@ -10,6 +10,7 @@ interface CountryData {
   name: string;
   flag: string;
   leader?: string;
+  avatarUrl?: string;
 }
 
 interface OnboardingProps {
@@ -395,10 +396,23 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs uppercase tracking-[0.18em] text-[oklch(0.72_0.15_65)] font-['Space_Grotesk'] mb-0.5">Your home country</p>
-                <p className="text-xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] truncate">{selectedCountry.name}</p>
-                {selectedCountry.leader && (
-                  <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mt-0.5 truncate">{selectedCountry.leader}</p>
-                )}
+                <div className="mt-2 flex items-center gap-3">
+                  {selectedCountry.avatarUrl ? (
+                    <img
+                      src={selectedCountry.avatarUrl}
+                      alt={`${selectedCountry.leader ?? selectedCountry.name} avatar`}
+                      className="w-16 h-16 rounded-2xl object-cover shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-2xl bg-[oklch(0.28_0.02_250)] flex items-center justify-center">
+                      <span className="text-2xl">{selectedCountry.flag}</span>
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] truncate">{selectedCountry.leader ?? selectedCountry.name}</p>
+                    <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] truncate">{selectedCountry.name}</p>
+                  </div>
+                </div>
               </div>
               <button
                 onClick={handleClearCountry}
@@ -490,7 +504,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] opacity-50 cursor-not-allowed'
               }`}
             >
-              Continue with {selectedCountry?.flag} {selectedCountry?.name}
+              <span className="inline-flex items-center justify-center gap-2">
+                <AnimatedFlag
+                  countryCode={selectedCountry.code}
+                  fallbackFlag={selectedCountry.flag}
+                  className="w-5 h-5"
+                />
+                <span>Continue with {selectedCountry?.name || '...'}</span>
+              </span>
             </button>
             <button
               onClick={handleSkipCountry}
