@@ -117,22 +117,22 @@ export default function Leaderboard({
   // Skeleton loader component
   const SkeletonRow = () => (
     <tr className="border-b border-[oklch(0.28_0.02_250)] animate-pulse">
-      <td className="px-4 py-4 text-[oklch(0.75_0.02_250)]">
+      <td className="px-3 py-3 sm:px-4 sm:py-4 text-[oklch(0.75_0.02_250)]">
         <div className="h-4 w-6 bg-[oklch(0.28_0.02_250)] rounded" />
       </td>
-      <td className="px-4 py-4">
+      <td className="px-3 py-3 sm:px-4 sm:py-4">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 bg-[oklch(0.28_0.02_250)] rounded-full" />
           <div className="h-4 w-24 bg-[oklch(0.28_0.02_250)] rounded" />
         </div>
       </td>
-      <td className="px-4 py-4 text-right">
+      <td className="px-3 py-3 sm:px-4 sm:py-4 text-right">
         <div className="h-4 w-12 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
       </td>
-      <td className="hidden px-4 py-4 text-right md:table-cell">
+      <td className="hidden px-3 py-3 sm:px-4 sm:py-4 text-right md:table-cell">
         <div className="h-4 w-8 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
       </td>
-      <td className="hidden px-4 py-4 text-right lg:table-cell">
+      <td className="hidden px-3 py-3 sm:px-4 sm:py-4 text-right lg:table-cell">
         <div className="h-4 w-16 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
       </td>
     </tr>

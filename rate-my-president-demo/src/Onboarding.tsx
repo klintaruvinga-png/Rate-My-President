@@ -366,7 +366,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
             {/* ── Selected-country preview card ── */}
             {countryConfirmed && selectedCountry ? (
-              <div className="flex items-center gap-4 rounded-2xl border border-[oklch(0.62_0.18_142)/0.4] bg-[oklch(0.20_0.02_250)] p-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)] sm:p-5">
+              <div className="flex items-center gap-4 rounded-2xl border border-[oklch(0.62_0.18_142_/_0.4)] bg-[oklch(0.20_0.02_250)] p-4 shadow-[0_0_24px_oklch(0.62_0.18_142/0.15)] sm:p-5">
                 <div className="flex-shrink-0">
                   <AnimatedFlag countryCode={selectedCountry.code} fallbackFlag={selectedCountry.flag} className="w-14 h-14" />
                 </div>

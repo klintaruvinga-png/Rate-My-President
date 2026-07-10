@@ -169,7 +169,7 @@ function App() {
 
       {/* Main Content Area */}
       <main className="flex flex-1 min-h-0 flex-col">
-        <div className="sticky top-[74px] z-40">
+        <div className="sticky top-[74px] sm:top-[89px] z-40">
           <NewsTicker />
         </div>
 
