@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import SwipeCard from './SwipeCard';
-import type { CardData } from './SwipeCard.types';
+import type { CardData, VoteAction } from './SwipeCard.types';
 import { availableCountries } from './rate-my-president-demo/src/countries';
 
 export function SwipeCardDemo() {
-  const [voteHistory, setVoteHistory] = useState<string[]>([]);
+  const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
 
   // Initial mock cards list
   const initialCards: CardData[] = [
@@ -82,40 +82,33 @@ export function SwipeCardDemo() {
   const [cardsQueue, setCardsQueue] = useState<CardData[]>(initialCards);
 
   const generateRandomCard = (id: string, excludedCodes: string[] = []): CardData => {
-    const countries = [
-      { code: 'US', name: 'United States', flag: '🇺🇸', leaders: ['Donald Trump'] },
-      { code: 'DE', name: 'Germany', flag: '🇩🇪', leaders: ['Olaf Scholz'] },
-      { code: 'JP', name: 'Japan', flag: '🇯🇵', leaders: ['Fumio Kishida'] },
-      { code: 'BR', name: 'Brazil', flag: '🇧🇷', leaders: ['Luiz Inácio Lula da Silva'] },
-      { code: 'ZA', name: 'South Africa', flag: '🇿🇦', leaders: ['Cyril Ramaphosa'] },
-    ];
+    const pool = availableCountries.filter((c) => !excludedCodes.includes(c.code));
+    const country = pool.length > 0
+      ? pool[Math.floor(Math.random() * pool.length)]
+      : availableCountries[Math.floor(Math.random() * availableCountries.length)];
 
-    const eligibleCountries = countries.filter((country) => !excludedCodes.includes(country.code));
-    const randomCountry = eligibleCountries.length > 0
-      ? eligibleCountries[Math.floor(Math.random() * eligibleCountries.length)]
-      : countries[Math.floor(Math.random() * countries.length)];
-    const leader = randomCountry.leaders[0];
-    const seed = leader
-      .split(' ')
-      .map((n) => n[0])
-      .join('');
+    const makeAvatarUrl = (seed: string, color: string) =>
+      `https://api.dicebear.com/7.x/initials/svg?seed=${seed}&backgroundColor=${color}`;
 
-    const colors = ['2f4f4f', '4682b4', '8b0000', '556b2f', '4b0082'];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const avatarUrl = country.avatarUrl ?? makeAvatarUrl(
+      country.avatarSeed ?? country.code,
+      country.avatarColor ?? '2f4f4f'
+    );
 
     return {
       id,
       type: Math.random() > 0.5 ? 'home' : 'global',
-      countryCode: randomCountry.code,
-      countryName: randomCountry.name,
-      countryFlag: randomCountry.flag,
-      leaderName: leader,
-      avatarUrl: `https://api.dicebear.com/7.x/initials/svg?seed=${seed}&backgroundColor=${randomColor}`,
+      countryCode: country.code,
+      countryName: country.name,
+      countryFlag: country.flag,
+      leaderName: country.leader ?? country.name,
+      avatarUrl: avatarUrl,
+      headerImageUrl: avatarUrl,
       approvalPercent: Math.floor(Math.random() * 100),
       trend: (['up', 'down', 'neutral'][Math.floor(Math.random() * 3)] as any),
       headlines: [
         {
-          title: `${leader} addresses delegation at summit`,
+          title: `${country.leader ?? country.name} addresses delegation at summit`,
           source: 'Reuters',
           date: 'Jul 6, 2026',
           url: 'https://reuters.com',
@@ -125,10 +118,10 @@ export function SwipeCardDemo() {
     };
   };
 
-  const handleVote = (action: string | null) => {
-    const voteStr = action || 'skip';
-    setVoteHistory((prev) => [...prev, voteStr]);
-    console.log('Vote recorded:', voteStr);
+  const handleVote = (action: VoteAction) => {
+    const voteAction = action ?? 'skip';
+    setVoteHistory((prev) => [...prev, voteAction]);
+    console.log('Vote recorded:', voteAction);
 
     // After 2.5 seconds (allowing results to show for a brief moment), advance queue
     setTimeout(() => {
