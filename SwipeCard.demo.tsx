@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import SwipeCard from './SwipeCard';
 import type { CardData } from './SwipeCard.types';
+import { availableCountries } from './rate-my-president-demo/src/countries';
 
 export function SwipeCardDemo() {
   const [voteHistory, setVoteHistory] = useState<string[]>([]);
@@ -14,7 +15,8 @@ export function SwipeCardDemo() {
       countryName: 'United Kingdom',
       countryFlag: '🇬🇧',
       leaderName: 'Keir Starmer',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=KS&backgroundColor=2f4f4f',
+      avatarUrl: availableCountries.find(c => c.code === 'GB')?.avatarUrl ?? 'https://api.dicebear.com/7.x/initials/svg?seed=KS&backgroundColor=2f4f4f',
+      headerImageUrl: availableCountries.find(c => c.code === 'GB')?.avatarUrl ?? 'https://api.dicebear.com/7.x/initials/svg?seed=KS&backgroundColor=2f4f4f',
       approvalPercent: 47,
       trend: 'down',
       headlines: [
@@ -40,7 +42,8 @@ export function SwipeCardDemo() {
       countryName: 'France',
       countryFlag: '🇫🇷',
       leaderName: 'Emmanuel Macron',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=EM&backgroundColor=4682b4',
+      avatarUrl: availableCountries.find(c => c.code === 'FR')?.avatarUrl ?? 'https://api.dicebear.com/7.x/initials/svg?seed=EM&backgroundColor=4682b4',
+      headerImageUrl: availableCountries.find(c => c.code === 'FR')?.avatarUrl ?? 'https://api.dicebear.com/7.x/initials/svg?seed=EM&backgroundColor=4682b4',
       approvalPercent: 32,
       trend: 'neutral',
       headlines: [
@@ -60,7 +63,8 @@ export function SwipeCardDemo() {
       countryName: 'India',
       countryFlag: '🇮🇳',
       leaderName: 'Narendra Modi',
-      avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=NM&backgroundColor=8b0000',
+      avatarUrl: availableCountries.find(c => c.code === 'IN')?.avatarUrl ?? 'https://api.dicebear.com/7.x/initials/svg?seed=NM&backgroundColor=8b0000',
+      headerImageUrl: availableCountries.find(c => c.code === 'IN')?.avatarUrl ?? 'https://api.dicebear.com/7.x/initials/svg?seed=NM&backgroundColor=8b0000',
       approvalPercent: 68,
       trend: 'up',
       headlines: [
