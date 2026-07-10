@@ -386,7 +386,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       {!showResults && (
         <div className={`flex flex-col items-center gap-2 w-full flex-grow transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
         {/* Card Z-Stack */}
-        <div className="relative w-full max-w-[460px] w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] h-full flex-grow mx-auto" style={{ boxSizing: 'border-box' }}>
+        <div className="relative max-w-[460px] w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] h-full flex-grow mx-auto" style={{ boxSizing: 'border-box' }}>
           {/* Bottom Card (Next Card) */}
           {nextCard && (
             <div
@@ -450,7 +450,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       {/* Results card (fades in from center) */}
       {showResults && (
         <div
-          className={`w-full max-w-[460px] w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${
+          className={`w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] max-w-[460px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${
             showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
           }`}
         >

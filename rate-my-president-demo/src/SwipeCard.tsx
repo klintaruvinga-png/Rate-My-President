@@ -443,7 +443,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       )}
 
       {showResults && (
-        <div className={`w-[450px] max-w-[420px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+        <div className={`w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] max-w-[460px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
           <div className={`transition-all duration-300 ${revealStage === 'idle' ? 'opacity-0' : 'opacity-100'}`}>
             <div className="text-center mb-2">
               <div className={`text-5xl font-bold ${percentColor} font-['Inter']`}>{card.approvalPercent}%</div>
