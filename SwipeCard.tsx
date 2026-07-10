@@ -373,7 +373,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-start bg-[oklch(0.15_0.04_250)] relative" style={{ paddingTop: 'env(safe-area-inset-top, 4px)', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
+    <div className="flex flex-col items-center justify-center bg-[oklch(0.15_0.04_250)] relative" style={{ paddingTop: 'env(safe-area-inset-top, 4px)', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}>
       {/* Vote History Pill */}
       {totalRated !== undefined && totalRated > 0 && (
         <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-[oklch(0.20_0.02_250)]/80 backdrop-blur-sm border border-[oklch(0.28_0.02_250)] rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] flex items-center gap-2">
@@ -384,9 +384,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
       {/* Voted card container (exits, fades out) */}
       {!showResults && (
-        <div className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+        <div className={`flex flex-col items-center gap-2 w-full flex-grow transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
         {/* Card Z-Stack */}
-        <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[52vh] md:h-[620px] mx-auto" style={{ boxSizing: 'border-box' }}>
+        <div className="relative max-w-[460px] w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] h-full flex-grow mx-auto" style={{ boxSizing: 'border-box' }}>
           {/* Bottom Card (Next Card) */}
           {nextCard && (
             <div
@@ -450,7 +450,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       {/* Results card (fades in from center) */}
       {showResults && (
         <div
-          className={`w-[450px] max-w-[420px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${
+          className={`w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] max-w-[460px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${
             showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
           }`}
         >

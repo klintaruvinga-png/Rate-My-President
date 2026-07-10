@@ -1,5 +1,5 @@
 import React from 'react';
-import headerImage from './assets/obama-header.png';
+import headerImage from '@root/assets/Obama Header No BG.png';
 
 export const SwipeTutorial: React.FC = () => {
   return (
