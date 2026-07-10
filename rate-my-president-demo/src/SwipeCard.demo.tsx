@@ -20,6 +20,7 @@ const today = new Date().toLocaleDateString('en-GB', {
 function buildHomeCard(countryCode: string): CardData | null {
   const country = availableCountries.find((c) => c.code === countryCode);
   if (!country) return null;
+  const avatarUrl = country.avatarUrl ?? makeAvatarUrl(country.avatarSeed ?? country.code, country.avatarColor ?? '2f4f4f');
   return {
     id: `home-${country.code}-${Date.now()}`,
     type: 'home',
@@ -27,7 +28,8 @@ function buildHomeCard(countryCode: string): CardData | null {
     countryName: country.name,
     countryFlag: country.flag,
     leaderName: country.leader ?? country.name,
-    avatarUrl: makeAvatarUrl(country.avatarSeed ?? country.code, country.avatarColor ?? '2f4f4f'),
+    avatarUrl: avatarUrl,
+    headerImageUrl: avatarUrl,
     approvalPercent: Math.floor(Math.random() * 100),
     trend: randomItem(['up', 'down', 'neutral'] as const),
     headlines: [
@@ -55,6 +57,7 @@ function buildGlobalCard(id: string, excludeCode?: string, existingCodes: string
   }
 
   const country = randomItem(pool);
+  const avatarUrl = country.avatarUrl ?? makeAvatarUrl(country.avatarSeed ?? country.code, country.avatarColor ?? '2f4f4f');
   return {
     id: `${id}-${Math.random().toString(36).slice(2, 8)}`,
     type: 'global',
@@ -62,7 +65,8 @@ function buildGlobalCard(id: string, excludeCode?: string, existingCodes: string
     countryName: country.name,
     countryFlag: country.flag,
     leaderName: country.leader ?? country.name,
-    avatarUrl: makeAvatarUrl(country.avatarSeed ?? country.code, country.avatarColor ?? '2f4f4f'),
+    avatarUrl: avatarUrl,
+    headerImageUrl: avatarUrl,
     approvalPercent: Math.floor(Math.random() * 100),
     trend: randomItem(['up', 'down', 'neutral'] as const),
     headlines: [
