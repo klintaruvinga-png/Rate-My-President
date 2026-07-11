@@ -322,7 +322,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex h-[80px] flex-col items-center justify-center px-3 py-1 sm:px-5">
+        <div className="flex-none flex h-[80px] items-center justify-center px-3 py-1 sm:px-5">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
