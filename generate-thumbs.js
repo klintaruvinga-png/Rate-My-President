@@ -17,29 +17,31 @@ const avatarFiles = fs.readdirSync(avatarsDir)
   .filter(file => file.endsWith('.png') && !file.startsWith('.'));
 
 console.log(`Found ${avatarFiles.length} avatar files to process...`);
+console.log('Thumbnail generation started...');
 
 // Process each avatar
-avatarFiles.forEach(async (file) => {
-  const inputPath = path.join(avatarsDir, file);
-  const outputPath = path.join(thumbsDir, file);
-  
-  try {
-    await sharp(inputPath)
-      .resize(Math.round(thumbSize * zoomFactor), Math.round(thumbSize * zoomFactor), {
-        fit: 'cover',
-        position: 'center'
-      })
-      .resize(thumbSize, thumbSize, {
-        fit: 'cover',
-        position: 'center'
-      })
-      .png({ quality: 80 })
-      .toFile(outputPath);
-    
-    console.log(`✓ Generated thumbnail for ${file}`);
-  } catch (error) {
-    console.error(`✗ Error processing ${file}:`, error.message);
-  }
-});
+(async () => {
+  for (const file of avatarFiles) {
+    const inputPath = path.join(avatarsDir, file);
+    const outputPath = path.join(thumbsDir, file);
 
-console.log('Thumbnail generation started...');
+    try {
+      await sharp(inputPath)
+        .resize(Math.round(thumbSize * zoomFactor), Math.round(thumbSize * zoomFactor), {
+          fit: 'cover',
+          position: 'center'
+        })
+        .resize(thumbSize, thumbSize, {
+          fit: 'cover',
+          position: 'center'
+        })
+        .png({ quality: 80 })
+        .toFile(outputPath);
+
+      console.log(`✓ Generated thumbnail for ${file}`);
+    } catch (error) {
+      console.error(`✗ Error processing ${file}:`, error.message);
+    }
+  }
+  console.log('Thumbnail generation complete!');
+})();

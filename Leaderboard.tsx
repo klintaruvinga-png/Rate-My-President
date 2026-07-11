@@ -24,8 +24,8 @@ export default function Leaderboard({
     const container = scrollContainerRef.current;
     if (!container || !entries || entries.length === 0) return;
 
-    let scrollInterval: NodeJS.Timeout;
-    let scrollTimeout: NodeJS.Timeout;
+    let scrollInterval: ReturnType<typeof setInterval>;
+    let scrollTimeout: ReturnType<typeof setTimeout>;
 
     const startScroll = () => {
       scrollInterval = setInterval(() => {
@@ -180,7 +180,7 @@ export default function Leaderboard({
 
       {/* Table */}
       {!error && entries.length > 0 && (
-        <div className="overflow-x-auto" ref={scrollContainerRef}>
+        <div className="max-h-[min(64vh,560px)] overflow-auto" ref={scrollContainerRef}>
           <table
             className="w-full text-sm min-w-[500px]"
             role="grid"
@@ -204,6 +204,13 @@ export default function Leaderboard({
                 <th
                   className={`px-4 py-3 text-center font-['Inter'] font-600 cursor-pointer transition-colors ${getSortIndicator('approval').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('approval')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleColumnClick('approval');
+                    }
+                  }}
+                  tabIndex={0}
                   aria-sort={sortState.column === 'approval' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center justify-center gap-1">
@@ -217,6 +224,13 @@ export default function Leaderboard({
                 <th
                   className={`hidden px-4 py-3 text-center font-['Inter'] font-600 cursor-pointer transition-colors lg:table-cell ${getSortIndicator('votes').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('votes')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleColumnClick('votes');
+                    }
+                  }}
+                  tabIndex={0}
                   aria-sort={sortState.column === 'votes' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center justify-center gap-1">
@@ -252,6 +266,8 @@ export default function Leaderboard({
                               const target = event.currentTarget as HTMLImageElement;
                               if (target.src.includes('/avatars/thumbs/')) {
                                 target.src = entry.avatarUrl;
+                              } else if (!target.src.startsWith('data:')) {
+                                target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="60" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
                               }
                             }}
                             className="h-10 w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0 object-cover"

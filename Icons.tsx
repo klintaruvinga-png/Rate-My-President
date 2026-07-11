@@ -228,3 +228,9 @@ export const MapPinIcon = ({ className, 'aria-label': ariaLabel, ...props }: Ico
     <circle cx="12" cy="10" r="3" />
   </IconBase>
 );
+
+export const ChevronDownIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Chevron down" {...props}>
+    <polyline points="6 9 12 15 18 9" />
+  </IconBase>
+);

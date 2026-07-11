@@ -303,17 +303,15 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-1 left-0 right-0 px-3 pb-4 pt-2 sm:px-5 sm:pb-6 sm:pt-3">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/40 to-transparent px-3 pb-4 pt-12 sm:px-5 sm:pb-6 sm:pt-16">
             <h2 className="mb-2 text-xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-2xl md:text-3xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[oklch(0.15_0.04_250)]/80 px-2.5 py-1.5 backdrop-blur-md sm:px-3 max-w-full break-words">
-                {cardData.leaderName}
-              </span>
+              {cardData.leaderName}
             </h2>
             {cardData.officeTitle && (
-              <p className="mb-1 text-sm font-['Inter'] text-white/90 sm:text-base md:text-lg">{cardData.officeTitle}</p>
+              <p className="mb-1 text-sm font-['Inter'] text-white/90 drop-shadow-md sm:text-base md:text-lg">{cardData.officeTitle}</p>
             )}
             {cardData.party && (
-              <p className="text-sm font-['Inter'] text-white/70 sm:text-base md:text-base">{cardData.party}</p>
+              <p className="text-sm font-['Inter'] text-white/80 drop-shadow-md sm:text-base md:text-base">{cardData.party}</p>
             )}
           </div>
         </div>

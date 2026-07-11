@@ -61,22 +61,27 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   // Swipe gesture handling
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const touchEndY = useRef<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.changedTouches[0].screenX;
+    touchStartY.current = e.changedTouches[0].screenY;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     touchEndX.current = e.changedTouches[0].screenX;
+    touchEndY.current = e.changedTouches[0].screenY;
     handleSwipe();
   };
 
   const handleSwipe = () => {
-    const swipeThreshold = 50; // Minimum swipe distance
-    const diff = touchStartX.current - touchEndX.current;
+    const diffX = touchStartX.current - touchEndX.current;
+    const diffY = touchStartY.current - touchEndY.current;
 
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
+    // Require horizontal gesture with at least 50px and greater than vertical distance
+    if (Math.abs(diffX) >= 50 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
         // Swipe left - advance
         handleAdvanceScreen();
       } else {
@@ -159,6 +164,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   }, [availableCountries, locationConsent, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
+    if (isAutoAdvancing) return;
+
     switch (currentScreen) {
       case 'intro':
         setCurrentScreen('mechanic-home');

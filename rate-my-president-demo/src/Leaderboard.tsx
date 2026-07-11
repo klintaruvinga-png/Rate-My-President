@@ -26,24 +26,44 @@ export default function Leaderboard({
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [regionDropdownOpen, setRegionDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Slow stream-style auto-scroll with 300ms initial pause
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container || !entries || entries.length === 0) return;
 
-    let scrollInterval: NodeJS.Timeout;
-    let scrollTimeout: NodeJS.Timeout;
+    let scrollInterval: ReturnType<typeof setInterval>;
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+    let isPaused = false;
 
     const startScroll = () => {
       scrollInterval = setInterval(() => {
-        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
-          // Reset to top when reaching bottom
-          container.scrollTop = 0;
-        } else {
-          container.scrollTop += 1;
+        if (!isPaused) {
+          if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+            // Reset to top when reaching bottom
+            container.scrollTop = 0;
+          } else {
+            container.scrollTop += 1;
+          }
         }
       }, 50); // Slow scroll speed
+    };
+
+    const handleMouseEnter = () => {
+      isPaused = true;
+    };
+
+    const handleMouseLeave = () => {
+      isPaused = false;
+    };
+
+    const handleTouchStart = () => {
+      isPaused = true;
+    };
+
+    const handleTouchEnd = () => {
+      isPaused = false;
     };
 
     // Initial 300ms pause before starting scroll
@@ -51,15 +71,48 @@ export default function Leaderboard({
       startScroll();
     }, 300);
 
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchend', handleTouchEnd);
+
     return () => {
       clearTimeout(scrollTimeout);
       clearInterval(scrollInterval);
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
     };
   }, [entries]);
 
   useEffect(() => {
     setSortState({ column: 'rank', direction: 'asc' });
   }, [selectedWindow]);
+
+  useEffect(() => {
+    if (!regionDropdownOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setRegionDropdownOpen(false);
+      }
+    };
+
+    const handleEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setRegionDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [regionDropdownOpen]);
 
   useEffect(() => {
     setLocalRegion(selectedRegion || 'global');
@@ -144,6 +197,9 @@ export default function Leaderboard({
 
   const resolveAvatarSrc = (avatarUrl: string) => {
     if (!avatarUrl) return '';
+    if (avatarUrl.startsWith('/avatars/thumbs/')) {
+      return avatarUrl;
+    }
     if (avatarUrl.startsWith('/avatars/')) {
       return avatarUrl.replace('/avatars/', '/avatars/thumbs/');
     }
@@ -223,7 +279,7 @@ export default function Leaderboard({
         </div>
 
         {/* Mobile: Dropdown */}
-        <div className="lg:hidden relative">
+        <div className="lg:hidden relative" ref={dropdownRef}>
           <button
             onClick={() => setRegionDropdownOpen(!regionDropdownOpen)}
             className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-['Space_Grotesk'] transition-all bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] hover:bg-[oklch(0.28_0.02_250)]"

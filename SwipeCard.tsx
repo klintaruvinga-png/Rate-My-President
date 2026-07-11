@@ -301,21 +301,21 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-1 left-0 right-0 p-6">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/40 to-transparent p-6 pt-16">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-['Space_Grotesk'] leading-tight drop-shadow-lg">
               {cardData.leaderName}
             </h2>
             {cardData.officeTitle && (
-              <p className="text-white/90 text-base md:text-lg font-['Inter'] mb-1">{cardData.officeTitle}</p>
+              <p className="text-white/90 text-base md:text-lg font-['Inter'] mb-1 drop-shadow-md">{cardData.officeTitle}</p>
             )}
             {cardData.party && (
-              <p className="text-white/70 text-sm md:text-base font-['Inter']">{cardData.party}</p>
+              <p className="text-white/80 text-sm md:text-base font-['Inter'] drop-shadow-md">{cardData.party}</p>
             )}
           </div>
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 py-6 xr:py-8 promax:py-12 sm:py-10 md:py-12 min-h-[120px] sm:min-h-[80px] shrink-0">
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-6 md:py-8 min-h-[120px] sm:min-h-[80px] shrink-0">
           <div className="flex justify-center gap-4 mt-0 sm:mt-0 md:mt-0">
             {/* No Like button */}
             <button
