@@ -308,7 +308,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {/* Overlay Information on Image */}
           <div className="absolute bottom-0 left-0 right-0 px-3 pb-4 pt-2 sm:px-5 sm:pb-6 sm:pt-3">
             <h2 className="mb-2 text-xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-2xl md:text-3xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[oklch(0.15_0.04_250)]/80 px-2.5 py-1.5 backdrop-blur-md sm:px-3">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[oklch(0.15_0.04_250)]/80 px-2.5 py-1.5 backdrop-blur-md sm:px-3 max-w-full break-words">
                 {cardData.leaderName}
               </span>
             </h2>
@@ -421,7 +421,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
       {!showResults && (
         <div className={`flex w-full flex-col items-center gap-2 transition-all duration-150 ${voteAction ? 'pointer-events-none scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
-          <div className="relative mx-auto h-[54dvh] w-full max-w-[420px] sm:h-[60dvh] md:h-[580px] md:max-w-[450px]" style={{ boxSizing: 'border-box' }}>
+          <div className="relative mx-auto h-[54dvh] min-h-[420px] w-full max-w-[420px] sm:h-[60dvh] sm:min-h-[480px] md:h-[580px] md:max-w-[450px]" style={{ boxSizing: 'border-box' }}>
             {nextCard && (
               <div
                 className={`absolute inset-0 rounded-[20px] select-none pointer-events-none ${bottomBgColor} border border-[oklch(0.28_0.02_250)] shadow-xl`}
