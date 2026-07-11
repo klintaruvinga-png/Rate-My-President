@@ -399,6 +399,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               </span>
             </button>
           </div>
+          <p className="mt-1 text-center text-[0.7rem] leading-4 text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk']">
+            {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
+          </p>
         </div>
       </div>
     );
