@@ -173,10 +173,10 @@ function App() {
           <NewsTicker />
         </div>
 
-        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-3 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-6">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-2 pt-0 pb-0 sm:px-6 sm:pt-1 sm:pb-1 lg:px-8 lg:py-1">
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && (
-            <div className="flex-1 flex flex-col justify-center min-h-0 py-2">
+            <div className="flex-1 flex flex-col justify-center min-h-0 py-0 sm:py-1">
               <SwipeCardDemo />
             </div>
           )}

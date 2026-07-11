@@ -322,7 +322,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex h-[80px] flex-col items-center justify-center px-3 py-1 sm:px-5">
+        <div className="flex min-h-[72px] flex-col items-center justify-center px-3 py-0 sm:min-h-[96px] sm:px-5 sm:py-1">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
@@ -399,7 +399,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               </span>
             </button>
           </div>
-          <p className="mt-1 text-center text-[0.7rem] leading-4 text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk']">
+          <p className="mt-2 w-full max-w-[240px] text-center text-[0.68rem] leading-3 text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:mt-3 sm:max-w-none sm:text-[0.75rem] sm:leading-4">
             {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
           </p>
         </div>
@@ -410,7 +410,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const cardTransitionStyle = prefersReducedMotion ? 'none' : dragState.isDragging ? 'none' : isFlinging ? 'transform 0.25s ease-out' : 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
   return (
-    <div className="flex flex-col items-center justify-center relative h-full">
+    <div className="flex h-full flex-col items-center justify-center relative overflow-hidden touch-none pt-0 sm:pt-1">
       {/* Vote History Pill */}
       {totalRated !== undefined && totalRated > 0 && (
         <div className="absolute right-2 top-2 flex items-center gap-2 rounded-full border border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]/80 px-3 py-1.5 text-xs font-['Inter'] text-[oklch(0.75_0.02_250)] backdrop-blur-sm md:right-4 md:top-4 md:px-4 md:py-2 md:text-sm">
