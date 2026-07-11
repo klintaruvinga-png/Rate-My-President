@@ -286,7 +286,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           />
           
           {/* Gradient Overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.15_0.04_250)] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.25_0.04_250)] via-transparent to-transparent" />
           
           {/* Top Left: Home/Global Icon Badge */}
           <div className="absolute top-4 left-4 w-4 h-4 text-[oklch(0.75_0.02_250)]">
