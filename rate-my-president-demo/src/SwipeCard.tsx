@@ -322,7 +322,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex min-h-[104px] flex-col items-center justify-center px-3 pb-3 pt-2 sm:min-h-[112px] sm:px-5 sm:pb-4 sm:pt-4 md:min-h-[128px] md:pt-6">
+        <div className="flex-none flex h-[80px] flex-col items-center justify-center px-3 py-1 sm:px-5">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
@@ -399,9 +399,6 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               </span>
             </button>
           </div>
-          <p className="mt-2 max-w-[260px] text-center text-[0.8rem] leading-5 text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:max-w-none sm:text-xs sm:leading-4">
-            {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
-          </p>
         </div>
       </div>
     );
