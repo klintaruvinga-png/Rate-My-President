@@ -59,7 +59,7 @@ function App() {
   };
 
   return (
-    <div className={`bg-[oklch(0.15_0.04_250)] min-h-screen text-[oklch(0.95_0.02_250)] flex flex-col ${showHelpTooltip ? 'overflow-hidden' : ''}`}>
+    <div className="bg-[oklch(0.15_0.04_250)] h-full text-[oklch(0.95_0.02_250)] flex flex-col overflow-hidden">
       {/* Premium Navigation Header */}
       <header className="sticky top-0 z-50 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)]/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
@@ -165,15 +165,16 @@ function App() {
             ? Help
           </button>
         </div>
+
+        {/* NewsTicker in header for proper sticky behavior */}
+        <div className="border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)]">
+          <NewsTicker />
+        </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex flex-1 min-h-0 flex-col">
-        <div className="sticky top-[74px] sm:top-[89px] z-40">
-          <NewsTicker />
-        </div>
-
-        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-2 pt-0 pb-0 sm:px-6 sm:pt-1 sm:pb-1 lg:px-8 lg:py-1">
+      <main className="flex flex-1 min-h-0 flex-col overflow-hidden">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col min-h-0 px-2 pt-0 pb-0 sm:px-6 sm:pt-1 sm:pb-1 lg:px-8 lg:py-1">
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && (
             <div className="flex-1 flex flex-col justify-center min-h-0 py-0 sm:py-1">
