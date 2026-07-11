@@ -6,6 +6,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'xr': '414px',
+        'promax': '430px',
+      },
       colors: {
         // Primary Brand (Navy Ink Base)
         'brand-navy': 'oklch(0.15 0.04 250)',

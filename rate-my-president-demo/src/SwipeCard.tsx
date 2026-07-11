@@ -288,7 +288,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           />
           
           {/* Gradient Overlay for text readability */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.15_0.04_250)_0%,oklch(0.15_0.04_250_/_0.85)_25%,oklch(0.15_0.04_250_/_0.5)_50%,transparent_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.20_0.04_250)_0%,oklch(0.20_0.04_250_/_0.85)_25%,oklch(0.20_0.04_250_/_0.5)_50%,transparent_100%)]" />
           
           {/* Top Left: Home/Global Icon Badge */}
           <div className="absolute top-4 left-4 w-4 h-4 text-[oklch(0.75_0.02_250)]">
@@ -306,23 +306,23 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 pt-2 sm:px-5 sm:pb-6">
-            <h2 className="mb-2 text-2xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-3xl">
-              <span className="inline-flex items-center gap-2 bg-[oklch(0.15_0.04_250)]/80 backdrop-blur-md border border-white/20 rounded-full px-3 py-1.5">
+          <div className="absolute bottom-0 left-0 right-0 px-3 pb-4 pt-2 sm:px-5 sm:pb-6 sm:pt-3">
+            <h2 className="mb-2 text-xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-2xl md:text-3xl">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[oklch(0.15_0.04_250)]/80 px-2.5 py-1.5 backdrop-blur-md sm:px-3 max-w-full break-words">
                 {cardData.leaderName}
               </span>
             </h2>
             {cardData.officeTitle && (
-              <p className="text-white/90 text-base md:text-lg font-['Inter'] mb-1">{cardData.officeTitle}</p>
+              <p className="mb-1 text-sm font-['Inter'] text-white/90 sm:text-base md:text-lg">{cardData.officeTitle}</p>
             )}
             {cardData.party && (
-              <p className="text-white/70 text-sm md:text-base font-['Inter']">{cardData.party}</p>
+              <p className="text-sm font-['Inter'] text-white/70 sm:text-base md:text-base">{cardData.party}</p>
             )}
           </div>
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex flex-col items-center justify-center px-4 pb-4 pt-15 sm:px-5 min-h-[120px]">
+        <div className="flex min-h-[72px] flex-col items-center justify-center px-3 py-0 sm:min-h-[96px] sm:px-5 sm:py-1">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
@@ -345,7 +345,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               aria-label="No Like"
             >
               <span aria-hidden="true" className="inline-flex">
-                <NoLikeIcon className="w-5 h-5 md:w-8 md:h-8" />
+                <NoLikeIcon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
               </span>
             </button>
 
@@ -370,7 +370,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               aria-label="Skip"
             >
               <span aria-hidden="true" className="inline-flex">
-                <SkipIcon className="w-5 h-5 md:w-8 md:h-8" />
+                <SkipIcon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
               </span>
             </button>
 
@@ -395,11 +395,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               aria-label="Like"
             >
               <span aria-hidden="true" className="inline-flex">
-                <LikeIcon className="w-5 h-5 md:w-8 md:h-8" />
+                <LikeIcon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
               </span>
             </button>
           </div>
-          <p className="mt-2 text-center text-[0.7rem] text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:text-xs">
+          <p className="mt-2 w-full max-w-[240px] text-center text-[0.68rem] leading-3 text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:mt-3 sm:max-w-none sm:text-[0.75rem] sm:leading-4">
             {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
           </p>
         </div>
@@ -410,7 +410,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const cardTransitionStyle = prefersReducedMotion ? 'none' : dragState.isDragging ? 'none' : isFlinging ? 'transform 0.25s ease-out' : 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
   return (
-    <div className="flex flex-col items-center justify-center relative h-full">
+    <div className="flex h-full flex-col items-center justify-center relative overflow-hidden touch-none pt-0 sm:pt-1">
       {/* Vote History Pill */}
       {totalRated !== undefined && totalRated > 0 && (
         <div className="absolute right-2 top-2 flex items-center gap-2 rounded-full border border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]/80 px-3 py-1.5 text-xs font-['Inter'] text-[oklch(0.75_0.02_250)] backdrop-blur-sm md:right-4 md:top-4 md:px-4 md:py-2 md:text-sm">
@@ -421,7 +421,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
       {!showResults && (
         <div className={`flex w-full flex-col items-center gap-2 transition-all duration-150 ${voteAction ? 'pointer-events-none scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
-          <div className="relative mx-auto h-[54vh] w-full max-w-[420px] sm:h-[60vh] md:h-[580px] md:max-w-[450px]" style={{ boxSizing: 'border-box' }}>
+          <div className="relative mx-auto h-[54dvh] min-h-[420px] w-full max-w-[420px] sm:h-[60dvh] sm:min-h-[480px] md:h-[580px] md:max-w-[450px]" style={{ boxSizing: 'border-box' }}>
             {nextCard && (
               <div
                 className={`absolute inset-0 rounded-[20px] select-none pointer-events-none ${bottomBgColor} border border-[oklch(0.28_0.02_250)] shadow-xl`}
@@ -464,7 +464,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               </div>
               <div
                 style={{ opacity: skipOpacity }}
-                className="border-4 border-[oklch(0.72_0.15_65)] text-[oklch(0.72_0.15_65)] text-2xl font-bold uppercase rounded-lg px-4 py-1 tracking-widest absolute bottom-12 left-1/2 -translate-x-1/2 rotate-0 pointer-events-none z-30 transition-opacity duration-75"
+                className="border-4 border-[oklch(0.72_0.15_65)] text-[oklch(0.72_0.15_65)] text-2xl font-bold uppercase rounded-lg px-4 py-1 tracking-widest absolute bottom-8 left-1/2 -translate-x-1/2 rotate-0 pointer-events-none z-30 transition-opacity duration-75"
               >
                 SKIP
               </div>
