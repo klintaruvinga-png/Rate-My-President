@@ -16,11 +16,14 @@ html,
 body,
 #root {
   min-height: 100%;
+  overflow: hidden;
+  height: 100dvh;
+  touch-action: none;
+  overscroll-behavior-y: contain;
 }
 
 body {
   margin: 0;
-  min-height: 100vh;
   background: oklch(0.15 0.04 250);
   color: oklch(0.95 0.02 250);
 }
