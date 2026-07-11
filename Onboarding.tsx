@@ -40,6 +40,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
@@ -76,6 +77,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
           const selected = matchedCountry ?? availableCountries[0];
           if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            clearTimeout(timeoutId);
             setDetectedCountry(selected);
             setSelectedCountry(selected);
             setCountryConfirmed(true);
@@ -110,7 +112,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       clearTimeout(timeoutId);
       abortController.abort();
     };
-  }, [availableCountries, defaultCountry, locationConsent]);
+  }, [availableCountries, defaultCountry, locationConsent, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
     switch (currentScreen) {
@@ -443,7 +445,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                   <div className="flex gap-2">
                     <button
                       type="button"
-                      onClick={() => setLocationStatus('idle')}
+                      onClick={() => {
+                        setLocationStatus('idle');
+                        setLocationRetryToken(prev => prev + 1);
+                      }}
                       className="rounded-lg bg-[oklch(0.62_0.18_142)] px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                     >
                       Try again

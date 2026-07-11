@@ -47,6 +47,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
+  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const [focusedCountryIndex, setFocusedCountryIndex] = useState(0);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
@@ -89,13 +90,16 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
           if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
             if (matchedCountry) {
+              clearTimeout(timeoutId);
               setSelectedCountry(matchedCountry);
               setCountryConfirmed(true);
               userMadeExplicitChoice.current = true;
               setLocationStatus('success');
               setCurrentScreen('confirmation');
+            } else {
+              clearTimeout(timeoutId);
+              setLocationStatus('success');
             }
-            setLocationStatus('success');
           }
         } catch {
           // Reverse geocoding failed or was aborted; fallback to manual selection.
@@ -124,7 +128,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       clearTimeout(timeoutId);
       abortController.abort();
     };
-  }, [availableCountries, locationConsent]);
+  }, [availableCountries, locationConsent, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
     switch (currentScreen) {
@@ -399,7 +403,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     <p className="text-xs">This could be due to permission denied, timeout, or network issues. You can still select your country manually.</p>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => setLocationStatus('idle')}
+                        onClick={() => {
+                          setLocationStatus('idle');
+                          setLocationRetryToken(prev => prev + 1);
+                        }}
                         className="flex-1 py-2 bg-[oklch(0.62_0.18_142)] text-white rounded-md"
                       >
                         Try again
