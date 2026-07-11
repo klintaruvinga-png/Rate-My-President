@@ -165,6 +165,7 @@ function App() {
             ? Help
           </button>
         </div>
+
         {/* NewsTicker in header for proper sticky behavior */}
         <div className="border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)]">
           <NewsTicker />
