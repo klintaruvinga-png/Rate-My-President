@@ -58,6 +58,34 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation'];
   const progressPercent = ((screenOrder.indexOf(currentScreen) + 1) / screenOrder.length) * 100;
 
+  // Swipe gesture handling
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50; // Minimum swipe distance
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - advance
+        handleAdvanceScreen();
+      } else {
+        // Swipe right - go back
+        handleBackScreen();
+      }
+    }
+  };
+
   // Only attempt geolocation & reverse-geocoding after explicit user consent.
   useEffect(() => {
     if (locationConsent !== true) return;
@@ -242,7 +270,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const cardColor = 'bg-[oklch(0.20_0.02_250)]';
 
   return (
-    <div className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
+    <div 
+      className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="w-full">
         <div className="mx-auto w-full max-w-2xl space-y-4 px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
           <div className="space-y-2">

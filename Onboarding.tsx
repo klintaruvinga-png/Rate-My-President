@@ -45,6 +45,34 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
+  // Swipe gesture handling
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50; // Minimum swipe distance
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - advance
+        handleAdvanceScreen();
+      } else {
+        // Swipe right - go back
+        handleBackScreen();
+      }
+    }
+  };
+
   // Detect user's geolocation only after explicit consent and with cleanup protection.
   useEffect(() => {
     if (defaultCountry || locationConsent !== true) return;
@@ -191,7 +219,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const cardColor = 'bg-[oklch(0.20_0.02_250)]';
 
   return (
-    <div className={`min-h-screen ${bgColor} flex items-center justify-center p-4 transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
+    <div 
+      className={`min-h-screen ${bgColor} flex items-center justify-center p-4 transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Screen 1: Intro */}
       {currentScreen === 'intro' && (
         <div className="w-full max-w-md space-y-8 text-center">

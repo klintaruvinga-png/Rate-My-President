@@ -277,16 +277,13 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     return (
       <div className="flex flex-col relative overflow-hidden rounded-t-[20px]">
         {/* Full Bleed Header Image */}
-        <div className="relative w-full h-[395px] shrink-0">
+        <div className="relative w-full h-[395px] shrink-0 border-b border-[oklch(0.28_0.02_250)]">
           <img
             src={headerImage}
             alt={cardData.leaderName}
             className="w-full h-full object-cover"
             onError={(event) => { (event.currentTarget as HTMLImageElement).src = fallbackAvatar; }}
           />
-          
-          {/* Gradient Overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.20_0.04_250)] via-transparent to-transparent" />
           
           {/* Top Left: Home/Global Icon Badge */}
           <div className="absolute top-4 left-4 w-4 h-4 text-[oklch(0.75_0.02_250)]">
@@ -304,7 +301,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-0 left-0 right-0 p-6">
+          <div className="absolute bottom-1 left-0 right-0 p-6">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-['Space_Grotesk'] leading-tight drop-shadow-lg">
               {cardData.leaderName}
             </h2>
@@ -318,8 +315,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 pt-0 pb-2 xr:pt-8 promax:pt-16 sm:pt-16 md:pt-16 min-h-[120px] sm:min-h-[80px] shrink-0">
-          <div className="flex justify-center gap-4">
+        <div className="flex-1 max-h-[160px] flex flex-col items-center justify-center px-4 py-6 xr:py-8 promax:py-12 sm:py-10 md:py-12 min-h-[120px] sm:min-h-[80px] shrink-0">
+          <div className="flex justify-center gap-4 mt-0 sm:mt-0 md:mt-0">
             {/* No Like button */}
             <button
               type="button"
@@ -493,7 +490,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               <div className={`text-5xl font-bold ${percentColor} font-['Inter']`}>
                 {card.approvalPercent}%
               </div>
-              <div className={`text-2xl ${trendColor}`}>
+              <div className={`text-2xl ${trendColor} flex items-center justify-center`}>
                 {card.trend === 'up' ? (
                   <TrendUpIcon aria-label="Trend up" />
                 ) : card.trend === 'down' ? (
