@@ -71,7 +71,7 @@ export function LeaderboardDemo() {
   };
 
   return (
-    <div className="min-h-screen bg-[oklch(0.15_0.04_250)]">
+    <div className="h-full bg-[oklch(0.15_0.04_250)] overflow-auto">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="p-6 border-b border-[oklch(0.28_0.02_250)]">

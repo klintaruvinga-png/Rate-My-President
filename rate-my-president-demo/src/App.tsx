@@ -165,14 +165,14 @@ function App() {
             ? Help
           </button>
         </div>
+        {/* NewsTicker in header for proper sticky behavior */}
+        <div className="border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)]">
+          <NewsTicker />
+        </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex flex-1 min-h-0 flex-col">
-        <div className="sticky top-[74px] sm:top-[89px] z-40">
-          <NewsTicker />
-        </div>
-
+      <main className="flex flex-1 min-h-0 flex-col overflow-hidden">
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-2 pt-0 pb-0 sm:px-6 sm:pt-1 sm:pb-1 lg:px-8 lg:py-1">
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && (
