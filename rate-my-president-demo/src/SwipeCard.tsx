@@ -322,7 +322,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex flex-col items-center justify-center px-4 pb-4 pt-15 sm:px-5 min-h-[120px]">
+        <div className="flex-none flex flex-col items-center justify-center px-4 pb-4 pt-0 sm:px-5 xr:pt-8 promax:pt-16 sm:pt-16 md:pt-16 min-h-[120px] sm:min-h-[80px]">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
@@ -464,7 +464,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               </div>
               <div
                 style={{ opacity: skipOpacity }}
-                className="border-4 border-[oklch(0.72_0.15_65)] text-[oklch(0.72_0.15_65)] text-2xl font-bold uppercase rounded-lg px-4 py-1 tracking-widest absolute bottom-12 left-1/2 -translate-x-1/2 rotate-0 pointer-events-none z-30 transition-opacity duration-75"
+                className="border-4 border-[oklch(0.72_0.15_65)] text-[oklch(0.72_0.15_65)] text-2xl font-bold uppercase rounded-lg px-4 py-1 tracking-widest absolute bottom-8 left-1/2 -translate-x-1/2 rotate-0 pointer-events-none z-30 transition-opacity duration-75"
               >
                 SKIP
               </div>
