@@ -117,31 +117,31 @@ export default function Leaderboard({
   // Skeleton loader component
   const SkeletonRow = () => (
     <tr className="border-b border-[oklch(0.28_0.02_250)] animate-pulse">
-      <td className="px-4 py-4 text-[oklch(0.75_0.02_250)]">
+      <td className="px-3 py-3 sm:px-4 sm:py-4 text-[oklch(0.75_0.02_250)]">
         <div className="h-4 w-6 bg-[oklch(0.28_0.02_250)] rounded" />
       </td>
-      <td className="px-4 py-4">
+      <td className="px-3 py-3 sm:px-4 sm:py-4">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 bg-[oklch(0.28_0.02_250)] rounded-full" />
           <div className="h-4 w-24 bg-[oklch(0.28_0.02_250)] rounded" />
         </div>
       </td>
-      <td className="px-4 py-4 text-right">
+      <td className="px-3 py-3 sm:px-4 sm:py-4 text-right">
         <div className="h-4 w-12 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
       </td>
-      <td className="hidden px-4 py-4 text-right md:table-cell">
+      <td className="hidden px-3 py-3 sm:px-4 sm:py-4 text-right md:table-cell">
         <div className="h-4 w-8 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
       </td>
-      <td className="hidden px-4 py-4 text-right lg:table-cell">
+      <td className="hidden px-3 py-3 sm:px-4 sm:py-4 text-right lg:table-cell">
         <div className="h-4 w-16 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
       </td>
     </tr>
   );
 
   return (
-    <div className="w-full bg-[oklch(0.15_0.04_250)] text-[oklch(0.95_0.02_250)]">
+    <div className="w-full overflow-hidden rounded-[24px] border border-[oklch(0.28_0.02_250)] bg-[oklch(0.15_0.04_250)] text-[oklch(0.95_0.02_250)] shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-[oklch(0.28_0.02_250)] px-4 sm:px-6">
+      <div className="flex gap-1 border-b border-[oklch(0.28_0.02_250)] px-3 sm:px-6">
         {(['day', 'week', 'all'] as const).map((window) => (
           <button
             key={window}
@@ -158,7 +158,7 @@ export default function Leaderboard({
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-2 items-center px-4 py-4 sm:px-6 bg-[oklch(0.18_0.03_250)] border-b border-[oklch(0.28_0.02_250)]">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] px-3 py-3 sm:px-6">
         <span className="text-xs uppercase tracking-[0.25em] text-[oklch(0.75_0.02_250)]">Region</span>
         {regionOptions.map((region) => (
           <button
@@ -203,16 +203,16 @@ export default function Leaderboard({
 
       {/* Table */}
       {!error && entries.length > 0 && (
-        <div className="overflow-x-auto">
+        <div className="max-h-[min(64vh,560px)] overflow-auto">
           <table
-            className="w-full text-sm"
+            className="min-w-[640px] w-full text-sm"
             role="grid"
             aria-label={`Leader rankings for ${selectedWindow === 'day' ? 'today' : selectedWindow === 'week' ? 'this week' : 'all time'}`}
           >
-            <thead className="border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]">
+            <thead className="sticky top-0 z-10 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]">
               <tr>
                 <th
-                  className="px-4 py-3 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer hover:text-[oklch(0.95_0.02_250)] transition-colors"
+                  className="px-3 py-3 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer transition-colors hover:text-[oklch(0.95_0.02_250)] sm:px-4"
                   onClick={() => handleColumnClick('rank')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'rank')}
                   tabIndex={0}
@@ -223,11 +223,11 @@ export default function Leaderboard({
                     <span className="text-xs opacity-70 min-w-4">{getSortIndicator('rank')}</span>
                   </div>
                 </th>
-                <th className="px-4 py-3 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)]">
+                <th className="px-3 py-3 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] sm:px-4">
                   Leader
                 </th>
                 <th
-                  className="px-4 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer hover:text-[oklch(0.95_0.02_250)] transition-colors"
+                  className="px-3 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer transition-colors hover:text-[oklch(0.95_0.02_250)] sm:px-4"
                   onClick={() => handleColumnClick('approval')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'approval')}
                   tabIndex={0}
@@ -238,11 +238,11 @@ export default function Leaderboard({
                     <span className="text-xs opacity-70 min-w-4">{getSortIndicator('approval')}</span>
                   </div>
                 </th>
-                <th className="hidden px-4 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] md:table-cell">
+                <th className="hidden px-3 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] sm:px-4 md:table-cell">
                   Trend
                 </th>
                 <th
-                  className="hidden px-4 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer hover:text-[oklch(0.95_0.02_250)] transition-colors lg:table-cell"
+                  className="hidden px-3 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer transition-colors hover:text-[oklch(0.95_0.02_250)] sm:px-4 lg:table-cell"
                   onClick={() => handleColumnClick('votes')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'votes')}
                   tabIndex={0}
@@ -264,11 +264,11 @@ export default function Leaderboard({
                       className="border-b border-[oklch(0.28_0.02_250)] hover:bg-[oklch(0.20_0.02_250)] transition-colors group animate-[fadeIn_0.2s_ease-out]"
                       style={{ animationDelay: `${index * 20}ms` }}
                     >
-                      <td className="px-4 py-4 text-[oklch(0.75_0.02_250)] font-['Inter'] font-600 w-12">
+                      <td className="w-12 px-3 py-3 font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] sm:px-4 sm:py-4">
                         #{entry.rank}
                       </td>
                       <td
-                        className="px-4 py-4 cursor-pointer"
+                        className="px-3 py-3 cursor-pointer sm:px-4 sm:py-4"
                         role={onLeaderClick ? 'button' : undefined}
                         tabIndex={onLeaderClick ? 0 : undefined}
                         onClick={() => onLeaderClick && onLeaderClick(entry.id)}
@@ -302,14 +302,14 @@ export default function Leaderboard({
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-right font-['Inter'] font-700 text-base">
+                      <td className="px-3 py-3 text-right font-['Inter'] font-700 text-base sm:px-4 sm:py-4">
                         <span
                           className={entry.approvalPercent >= 50 ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]'}
                         >
                           {entry.approvalPercent}%
                         </span>
                       </td>
-                      <td className="hidden px-4 py-4 text-right md:table-cell">
+                      <td className="hidden px-3 py-3 text-right sm:px-4 sm:py-4 md:table-cell">
                         {entry.trend === 'up' ? (
                           <TrendUpIcon
                             className={`w-5 h-5 text-[oklch(0.62_0.18_142)]`}
@@ -322,7 +322,7 @@ export default function Leaderboard({
                           />
                         )}
                       </td>
-                      <td className="hidden px-4 py-4 text-right font-['Inter'] text-[oklch(0.75_0.02_250)] lg:table-cell">
+                      <td className="hidden px-3 py-3 text-right font-['Inter'] text-[oklch(0.75_0.02_250)] sm:px-4 sm:py-4 lg:table-cell">
                         {entry.voteCount.toLocaleString()}
                       </td>
                     </tr>
@@ -334,7 +334,7 @@ export default function Leaderboard({
 
       {/* Footer: Last Updated */}
       {!isLoading && lastUpdated && (
-        <div className="px-4 py-3 border-t border-[oklch(0.28_0.02_250)] text-xs font-['Inter'] text-[oklch(0.75_0.02_250)]">
+        <div className="border-t border-[oklch(0.28_0.02_250)] px-3 py-3 text-xs font-['Inter'] text-[oklch(0.75_0.02_250)] sm:px-6">
           Updated: {lastUpdated}
         </div>
       )}

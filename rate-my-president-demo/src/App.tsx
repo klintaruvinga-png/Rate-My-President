@@ -61,72 +61,73 @@ function App() {
   return (
     <div className={`bg-[oklch(0.15_0.04_250)] min-h-screen text-[oklch(0.95_0.02_250)] flex flex-col ${showHelpTooltip ? 'overflow-hidden' : ''}`}>
       {/* Premium Navigation Header */}
-      <header className="relative border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-0 z-50 shadow-md">
-        <div className="flex w-full items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <img src={headerImage} alt="Rate My President mascot" className="h-[90px] w-[90px] rounded-2xl bg-white/10 p-2 shadow-sm" />
-            <div>
-              <h1 className="text-xl font-bold font-['Space_Grotesk'] tracking-tight">Rate My President</h1>
-              <span className="text-xs text-[oklch(0.72_0.15_65)] font-semibold uppercase tracking-widest font-['Space_Grotesk']">Playground</span>
+      <header className="sticky top-0 z-50 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)]/95 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <img src={headerImage} alt="Rate My President mascot" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-sm sm:h-14 sm:w-14" />
+              <div>
+                <h1 className="text-lg font-bold font-['Space_Grotesk'] tracking-tight sm:text-xl">Rate My President</h1>
+                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">Playground</span>
+              </div>
             </div>
+            <button
+              onClick={() => setIsMobileMenuOpen((value) => !value)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.22_0.02_250)] sm:hidden"
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <span className="text-lg">☰</span>
+            </button>
           </div>
-          <button
-            onClick={() => setIsMobileMenuOpen((value) => !value)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.22_0.02_250)] sm:hidden"
-            aria-label="Toggle navigation menu"
-            aria-expanded={isMobileMenuOpen}
-          >
-            <span className="text-lg">☰</span>
-          </button>
 
+          <nav className="hidden flex-wrap items-center gap-2 sm:flex sm:flex-nowrap sm:justify-end">
+            <button
+              onClick={() => handleTabChange('onboarding')}
+              className={`rounded-full px-4 py-2 text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
+                activeTab === 'onboarding'
+                  ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
+                  : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
+              }`}
+            >
+              👋 Onboarding
+            </button>
+            <button
+              onClick={() => handleTabChange('swipe')}
+              className={`rounded-full px-4 py-2 text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
+                activeTab === 'swipe'
+                  ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
+                  : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
+              }`}
+            >
+              🔥 Swipe
+            </button>
+            <button
+              onClick={() => handleTabChange('leaderboard')}
+              className={`rounded-full px-4 py-2 text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
+                activeTab === 'leaderboard'
+                  ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
+                  : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
+              }`}
+            >
+              📊 Leaderboard
+            </button>
+            <button
+              onClick={() => setShowHelpTooltip(true)}
+              className={`flex h-10 min-w-[44px] items-center justify-center rounded-full px-3 text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
+                showHelpTooltip
+                  ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
+                  : 'bg-[oklch(0.22_0.02_250)]/50 text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
+              }`}
+              aria-label="Help"
+              title="Help"
+            >
+              ?
+            </button>
+          </nav>
         </div>
 
-        <nav className="hidden flex-wrap gap-2 items-center sm:flex sm:flex-nowrap sm:justify-end sm:pr-8">
-          <button
-            onClick={() => handleTabChange('onboarding')}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
-              activeTab === 'onboarding'
-                ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
-                : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
-            }`}
-          >
-            👋 Onboarding
-          </button>
-          <button
-            onClick={() => handleTabChange('swipe')}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
-              activeTab === 'swipe'
-                ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
-                : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
-            }`}
-          >
-            🔥 Swipe
-          </button>
-          <button
-            onClick={() => handleTabChange('leaderboard')}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
-              activeTab === 'leaderboard'
-                ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
-                : 'text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
-            }`}
-          >
-            📊 Leaderboard
-          </button>
-          <button
-            onClick={() => setShowHelpTooltip(true)}
-            className={`flex h-10 min-w-[44px] items-center justify-center rounded-full px-3 text-sm font-semibold font-['Space_Grotesk'] whitespace-nowrap transition-all ${
-              showHelpTooltip
-                ? 'bg-[oklch(0.28_0.02_250)] text-white shadow'
-                : 'bg-[oklch(0.22_0.02_250)]/50 text-[oklch(0.75_0.02_250)] hover:text-white hover:bg-[oklch(0.22_0.02_250)]'
-            }`}
-            aria-label="Help"
-            title="Help"
-          >
-            ?
-          </button>
-        </nav>
-
-        <div className={`absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] p-3 shadow-xl sm:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+        <div className={`mx-3 mb-3 rounded-2xl border border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] p-3 shadow-xl sm:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
           <button
             onClick={() => {
               handleTabChange('onboarding');
@@ -167,12 +168,12 @@ function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-h-0 flex flex-col">
-        <div className="sticky top-[122px] z-40">
+      <main className="flex flex-1 min-h-0 flex-col">
+        <div className="sticky top-[74px] sm:top-[89px] z-40">
           <NewsTicker />
         </div>
 
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex-1 flex flex-col">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-3 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-6">
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && (
             <div className="flex-1 flex flex-col justify-center min-h-0 py-2">
@@ -227,8 +228,8 @@ function App() {
       )}
 
       {/* Persistent Disclaimer Footer */}
-      <footer className="py-4 px-6 border-t border-[oklch(0.28_0.02_250)] bg-[oklch(0.13_0.04_250)] text-center">
-        <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 max-w-2xl mx-auto font-['Inter'] leading-relaxed">
+      <footer className="border-t border-[oklch(0.28_0.02_250)] bg-[oklch(0.13_0.04_250)] px-4 py-4 text-center sm:px-6">
+        <p className="mx-auto max-w-2xl text-xs leading-relaxed text-[oklch(0.75_0.02_250)]/80 font-['Inter']">
           This App is for Entertainment Purposes Only. The rankings reflected are the opinions of the Users. This not a scientific or representative poll.
         </p>
       </footer>

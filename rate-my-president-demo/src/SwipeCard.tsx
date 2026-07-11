@@ -279,7 +279,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     return (
       <div className="flex flex-col relative overflow-hidden rounded-t-[20px]">
         {/* Full Bleed Header Image */}
-        <div className="relative w-full h-[395px] shrink-0">
+        <div className="relative h-[300px] w-full shrink-0 sm:h-[340px] md:h-[360px]">
           <img
             src={headerImage}
             alt={cardData.leaderName}
@@ -288,7 +288,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           />
           
           {/* Gradient Overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.15_0.04_250)] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_top,oklch(0.15_0.04_250)_0%,oklch(0.15_0.04_250_/_0.85)_25%,oklch(0.15_0.04_250_/_0.5)_50%,transparent_100%)]" />
           
           {/* Top Left: Home/Global Icon Badge */}
           <div className="absolute top-4 left-4 w-4 h-4 text-[oklch(0.75_0.02_250)]">
@@ -306,9 +306,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-0 left-0 right-0 px-6 pt-2 pb-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-['Space_Grotesk'] leading-snug drop-shadow-lg">
-              {cardData.leaderName}
+          <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 pt-2 sm:px-5 sm:pb-6">
+            <h2 className="mb-2 text-2xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-3xl">
+              <span className="inline-flex items-center gap-2 bg-[oklch(0.15_0.04_250)]/80 backdrop-blur-md border border-white/20 rounded-full px-3 py-1.5">
+                {cardData.leaderName}
+              </span>
             </h2>
             {cardData.officeTitle && (
               <p className="text-white/90 text-base md:text-lg font-['Inter'] mb-1">{cardData.officeTitle}</p>
@@ -320,7 +322,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex flex-col items-center justify-center px-4 pt-4 pb-2">
+        <div className="flex-none flex flex-col items-center justify-center px-4 pb-4 pt-15 sm:px-5 min-h-[120px]">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
@@ -335,7 +337,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               onMouseEnter={() => setHoveredButton('nolike')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
+              className={`flex h-12 w-12 min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] sm:h-14 sm:w-14 md:h-16 md:w-16 ${
                 hoveredButton === 'nolike'
                   ? 'bg-[oklch(0.55_0.20_25)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.55_0.20_25)] border-2 border-[oklch(0.55_0.20_25)] hover:scale-105'
@@ -360,7 +362,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               onMouseEnter={() => setHoveredButton('skip')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
+              className={`flex h-12 w-12 min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] sm:h-14 sm:w-14 md:h-16 md:w-16 ${
                 hoveredButton === 'skip'
                   ? 'bg-[oklch(0.72_0.15_65)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.72_0.15_65)] border-2 border-[oklch(0.72_0.15_65)] opacity-70 hover:opacity-100 hover:scale-105'
@@ -385,7 +387,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               onMouseEnter={() => setHoveredButton('like')}
               onMouseLeave={() => setHoveredButton(null)}
               disabled={isLoading || voteAction !== null || isFlinging}
-              className={`w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] ${
+              className={`flex h-12 w-12 min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] sm:h-14 sm:w-14 md:h-16 md:w-16 ${
                 hoveredButton === 'like'
                   ? 'bg-[oklch(0.62_0.18_142)] text-white scale-110'
                   : 'bg-[oklch(0.28_0.02_250)] text-[oklch(0.62_0.18_142)] border-2 border-[oklch(0.62_0.18_142)] hover:scale-105'
@@ -397,7 +399,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               </span>
             </button>
           </div>
-          <p className="mt-2 text-center text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">
+          <p className="mt-2 text-center text-[0.7rem] text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:text-xs">
             {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
           </p>
         </div>
@@ -411,21 +413,21 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     <div className="flex flex-col items-center justify-center relative h-full">
       {/* Vote History Pill */}
       {totalRated !== undefined && totalRated > 0 && (
-        <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-[oklch(0.20_0.02_250)]/80 backdrop-blur-sm border border-[oklch(0.28_0.02_250)] rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] flex items-center gap-2">
-          <span>🗳️</span>
+        <div className="absolute right-2 top-2 flex items-center gap-2 rounded-full border border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]/80 px-3 py-1.5 text-xs font-['Inter'] text-[oklch(0.75_0.02_250)] backdrop-blur-sm md:right-4 md:top-4 md:px-4 md:py-2 md:text-sm">
+          <span className="text-[oklch(0.62_0.18_142)]">•</span>
           <span>{totalRated} Rated</span>
         </div>
       )}
 
       {!showResults && (
-        <div className={`flex flex-col items-center gap-2 w-full transition-all duration-150 ${voteAction ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
-          <div className="relative w-full max-w-[420px] md:max-w-[450px] h-[45vh] sm:h-[50vh] md:h-[620px] mx-auto" style={{ boxSizing: 'border-box' }}>
+        <div className={`flex w-full flex-col items-center gap-2 transition-all duration-150 ${voteAction ? 'pointer-events-none scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
+          <div className="relative mx-auto h-[54vh] w-full max-w-[420px] sm:h-[60vh] md:h-[580px] md:max-w-[450px]" style={{ boxSizing: 'border-box' }}>
             {nextCard && (
               <div
                 className={`absolute inset-0 rounded-[20px] select-none pointer-events-none ${bottomBgColor} border border-[oklch(0.28_0.02_250)] shadow-xl`}
                 style={{
                   transform: `scale(${bottomScale}) translateY(${bottomTranslateY}px)`,
-                  opacity: bottomOpacity,
+                  opacity: (revealStage === 'news' || showResults) ? bottomOpacity : 0,
                   zIndex: 10,
                 }}
               >
@@ -474,7 +476,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       )}
 
       {showResults && (
-        <div className={`w-[92vw] sm:w-[85vw] md:w-[75vw] lg:w-[420px] max-w-[460px] ${topBgColor} rounded-[20px] p-6 border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm transition-all duration-300 ${showResults ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+        <div className={`w-[92vw] max-w-[460px] sm:w-[420px] ${topBgColor} rounded-[20px] border border-[oklch(0.28_0.02_250)] p-5 shadow-2xl backdrop-blur-sm transition-all duration-300 sm:p-6 ${showResults ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
           <div className={`transition-all duration-300 ${revealStage === 'idle' ? 'opacity-0' : 'opacity-100'}`}>
             <div className="text-center mb-2">
               <div className={`text-5xl font-bold ${percentColor} font-['Inter']`}>{card.approvalPercent}%</div>
