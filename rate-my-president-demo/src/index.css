@@ -21,6 +21,12 @@ body,
   overscroll-behavior-y: contain;
 }
 
+/* Enable pull-to-refresh only on header */
+header {
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+
 body {
   margin: 0;
   background: oklch(0.15 0.04 250);
