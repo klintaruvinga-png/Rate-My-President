@@ -4,6 +4,7 @@ import AnimatedFlag from './AnimatedFlag';
 import { setUserCountry } from './onboardingStorage';
 
 type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation';
+type LocationStatus = 'idle' | 'requesting' | 'success' | 'error';
 
 interface CountryData {
   code: string;
@@ -37,8 +38,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
-  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
@@ -53,9 +55,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     const timeoutId = window.setTimeout(() => {
       isCancelled = true;
       abortController.abort();
+      setLocationStatus('error');
     }, 8000);
 
-    setIsDetectingLocation(true);
+    setLocationStatus('requesting');
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -74,27 +77,32 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
           const selected = matchedCountry ?? availableCountries[0];
           if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            clearTimeout(timeoutId);
             setDetectedCountry(selected);
             setSelectedCountry(selected);
             setCountryConfirmed(true);
             userMadeExplicitChoice.current = true;
-            setIsDetectingLocation(false);
+            setLocationStatus('success');
             setCurrentScreen('confirmation');
           }
         } catch {
-          if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) return;
+          if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+            clearTimeout(timeoutId);
+            return;
+          }
           console.log('Geolocation permission denied or unavailable');
-          setIsDetectingLocation(false);
-          setSelectedCountry(null);
-          setCurrentScreen('confirmation');
+          setLocationStatus('error');
+          clearTimeout(timeoutId);
         }
       },
       () => {
-        if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) return;
+        if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+          clearTimeout(timeoutId);
+          return;
+        }
         console.log('Geolocation permission denied or unavailable');
-        setIsDetectingLocation(false);
-        setSelectedCountry(null);
-        setCurrentScreen('confirmation');
+        setLocationStatus('error');
+        clearTimeout(timeoutId);
       },
       { timeout: 8000 }
     );
@@ -104,7 +112,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       clearTimeout(timeoutId);
       abortController.abort();
     };
-  }, [availableCountries, defaultCountry, locationConsent]);
+  }, [availableCountries, defaultCountry, locationConsent, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
     switch (currentScreen) {
@@ -423,11 +431,35 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </div>
           ) : (
             <div className="space-y-3">
-              {isDetectingLocation ? (
+              {locationStatus === 'requesting' ? (
                 <div className="rounded-xl border border-[oklch(0.62_0.18_142)/0.25] bg-[oklch(0.24_0.02_250)] p-4 text-center">
                   <div className="flex items-center justify-center gap-2">
                     <div className="w-4 h-4 border-2 border-[oklch(0.62_0.18_142)] border-t-transparent rounded-full animate-spin"></div>
                     <p className="text-sm font-semibold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Detecting location…</p>
+                  </div>
+                </div>
+              ) : locationStatus === 'error' ? (
+                <div className="rounded-xl border border-[oklch(0.55_0.20_25)/0.25] bg-[oklch(0.24_0.02_250)] p-4 text-left">
+                  <p className="text-sm font-semibold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">Couldn't detect your location</p>
+                  <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Inter'] mb-3">This could be due to permission denied, timeout, or network issues. You can still select your country manually.</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLocationStatus('idle');
+                        setLocationRetryToken(prev => prev + 1);
+                      }}
+                      className="rounded-lg bg-[oklch(0.62_0.18_142)] px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                    >
+                      Try again
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSkipCountry}
+                      className="rounded-lg border border-[oklch(0.75_0.02_250)/0.4] px-3 py-2 text-sm font-semibold text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]"
+                    >
+                      Do this later
+                    </button>
                   </div>
                 </div>
               ) : locationConsent === null && !defaultCountry && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
