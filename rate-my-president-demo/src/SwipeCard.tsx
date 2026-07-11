@@ -306,23 +306,23 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 pt-2 sm:px-5 sm:pb-6">
-            <h2 className="mb-2 text-2xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-3xl">
-              <span className="inline-flex items-center gap-2 bg-[oklch(0.15_0.04_250)]/80 backdrop-blur-md border border-white/20 rounded-full px-3 py-1.5">
+          <div className="absolute bottom-0 left-0 right-0 px-3 pb-4 pt-2 sm:px-5 sm:pb-6 sm:pt-3">
+            <h2 className="mb-2 text-xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-2xl md:text-3xl">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[oklch(0.15_0.04_250)]/80 px-2.5 py-1.5 backdrop-blur-md sm:px-3">
                 {cardData.leaderName}
               </span>
             </h2>
             {cardData.officeTitle && (
-              <p className="text-white/90 text-base md:text-lg font-['Inter'] mb-1">{cardData.officeTitle}</p>
+              <p className="mb-1 text-sm font-['Inter'] text-white/90 sm:text-base md:text-lg">{cardData.officeTitle}</p>
             )}
             {cardData.party && (
-              <p className="text-white/70 text-sm md:text-base font-['Inter']">{cardData.party}</p>
+              <p className="text-sm font-['Inter'] text-white/70 sm:text-base md:text-base">{cardData.party}</p>
             )}
           </div>
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex-none flex flex-col items-center justify-center px-4 pb-4 pt-0 sm:px-5 xr:pt-8 promax:pt-16 sm:pt-16 md:pt-16 min-h-[120px] sm:min-h-[80px]">
+        <div className="flex-none flex min-h-[104px] flex-col items-center justify-center px-3 pb-3 pt-2 sm:min-h-[112px] sm:px-5 sm:pb-4 sm:pt-4 md:min-h-[128px] md:pt-6">
           <div className="flex justify-center gap-4 md:gap-6 lg:gap-8">
             {/* No Like button */}
             <button
@@ -345,7 +345,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               aria-label="No Like"
             >
               <span aria-hidden="true" className="inline-flex">
-                <NoLikeIcon className="w-5 h-5 md:w-8 md:h-8" />
+                <NoLikeIcon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
               </span>
             </button>
 
@@ -370,7 +370,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               aria-label="Skip"
             >
               <span aria-hidden="true" className="inline-flex">
-                <SkipIcon className="w-5 h-5 md:w-8 md:h-8" />
+                <SkipIcon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
               </span>
             </button>
 
@@ -395,11 +395,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               aria-label="Like"
             >
               <span aria-hidden="true" className="inline-flex">
-                <LikeIcon className="w-5 h-5 md:w-8 md:h-8" />
+                <LikeIcon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
               </span>
             </button>
           </div>
-          <p className="mt-2 text-center text-[0.7rem] text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:text-xs">
+          <p className="mt-2 max-w-[260px] text-center text-[0.8rem] leading-5 text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:max-w-none sm:text-xs sm:leading-4">
             {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
           </p>
         </div>
