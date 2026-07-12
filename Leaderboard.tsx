@@ -217,7 +217,7 @@ export default function Leaderboard({
 
   // Skeleton loader component
   const SkeletonRow = () => (
-    <tr className="border-b border-[oklch(0.28_0.02_250)] animate-pulse">
+    <tr className="border-b border-[oklch(0.28_0.02_250)] motion-safe:animate-pulse">
       <td className="px-2 py-2 sm:px-3 sm:py-3 text-[oklch(0.75_0.02_250)]">
         <div className="h-3 w-5 sm:h-4 sm:w-6 bg-[oklch(0.28_0.02_250)] rounded" />
       </td>
@@ -384,7 +384,7 @@ export default function Leaderboard({
                         #{entry.rank}
                       </td>
                       <td
-                        className="px-2 py-2 sm:px-3 sm:py-3 cursor-pointer"
+                        className={`px-2 py-2 sm:px-3 sm:py-3 ${onLeaderClick ? 'cursor-pointer' : ''}`}
                         role={onLeaderClick ? 'button' : undefined}
                         tabIndex={onLeaderClick ? 0 : undefined}
                         onClick={() => onLeaderClick && onLeaderClick(entry.id)}
