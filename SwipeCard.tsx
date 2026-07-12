@@ -182,8 +182,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       setShowResults(true);
       setRevealStage('number');
       setTimeout(() => setRevealStage('confirmation'), 150);
-      setTimeout(() => setRevealStage('news'), 150);
-      
+      setTimeout(() => setRevealStage('news'), 800);
+
       onVote(action);
       setIsFlinging(false);
       setFlingAction(null);
