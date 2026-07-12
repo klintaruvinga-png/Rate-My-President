@@ -3,7 +3,7 @@ import headerImage from '@root/assets/Obama Header No BG.png';
 
 export const SwipeTutorial: React.FC = () => {
   return (
-    <div className="w-full max-w-xs mx-auto py-4 relative flex flex-col items-center select-none overflow-visible">
+    <div className="w-full max-w-xs mx-auto py-1 relative flex flex-col items-center select-none overflow-visible sm:py-2 sm:py-4">
       {/* Self-contained CSS Keyframes */}
       <style>{`
         @keyframes tutorial-card {
@@ -294,40 +294,40 @@ export const SwipeTutorial: React.FC = () => {
       </div>
 
       {/* Core Animation Wrapper */}
-      <div className="w-[200px] h-[190px] relative overflow-visible flex items-center justify-center z-10">
+      <div className="w-[160px] h-[150px] relative overflow-visible flex items-center justify-center z-10 sm:w-[200px] sm:h-[190px]">
         {/* Mock Card */}
-        <div className="w-[140px] h-[170px] bg-[oklch(0.20_0.02_250)] border border-[oklch(0.28_0.02_250)] rounded-2xl overflow-hidden shadow-lg relative animate-tutorial-card will-change-transform">
+        <div className="w-[110px] h-[135px] bg-[oklch(0.20_0.02_250)] border border-[oklch(0.28_0.02_250)] rounded-2xl overflow-hidden shadow-lg relative animate-tutorial-card will-change-transform sm:w-[140px] sm:h-[170px]">
           {/* Branded Header Image */}
-          <div className="w-full h-[100px] flex items-center justify-center bg-[oklch(0.18_0.02_250)]">
-            <img 
-              src={headerImage} 
-              alt="Rate My President" 
-              className="w-16 h-16 object-contain rounded-lg"
+          <div className="w-full h-[80px] flex items-center justify-center bg-[oklch(0.18_0.02_250)] sm:h-[100px]">
+            <img
+              src={headerImage}
+              alt="Rate My President"
+              className="w-12 h-12 object-contain rounded-lg sm:w-16 sm:h-16"
             />
           </div>
 
           {/* Label */}
-          <div className="p-3 space-y-2">
-            <div className="h-2 w-full bg-[oklch(0.75_0.02_250)]/40 rounded"></div>
-            <div className="h-1.5 w-3/4 bg-[oklch(0.75_0.02_250)]/20 rounded"></div>
+          <div className="p-2 space-y-1.5 sm:p-3 sm:space-y-2">
+            <div className="h-1.5 w-full bg-[oklch(0.75_0.02_250)]/40 rounded sm:h-2"></div>
+            <div className="h-1 w-3/4 bg-[oklch(0.75_0.02_250)]/20 rounded sm:h-1.5"></div>
           </div>
 
           {/* Stamp Overlays */}
           {/* Approve Overlay */}
-          <div className="absolute top-6 left-2 border-2 border-[oklch(0.62_0.18_142)] text-[oklch(0.62_0.18_142)] text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-md opacity-0 animate-badge-approve pointer-events-none select-none">
+          <div className="absolute top-4 left-1.5 border-2 border-[oklch(0.62_0.18_142)] text-[oklch(0.62_0.18_142)] text-[8px] font-black tracking-widest uppercase px-1.5 py-0.5 rounded-md opacity-0 animate-badge-approve pointer-events-none select-none sm:top-6 sm:left-2 sm:text-[10px] sm:px-2">
             Like
           </div>
 
           {/* Disapprove Overlay */}
-          <div className="absolute top-6 right-2 border-2 border-[oklch(0.55_0.20_25)] text-[oklch(0.55_0.20_25)] text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-md opacity-0 animate-badge-disapprove pointer-events-none select-none">
+          <div className="absolute top-4 right-1.5 border-2 border-[oklch(0.55_0.20_25)] text-[oklch(0.55_0.20_25)] text-[8px] font-black tracking-widest uppercase px-1.5 py-0.5 rounded-md opacity-0 animate-badge-disapprove pointer-events-none select-none sm:top-6 sm:right-2 sm:text-[10px] sm:px-2">
             No Like
           </div>
         </div>
 
         {/* Pointer / Hand Wrapper */}
-        <div className="absolute left-0 top-0 w-12 h-12 pointer-events-none animate-tutorial-hand will-change-transform z-20 overflow-visible">
+        <div className="absolute left-0 top-0 w-10 h-10 pointer-events-none animate-tutorial-hand will-change-transform z-20 overflow-visible sm:w-12 sm:h-12">
           {/* Ripple behind fingertip */}
-          <div className="absolute top-[4px] left-[24px] w-6 h-6 rounded-full border border-[oklch(0.72_0.15_65)] bg-[oklch(0.72_0.15_65)]/20 -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 animate-tutorial-ripple"></div>
+          <div className="absolute top-[3px] left-[20px] w-5 h-5 rounded-full border border-[oklch(0.72_0.15_65)] bg-[oklch(0.72_0.15_65)]/20 -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 animate-tutorial-ripple sm:top-[4px] sm:left-[24px] sm:w-6 sm:h-6"></div>
 
           {/* Vector Open Palm Hand */}
           <svg
@@ -337,7 +337,7 @@ export const SwipeTutorial: React.FC = () => {
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="w-12 h-12 text-[oklch(0.95_0.02_250)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] rotate-[-10deg]"
+            className="w-full h-10 text-[oklch(0.95_0.02_250)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] rotate-[-10deg] sm:w-12 sm:h-12"
           >
             <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
             <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
@@ -348,7 +348,7 @@ export const SwipeTutorial: React.FC = () => {
       </div>
 
       {/* Floating Synchronized Text Prompts */}
-      <div className="relative h-6 w-full text-center mt-3 text-xs font-semibold uppercase tracking-widest font-['Space_Grotesk'] text-[oklch(0.72_0.15_65)]">
+      <div className="relative h-5 w-full text-center mt-2 text-[10px] font-semibold uppercase tracking-widest font-['Space_Grotesk'] text-[oklch(0.72_0.15_65)] sm:h-6 sm:mt-3 sm:text-xs">
         <span className="absolute inset-x-0 mx-auto opacity-0 animate-prompt-right">
           👉 Swipe Right to Like
         </span>
