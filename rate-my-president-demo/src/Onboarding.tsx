@@ -140,6 +140,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   }, [showLocationConsentDialog]);
 
   // Show location consent dialog when entering country-select screen
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- locationConsent intentionally omitted to prevent re-showing dialog after consent
   useEffect(() => {
     if (currentScreen !== 'country-select') return;
     if (!navigator.geolocation || availableCountries.length === 0) return;
@@ -308,6 +309,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setLocationConsent(consented);
     setShowLocationConsentDialog(false);
     locationConsentHandled.current = true;
+    if (!consented) {
+      userMadeExplicitChoice.current = true;
+    }
   };
 
   const handleComplete = () => {
@@ -694,7 +698,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 <button
                   onClick={() => {
                     setShowLocationErrorPopup(false);
-                    setLocationRetryToken(prev => prev + 1);
+                    setLocationConsent(null);
+                    locationConsentHandled.current = false;
                   }}
                   className="flex-1 py-2.5 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
                 >
