@@ -646,7 +646,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         </div>{/* /space-y-4 p-4 pr-8 */}
 
         {/* Location Consent Dialog */}
-        {showLocationConsentDialog && (
+        {showLocationConsentDialog && currentScreen === 'country-select' && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div
               ref={consentDialogRef}
