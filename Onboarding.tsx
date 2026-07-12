@@ -42,6 +42,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [locationRetryToken, setLocationRetryToken] = useState(0);
   const [showLocationErrorPopup, setShowLocationErrorPopup] = useState(false);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const isGeolocationInProgress = useRef(false);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
@@ -78,32 +80,63 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     }
   };
 
+  // Handle Escape key to close the popup
+  useEffect(() => {
+    if (!showLocationErrorPopup) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowLocationErrorPopup(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [showLocationErrorPopup]);
+
+  // Move focus to popup when it opens
+  useEffect(() => {
+    if (showLocationErrorPopup && popupRef.current) {
+      popupRef.current.focus();
+    }
+  }, [showLocationErrorPopup]);
+
   // Detect user's geolocation with delayed request when entering country-select screen
   useEffect(() => {
     if (defaultCountry || currentScreen !== 'country-select') return;
     if (typeof navigator === 'undefined' || !navigator.geolocation || availableCountries.length === 0) return;
-    if (locationStatus === 'requesting' || locationStatus === 'success') return;
+    if (isGeolocationInProgress.current) return;
 
     const abortController = new AbortController();
     let isCancelled = false;
+    isGeolocationInProgress.current = true;
 
     // Delay the location request by 1.5 seconds
     const delayId = window.setTimeout(() => {
-      if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) return;
+      if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+        isGeolocationInProgress.current = false;
+        return;
+      }
 
       const timeoutId = window.setTimeout(() => {
         isCancelled = true;
         abortController.abort();
         setLocationStatus('error');
+        setShowLocationErrorPopup(true);
+        isGeolocationInProgress.current = false;
       }, 8000);
 
       setLocationStatus('requesting');
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          if (isCancelled || abortController.signal.aborted) return;
+          if (isCancelled || abortController.signal.aborted) {
+            isGeolocationInProgress.current = false;
+            return;
+          }
 
           try {
+            // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
               { signal: abortController.signal }
@@ -114,36 +147,40 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               (country) => country.code.toUpperCase() === countryCode
             );
 
-            const selected = matchedCountry ?? availableCountries[0];
-            if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            if (matchedCountry && !isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
               clearTimeout(timeoutId);
-              setDetectedCountry(selected);
-              setSelectedCountry(selected);
+              setDetectedCountry(matchedCountry);
+              setSelectedCountry(matchedCountry);
               setCountryConfirmed(true);
               userMadeExplicitChoice.current = true;
               setLocationStatus('success');
               setCurrentScreen('confirmation');
+            } else {
+              clearTimeout(timeoutId);
+              setLocationStatus('success');
             }
           } catch {
             if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
               clearTimeout(timeoutId);
+              isGeolocationInProgress.current = false;
               return;
             }
-            console.log('Geolocation permission denied or unavailable');
             setLocationStatus('error');
             setShowLocationErrorPopup(true);
             clearTimeout(timeoutId);
           }
+          isGeolocationInProgress.current = false;
         },
         () => {
           if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
             clearTimeout(timeoutId);
+            isGeolocationInProgress.current = false;
             return;
           }
-          console.log('Geolocation permission denied or unavailable');
           setLocationStatus('error');
           setShowLocationErrorPopup(true);
           clearTimeout(timeoutId);
+          isGeolocationInProgress.current = false;
         },
         { timeout: 8000 }
       );
@@ -151,10 +188,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
     return () => {
       isCancelled = true;
+      isGeolocationInProgress.current = false;
       clearTimeout(delayId);
       abortController.abort();
     };
-  }, [availableCountries, defaultCountry, currentScreen, locationStatus, locationRetryToken]);
+  }, [availableCountries, defaultCountry, currentScreen, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
     if (isAutoAdvancing) return;
@@ -638,8 +676,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       {/* Location Error Popup */}
       {showLocationErrorPopup && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-[oklch(0.20_0.02_250)] rounded-xl p-6 max-w-sm w-full border border-[oklch(0.55_0.20_25)/0.25]">
-            <h3 className="text-lg font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
+          <div
+            ref={popupRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="location-error-title"
+            tabIndex={-1}
+            className="bg-[oklch(0.20_0.02_250)] rounded-xl p-6 max-w-sm w-full border border-[oklch(0.55_0.20_25)/0.25]"
+          >
+            <h3 id="location-error-title" className="text-lg font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">
               Couldn't detect your location
             </h3>
             <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mb-4">
