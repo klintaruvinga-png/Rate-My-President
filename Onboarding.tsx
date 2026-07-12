@@ -43,6 +43,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   const popupRef = useRef<HTMLDivElement>(null);
   const isGeolocationInProgress = useRef(false);
+  const geolocationTimeoutId = useRef<NodeJS.Timeout | null>(null);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
@@ -117,7 +118,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         return;
       }
 
-      const timeoutId = window.setTimeout(() => {
+      geolocationTimeoutId.current = window.setTimeout(() => {
+        if (isCancelled) return;
         isCancelled = true;
         abortController.abort();
         setLocationStatus('error');
@@ -147,7 +149,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             );
 
             if (matchedCountry && !isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
-              clearTimeout(timeoutId);
+              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
               setDetectedCountry(matchedCountry);
               setSelectedCountry(matchedCountry);
               setCountryConfirmed(true);
@@ -155,30 +157,30 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               setLocationStatus('success');
               setCurrentScreen('confirmation');
             } else {
-              clearTimeout(timeoutId);
+              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
               setLocationStatus('success');
             }
           } catch {
             if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
-              clearTimeout(timeoutId);
+              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
               isGeolocationInProgress.current = false;
               return;
             }
             setLocationStatus('error');
             setShowLocationErrorPopup(true);
-            clearTimeout(timeoutId);
+            if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
           }
           isGeolocationInProgress.current = false;
         },
         () => {
           if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
-            clearTimeout(timeoutId);
+            if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
             isGeolocationInProgress.current = false;
             return;
           }
           setLocationStatus('error');
           setShowLocationErrorPopup(true);
-          clearTimeout(timeoutId);
+          if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
           isGeolocationInProgress.current = false;
         },
         { timeout: 8000 }
@@ -189,6 +191,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       isCancelled = true;
       isGeolocationInProgress.current = false;
       clearTimeout(delayId);
+      if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
       abortController.abort();
     };
   }, [availableCountries, defaultCountry, currentScreen]);
@@ -218,6 +221,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         // Auto-advance to first swipe
         handleComplete();
         break;
+      case 'international-only':
+        handleComplete();
+        break;
     }
   };
 
@@ -238,6 +244,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         setCurrentScreen('mechanic-summary');
         break;
       case 'confirmation':
+        setCurrentScreen('country-select');
+        break;
+      case 'international-only':
         setCurrentScreen('country-select');
         break;
     }
@@ -475,7 +484,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               Where are you from?
             </h2>
             <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
-              We'll show you your leader first. <span className="text-[oklch(0.72_0.15_65)]">You can opt out of Home Swipes by declining location permission</span>
+              We'll show you your leader first. <span className="text-[oklch(0.72_0.15_65)]">Or skip to Global-only mode</span>
             </p>
             <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk'] mt-2">
               Your precise coordinates will be sent to Nominatim (OpenStreetMap) to detect your country.

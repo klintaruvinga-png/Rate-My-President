@@ -50,7 +50,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [showLocationErrorPopup, setShowLocationErrorPopup] = useState(false);
   const [showLocationConsentDialog, setShowLocationConsentDialog] = useState(false);
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
-  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const [focusedCountryIndex, setFocusedCountryIndex] = useState(0);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
@@ -218,7 +217,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
       abortController.abort();
     };
-  }, [locationConsent, availableCountries, locationRetryToken]);
+  }, [locationConsent, availableCountries]);
 
   const handleAdvanceScreen = () => {
     if (isAutoAdvancing) return;
@@ -358,7 +357,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       onTouchEnd={handleTouchEnd}
     >
       <div className="w-full">
-        <div className="mx-auto w-full max-w-2xl space-y-4 px-2 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-6">
+        <div className="mx-auto w-full max-w-2xl space-y-4 px-2 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 lg:px-8 lg:py-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
               <span>Setup</span>
