@@ -48,6 +48,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
   const [showLocationErrorPopup, setShowLocationErrorPopup] = useState(false);
+  const [showLocationConsentDialog, setShowLocationConsentDialog] = useState(false);
+  const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const [focusedCountryIndex, setFocusedCountryIndex] = useState(0);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
@@ -56,7 +59,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   const popupRef = useRef<HTMLDivElement>(null);
   const isGeolocationInProgress = useRef(false);
-  const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation'];
+  const geolocationTimeoutId = useRef<NodeJS.Timeout | null>(null);
+  const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation', 'international-only'];
   const progressPercent = ((screenOrder.indexOf(currentScreen) + 1) / screenOrder.length) * 100;
 
   // Swipe gesture handling
@@ -113,9 +117,25 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     }
   }, [showLocationErrorPopup]);
 
-  // Detect user's geolocation with delayed request when entering country-select screen
+  // Show location consent dialog when entering country-select screen
   useEffect(() => {
     if (currentScreen !== 'country-select') return;
+    if (!navigator.geolocation || availableCountries.length === 0) return;
+    if (locationConsent !== null || userMadeExplicitChoice.current) return;
+
+    // Show consent dialog after a short delay to let user read the screen first
+    const delayId = window.setTimeout(() => {
+      if (!userMadeExplicitChoice.current && locationConsent === null) {
+        setShowLocationConsentDialog(true);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayId);
+  }, [availableCountries, currentScreen, locationConsent]);
+
+  // Trigger geolocation only after user explicitly consents
+  useEffect(() => {
+    if (locationConsent !== true) return;
     if (!navigator.geolocation || availableCountries.length === 0) return;
     if (isGeolocationInProgress.current) return;
 
@@ -123,89 +143,82 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     let isCancelled = false;
     isGeolocationInProgress.current = true;
 
-    // Delay the location request by 1.5 seconds
-    const delayId = window.setTimeout(() => {
-      if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
-        isGeolocationInProgress.current = false;
-        return;
-      }
+    geolocationTimeoutId.current = setTimeout(() => {
+      if (isCancelled) return;
+      isCancelled = true;
+      abortController.abort();
+      setLocationStatus('error');
+      setShowLocationErrorPopup(true);
+      isGeolocationInProgress.current = false;
+    }, 8000);
 
-      const timeoutId = setTimeout(() => {
-        isCancelled = true;
-        abortController.abort();
-        setLocationStatus('error');
-        setShowLocationErrorPopup(true);
-        isGeolocationInProgress.current = false;
-      }, 8000);
+    setLocationStatus('requesting');
 
-      setLocationStatus('requesting');
-
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          if (isCancelled || abortController.signal.aborted) {
-            isGeolocationInProgress.current = false;
-            return;
-          }
-
-          try {
-            // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
-              { signal: abortController.signal }
-            );
-            const data = await response.json();
-            const countryCode = data.address?.country_code?.toUpperCase();
-            const matchedCountry = availableCountries.find(
-              (country) => country.code.toUpperCase() === countryCode
-            );
-
-            if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
-              if (matchedCountry) {
-                clearTimeout(timeoutId);
-                setSelectedCountry(matchedCountry);
-                setCountryConfirmed(true);
-                userMadeExplicitChoice.current = true;
-                setLocationStatus('success');
-                setCurrentScreen('confirmation');
-              } else {
-                clearTimeout(timeoutId);
-                setLocationStatus('success');
-              }
-            }
-          } catch {
-            if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
-              clearTimeout(timeoutId);
-              isGeolocationInProgress.current = false;
-              return;
-            }
-            setLocationStatus('error');
-            setShowLocationErrorPopup(true);
-            clearTimeout(timeoutId);
-          }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        if (isCancelled || abortController.signal.aborted) {
           isGeolocationInProgress.current = false;
-        },
-        () => {
+          return;
+        }
+
+        try {
+          // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
+            { signal: abortController.signal }
+          );
+          const data = await response.json();
+          const countryCode = data.address?.country_code?.toUpperCase();
+          const matchedCountry = availableCountries.find(
+            (country) => country.code.toUpperCase() === countryCode
+          );
+
+          if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            if (matchedCountry) {
+              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+              setSelectedCountry(matchedCountry);
+              setCountryConfirmed(true);
+              userMadeExplicitChoice.current = true;
+              setLocationStatus('success');
+              setCurrentScreen('confirmation');
+            } else {
+              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+              setLocationStatus('success');
+            }
+          }
+        } catch {
           if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
-            clearTimeout(timeoutId);
+            if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
             isGeolocationInProgress.current = false;
             return;
           }
           setLocationStatus('error');
           setShowLocationErrorPopup(true);
-          clearTimeout(timeoutId);
+          if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+        }
+        isGeolocationInProgress.current = false;
+      },
+      () => {
+        if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+          if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
           isGeolocationInProgress.current = false;
-        },
-        { timeout: 8000 }
-      );
-    }, 1500);
+          return;
+        }
+        setLocationStatus('error');
+        setShowLocationErrorPopup(true);
+        if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+        isGeolocationInProgress.current = false;
+      },
+      { timeout: 8000 }
+    );
 
     return () => {
       isCancelled = true;
       isGeolocationInProgress.current = false;
-      clearTimeout(delayId);
+      if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
       abortController.abort();
     };
-  }, [availableCountries, currentScreen]);
+  }, [locationConsent, availableCountries, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
     if (isAutoAdvancing) return;
@@ -231,6 +244,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       case 'confirmation':
         handleComplete();
         break;
+      case 'international-only':
+        handleComplete();
+        break;
     }
   };
 
@@ -253,6 +269,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       case 'confirmation':
         setCurrentScreen('country-select');
         break;
+      case 'international-only':
+        setCurrentScreen('country-select');
+        break;
     }
   };
 
@@ -260,6 +279,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     userMadeExplicitChoice.current = true;
     setSelectedCountry(null);
     setCurrentScreen('confirmation');
+  };
+
+  const handleLocationConsent = (consented: boolean) => {
+    setLocationConsent(consented);
+    setShowLocationConsentDialog(false);
+    if (!consented) {
+      userMadeExplicitChoice.current = true;
+    }
   };
 
   const handleComplete = () => {
@@ -331,7 +358,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       onTouchEnd={handleTouchEnd}
     >
       <div className="w-full">
-        <div className="mx-auto w-full max-w-2xl space-y-4 px-2 py-3 sm:px-3 sm:py-4 sm:px-6 sm:py-6 lg:px-8">
+        <div className="mx-auto w-full max-w-2xl space-y-4 px-2 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
               <span>Setup</span>
@@ -447,7 +474,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
               <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Where are you from?</h2>
-              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. <span className="text-[oklch(0.72_0.15_65)]">You can opt out of Home Swipes by declining location permission</span></p>
+              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. <span className="text-[oklch(0.72_0.15_65)]">Or skip to Global-only mode</span></p>
               <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">Your precise coordinates will be sent to Nominatim (OpenStreetMap) to detect your country.</p>
             </div>
 
@@ -558,15 +585,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                   <h2 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">No problem</h2>
                   <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">You'll get Global cards only—for now</p>
                 </div>
-                <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 font-['Space_Grotesk']">Add your country anytime in settings</p>
+                <p className="text-sm text-[oklch(0.75_0.02_220)] opacity-70 font-['Space_Grotesk']">Add your country anytime in settings</p>
               </>
             )}
             <button onClick={handleComplete} className="min-h-12 w-full rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90">Start swiping</button>
           </div>
         )}
-        </div>{/* /space-y-4 p-4 pr-8 */}
 
-        {/* Screen 7: International Only */}
         {currentScreen === 'international-only' && (
           <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
@@ -574,12 +599,54 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">You'll get Global cards only—for now</p>
             </div>
             <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 font-['Space_Grotesk']">Add your country anytime in settings</p>
-            <button
-              onClick={handleComplete}
-              className="min-h-11 w-full rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-2.5 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90 sm:min-h-12 sm:py-3"
+            <div className="flex gap-3">
+              <button
+                onClick={handleBackScreen}
+                className="flex-1 min-h-12 rounded-xl border border-[oklch(0.75_0.02_250)] bg-transparent px-4 py-3 font-semibold font-['Space_Grotesk'] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleComplete}
+                className="flex-1 min-h-12 rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90"
+              >
+                Start swiping
+              </button>
+            </div>
+          </div>
+        )}
+        </div>{/* /space-y-4 p-4 pr-8 */}
+
+        {/* Location Consent Dialog */}
+        {showLocationConsentDialog && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="location-consent-title"
+              className="bg-[oklch(0.20_0.02_250)] rounded-xl p-6 max-w-sm w-full border border-[oklch(0.62_0.18_142)/0.3]"
             >
-              Start swiping
-            </button>
+              <h3 id="location-consent-title" className="text-lg font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">
+                Use your location?
+              </h3>
+              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mb-4">
+                We can detect your country automatically. Your precise GPS coordinates will be sent to <strong>Nominatim (OpenStreetMap)</strong> to determine your location.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleLocationConsent(true)}
+                  className="flex-1 py-2.5 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
+                >
+                  Yes, use location
+                </button>
+                <button
+                  onClick={() => handleLocationConsent(false)}
+                  className="flex-1 py-2.5 border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors"
+                >
+                  No thanks
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -602,21 +669,30 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </p>
               <div className="flex gap-2">
                 <button
-                  onClick={() => setShowLocationErrorPopup(false)}
+                  onClick={() => {
+                    setShowLocationErrorPopup(false);
+                    setLocationRetryToken(prev => prev + 1);
+                  }}
                   className="flex-1 py-2.5 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
+                >
+                  Try again
+                </button>
+                <button
+                  onClick={() => setShowLocationErrorPopup(false)}
+                  className="flex-1 py-2.5 border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors"
                 >
                   Manual search
                 </button>
-                <button
-                  onClick={() => {
-                    setShowLocationErrorPopup(false);
-                    setCurrentScreen('international-only');
-                  }}
-                  className="flex-1 py-2.5 border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors"
-                >
-                  Do this later
-                </button>
               </div>
+              <button
+                onClick={() => {
+                  setShowLocationErrorPopup(false);
+                  setCurrentScreen('international-only');
+                }}
+                className="w-full mt-2 py-2.5 text-sm text-[oklch(0.75_0.02_250)] opacity-70 font-['Space_Grotesk'] hover:opacity-100 transition-opacity"
+              >
+                Do this later
+              </button>
             </div>
           </div>
         )}

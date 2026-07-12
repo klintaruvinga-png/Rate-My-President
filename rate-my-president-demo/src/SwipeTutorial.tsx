@@ -3,7 +3,7 @@ import headerImage from '@root/assets/Obama Header No BG.png';
 
 export const SwipeTutorial: React.FC = () => {
   return (
-    <div className="w-full max-w-xs mx-auto py-1 relative flex flex-col items-center select-none overflow-visible sm:py-2 sm:py-4">
+    <div className="w-full max-w-xs mx-auto py-1 relative flex flex-col items-center select-none overflow-visible sm:py-4">
       {/* Self-contained CSS Keyframes */}
       <style>{`
         @keyframes tutorial-card {

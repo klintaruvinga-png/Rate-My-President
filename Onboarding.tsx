@@ -39,7 +39,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [detectedCountry, setDetectedCountry] = useState<CountryData | null>(null);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
-  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const [showLocationErrorPopup, setShowLocationErrorPopup] = useState(false);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -192,7 +191,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       clearTimeout(delayId);
       abortController.abort();
     };
-  }, [availableCountries, defaultCountry, currentScreen, locationRetryToken]);
+  }, [availableCountries, defaultCountry, currentScreen]);
 
   const handleAdvanceScreen = () => {
     if (isAutoAdvancing) return;
