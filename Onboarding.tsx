@@ -45,6 +45,39 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
+  // Swipe gesture handling
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const touchEndY = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+    touchStartY.current = e.changedTouches[0].screenY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    touchEndY.current = e.changedTouches[0].screenY;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const diffX = touchStartX.current - touchEndX.current;
+    const diffY = touchStartY.current - touchEndY.current;
+
+    // Require horizontal gesture with at least 50px and greater than vertical distance
+    if (Math.abs(diffX) >= 50 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        // Swipe left - advance
+        handleAdvanceScreen();
+      } else {
+        // Swipe right - go back
+        handleBackScreen();
+      }
+    }
+  };
+
   // Detect user's geolocation only after explicit consent and with cleanup protection.
   useEffect(() => {
     if (defaultCountry || locationConsent !== true) return;
@@ -115,6 +148,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   }, [availableCountries, defaultCountry, locationConsent, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
+    if (isAutoAdvancing) return;
+
     switch (currentScreen) {
       case 'intro':
         setCurrentScreen('mechanic-home');
@@ -141,6 +176,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleBackScreen = () => {
+    if (isAutoAdvancing) return;
+
     switch (currentScreen) {
       case 'mechanic-home':
         setCurrentScreen('intro');
@@ -174,6 +211,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleComplete = () => {
+    if (isAutoAdvancing) return;
+
     setUserCountry(selectedCountry?.code || null);
     setIsAutoAdvancing(true);
     setTimeout(() => {
@@ -191,7 +230,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const cardColor = 'bg-[oklch(0.20_0.02_250)]';
 
   return (
-    <div className={`min-h-screen ${bgColor} flex items-center justify-center p-4 transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
+    <div 
+      className={`min-h-screen ${bgColor} flex items-center justify-center p-4 transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Screen 1: Intro */}
       {currentScreen === 'intro' && (
         <div className="w-full max-w-md space-y-8 text-center">

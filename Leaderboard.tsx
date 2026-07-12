@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { LeaderboardEntry, LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
 import { TrendUpIcon, TrendDownIcon } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
@@ -13,9 +13,75 @@ export default function Leaderboard({
   lastUpdated,
 }: LeaderboardProps) {
   const [sortState, setSortState] = useState<LeaderboardSortState>({
-    column: 'approval',
-    direction: 'desc',
+    column: 'rank',
+    direction: 'asc',
   });
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Slow stream-style auto-scroll with 300ms initial pause
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container || !entries || entries.length === 0) return;
+
+    let scrollInterval: ReturnType<typeof setInterval>;
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+    let isPaused = false;
+
+    const startScroll = () => {
+      scrollInterval = setInterval(() => {
+        if (!isPaused) {
+          if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+            // Reset to top when reaching bottom
+            container.scrollTop = 0;
+          } else {
+            container.scrollTop += 1;
+          }
+        }
+      }, 50); // Slow scroll speed
+    };
+
+    const handleMouseEnter = () => {
+      isPaused = true;
+    };
+
+    const handleMouseLeave = () => {
+      isPaused = false;
+    };
+
+    const handleTouchStart = () => {
+      isPaused = true;
+    };
+
+    const handleTouchEnd = () => {
+      isPaused = false;
+    };
+
+    const handleTouchCancel = () => {
+      isPaused = false;
+    };
+
+    // Initial 300ms pause before starting scroll
+    scrollTimeout = setTimeout(() => {
+      startScroll();
+    }, 300);
+
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener('touchcancel', handleTouchCancel);
+
+    return () => {
+      clearTimeout(scrollTimeout);
+      clearInterval(scrollInterval);
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchcancel', handleTouchCancel);
+    };
+  }, [entries]);
 
   // Sort entries based on current sort state
   const sortedEntries = useMemo(() => {
@@ -64,8 +130,17 @@ export default function Leaderboard({
   );
 
   const getSortIndicator = (column: LeaderboardSortState['column']) => {
-    if (sortState.column !== column) return null;
-    return sortState.direction === 'desc' ? '▼' : '▲';
+    const isActive = sortState.column === column;
+    const direction = isActive ? (sortState.direction === 'desc' ? '▼' : '▲') : '▲';
+    return { direction, isActive };
+  };
+
+  const resolveAvatarSrc = (avatarUrl: string) => {
+    if (!avatarUrl) return '';
+    if (avatarUrl.startsWith('/avatars/')) {
+      return avatarUrl.replace('/avatars/', '/avatars/thumbs/');
+    }
+    return avatarUrl;
   };
 
   // Skeleton loader component
@@ -95,7 +170,7 @@ export default function Leaderboard({
   return (
     <div className="w-full bg-[oklch(0.15_0.04_250)] text-[oklch(0.95_0.02_250)]">
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-[oklch(0.28_0.02_250)] px-4 sm:px-6">
+      <div className="flex gap-1 px-4 sm:px-6">
         {(['day', 'week', 'all'] as const).map((window) => (
           <button
             key={window}
@@ -139,48 +214,69 @@ export default function Leaderboard({
 
       {/* Table */}
       {!error && entries.length > 0 && (
-        <div className="overflow-x-auto">
+        <div className="max-h-[min(64vh,560px)] overflow-auto" ref={scrollContainerRef}>
           <table
-            className="w-full text-sm"
+            className="w-full text-sm min-w-[500px]"
             role="grid"
             aria-label={`Leader rankings for ${selectedWindow === 'day' ? 'today' : selectedWindow === 'week' ? 'this week' : 'all time'}`}
           >
-            <thead className="border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]">
+            <thead className="sticky top-0 z-10 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]">
               <tr>
                 <th
-                  className="px-4 py-3 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer hover:text-[oklch(0.95_0.02_250)] transition-colors"
+                  className={`px-4 py-3 text-left font-['Inter'] font-600 cursor-pointer transition-colors ${getSortIndicator('rank').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('rank')}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleColumnClick('rank');
+                    }
+                  }}
+                  tabIndex={0}
                   aria-sort={sortState.column === 'rank' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center gap-1">
                     Rank
-                    <span className="text-xs opacity-70 min-w-4">{getSortIndicator('rank')}</span>
+                    <span className={`text-xs min-w-4 ${getSortIndicator('rank').isActive ? 'opacity-100' : 'opacity-40'}`}>{getSortIndicator('rank').direction}</span>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)]">
                   Leader
                 </th>
                 <th
-                  className="px-4 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer hover:text-[oklch(0.95_0.02_250)] transition-colors"
+                  className={`px-4 py-3 text-center font-['Inter'] font-600 cursor-pointer transition-colors ${getSortIndicator('approval').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('approval')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleColumnClick('approval');
+                    }
+                  }}
+                  tabIndex={0}
                   aria-sort={sortState.column === 'approval' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
-                  <div className="flex items-center justify-end gap-1">
+                  <div className="flex items-center justify-center gap-1">
                     Approval
-                    <span className="text-xs opacity-70 min-w-4">{getSortIndicator('approval')}</span>
+                    <span className={`text-xs min-w-4 ${getSortIndicator('approval').isActive ? 'opacity-100' : 'opacity-40'}`}>{getSortIndicator('approval').direction}</span>
                   </div>
                 </th>
-                <th className="hidden px-4 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] md:table-cell">
+                <th className="hidden px-4 py-3 text-center font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] md:table-cell">
                   Trend
                 </th>
                 <th
-                  className="hidden px-4 py-3 text-right font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] cursor-pointer hover:text-[oklch(0.95_0.02_250)] transition-colors lg:table-cell"
+                  className={`hidden px-4 py-3 text-center font-['Inter'] font-600 cursor-pointer transition-colors lg:table-cell ${getSortIndicator('votes').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('votes')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleColumnClick('votes');
+                    }
+                  }}
+                  tabIndex={0}
                   aria-sort={sortState.column === 'votes' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
-                  <div className="flex items-center justify-end gap-1">
+                  <div className="flex items-center justify-center gap-1">
                     Votes
-                    <span className="text-xs opacity-70 min-w-4">{getSortIndicator('votes')}</span>
+                    <span className={`text-xs min-w-4 ${getSortIndicator('votes').isActive ? 'opacity-100' : 'opacity-40'}`}>{getSortIndicator('votes').direction}</span>
                   </div>
                 </th>
               </tr>
@@ -204,9 +300,18 @@ export default function Leaderboard({
                         <div className="flex items-center gap-3">
                           {/* Avatar */}
                           <img
-                            src={entry.avatarUrl}
+                            src={resolveAvatarSrc(entry.avatarUrl)}
                             alt={entry.name}
-                            className="h-10 w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0"
+                            loading="lazy"
+                            onError={(event) => {
+                              const target = event.currentTarget as HTMLImageElement;
+                              if (target.src.includes('/avatars/thumbs/')) {
+                                target.src = entry.avatarUrl;
+                              } else if (!target.src.startsWith('data:')) {
+                                target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="60" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
+                              }
+                            }}
+                            className="h-10 w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0 object-cover"
                           />
                           {/* Flag + Name */}
                           {(entry.countryCode || entry.countryFlag) && (
@@ -221,27 +326,29 @@ export default function Leaderboard({
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-right font-['Inter'] font-700 text-base">
+                      <td className="px-4 py-4 text-center font-['Inter'] font-700 text-base">
                         <span
                           className={entry.approvalPercent >= 50 ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]'}
                         >
                           {entry.approvalPercent}%
                         </span>
                       </td>
-                      <td className="hidden px-4 py-4 text-right md:table-cell">
-                        {entry.trend === 'up' ? (
-                          <TrendUpIcon
-                            className={`w-5 h-5 text-[oklch(0.62_0.18_142)]`}
-                            aria-label="Trend up"
-                          />
-                        ) : (
-                          <TrendDownIcon
-                            className={`w-5 h-5 text-[oklch(0.55_0.20_25)]`}
-                            aria-label="Trend down"
-                          />
-                        )}
+                      <td className="hidden px-4 py-4 text-center md:table-cell">
+                        <div className="flex items-center justify-center">
+                          {entry.trend === 'up' ? (
+                            <TrendUpIcon
+                              className={`w-5 h-5 text-[oklch(0.62_0.18_142)]`}
+                              aria-label="Trend up"
+                            />
+                          ) : (
+                            <TrendDownIcon
+                              className={`w-5 h-5 text-[oklch(0.55_0.20_25)]`}
+                              aria-label="Trend down"
+                            />
+                          )}
+                        </div>
                       </td>
-                      <td className="hidden px-4 py-4 text-right font-['Inter'] text-[oklch(0.75_0.02_250)] lg:table-cell">
+                      <td className="hidden px-4 py-4 text-center font-['Inter'] text-[oklch(0.75_0.02_250)] lg:table-cell">
                         {entry.voteCount.toLocaleString()}
                       </td>
                     </tr>

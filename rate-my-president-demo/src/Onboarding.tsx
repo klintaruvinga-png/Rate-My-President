@@ -58,6 +58,39 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation'];
   const progressPercent = ((screenOrder.indexOf(currentScreen) + 1) / screenOrder.length) * 100;
 
+  // Swipe gesture handling
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const touchEndY = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+    touchStartY.current = e.changedTouches[0].screenY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    touchEndY.current = e.changedTouches[0].screenY;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const diffX = touchStartX.current - touchEndX.current;
+    const diffY = touchStartY.current - touchEndY.current;
+
+    // Require horizontal gesture with at least 50px and greater than vertical distance
+    if (Math.abs(diffX) >= 50 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        // Swipe left - advance
+        handleAdvanceScreen();
+      } else {
+        // Swipe right - go back
+        handleBackScreen();
+      }
+    }
+  };
+
   // Only attempt geolocation & reverse-geocoding after explicit user consent.
   useEffect(() => {
     if (locationConsent !== true) return;
@@ -131,6 +164,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   }, [availableCountries, locationConsent, locationRetryToken]);
 
   const handleAdvanceScreen = () => {
+    if (isAutoAdvancing) return;
+
     switch (currentScreen) {
       case 'intro':
         setCurrentScreen('mechanic-home');
@@ -156,6 +191,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleBackScreen = () => {
+    if (isAutoAdvancing) return;
+
     switch (currentScreen) {
       case 'mechanic-home':
         setCurrentScreen('intro');
@@ -182,6 +219,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleComplete = () => {
+    if (isAutoAdvancing) return;
+
     setUserCountry(selectedCountry?.code || null);
     setIsAutoAdvancing(true);
     setTimeout(() => {
@@ -242,7 +281,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const cardColor = 'bg-[oklch(0.20_0.02_250)]';
 
   return (
-    <div className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}>
+    <div 
+      className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="w-full">
         <div className="mx-auto w-full max-w-2xl space-y-4 px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
           <div className="space-y-2">
@@ -341,12 +384,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
                 <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
-                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon /></span></div>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon className="w-full h-full" /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon className="w-full h-full" /></span></div>
               </div>
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
                 <div className="text-3xl inline-block w-10 h-10"><GlobeIcon aria-label="Global" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
-                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon /></span></div>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon className="w-full h-full" /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon className="w-full h-full" /></span></div>
               </div>
             </div>
             <div className="space-y-2 text-center">
