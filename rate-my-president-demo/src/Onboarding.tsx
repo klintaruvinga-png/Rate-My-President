@@ -135,6 +135,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   // Trigger geolocation only after user explicitly consents
   useEffect(() => {
     if (locationConsent !== true) return;
+    if (currentScreen !== 'country-select') return;
     if (!navigator.geolocation || availableCountries.length === 0) return;
     if (isGeolocationInProgress.current) return;
 
@@ -217,7 +218,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
       abortController.abort();
     };
-  }, [locationConsent, availableCountries]);
+  }, [locationConsent, availableCountries, currentScreen]);
 
   const handleAdvanceScreen = () => {
     if (isAutoAdvancing) return;
