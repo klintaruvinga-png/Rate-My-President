@@ -163,6 +163,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     if (currentScreen !== 'country-select') return;
     if (!navigator.geolocation || availableCountries.length === 0) return;
     if (isGeolocationInProgress.current) return;
+    if (userMadeExplicitChoice.current) return;
 
     const abortController = new AbortController();
     let isCancelled = false;
