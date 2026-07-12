@@ -38,6 +38,7 @@ export default function Leaderboard({
     let scrollInterval: ReturnType<typeof setInterval> | null = null;
     let scrollTimeout: ReturnType<typeof setTimeout>;
     let isPaused = false;
+    let initialDelayElapsed = false;
 
     const startScroll = () => {
       // Clear any existing interval
@@ -90,7 +91,7 @@ export default function Leaderboard({
     // Use ResizeObserver to detect when content overflows
     const resizeObserver = new ResizeObserver(() => {
       if (container.scrollHeight > container.clientHeight) {
-        if (!scrollInterval) {
+        if (!scrollInterval && initialDelayElapsed) {
           startScroll();
         }
       } else {
@@ -102,6 +103,7 @@ export default function Leaderboard({
 
     // Initial 300ms pause before starting scroll
     scrollTimeout = setTimeout(() => {
+      initialDelayElapsed = true;
       startScroll();
     }, 300);
 
@@ -285,7 +287,7 @@ export default function Leaderboard({
       </td>
       <td className="px-2 py-2 sm:px-3 sm:py-3">
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="h-8 w-8 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-full" />
+          <div className="h-8 w-8 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
           <div className="h-3 w-16 sm:h-4 sm:w-24 bg-[oklch(0.28_0.02_250)] rounded" />
         </div>
       </td>

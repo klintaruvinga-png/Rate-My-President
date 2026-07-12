@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { KeyboardEvent } from 'react';
 import { LeaderboardEntry, LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
-import { TrendUpIcon, TrendDownIcon } from './Icons';
+import { TrendUpIcon, TrendDownIcon, ChevronDownIcon } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 
 export default function Leaderboard({
@@ -30,6 +30,7 @@ export default function Leaderboard({
     let scrollInterval: ReturnType<typeof setInterval> | null = null;
     let scrollTimeout: ReturnType<typeof setTimeout>;
     let isPaused = false;
+    let initialDelayElapsed = false;
 
     const startScroll = () => {
       // Clear any existing interval
@@ -82,7 +83,7 @@ export default function Leaderboard({
     // Use ResizeObserver to detect when content overflows
     const resizeObserver = new ResizeObserver(() => {
       if (container.scrollHeight > container.clientHeight) {
-        if (!scrollInterval) {
+        if (!scrollInterval && initialDelayElapsed) {
           startScroll();
         }
       } else {
@@ -94,6 +95,7 @@ export default function Leaderboard({
 
     // Initial 300ms pause before starting scroll
     scrollTimeout = setTimeout(() => {
+      initialDelayElapsed = true;
       startScroll();
     }, 300);
 
@@ -239,7 +241,7 @@ export default function Leaderboard({
             className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-['Space_Grotesk'] transition-all bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] hover:bg-[oklch(0.28_0.02_250)]"
           >
             {timeLabels[selectedWindow]}
-            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <ChevronDownIcon className="w-4 h-4" aria-hidden="true" />
           </button>
           {timeDropdownOpen && (
             <div className="absolute top-full left-0 mt-2 z-20 bg-[oklch(0.20_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] shadow-lg min-w-[150px]">
@@ -372,7 +374,15 @@ export default function Leaderboard({
                       </td>
                       <td
                         className="px-2 py-2 sm:px-3 sm:py-3 cursor-pointer"
+                        role={onLeaderClick ? 'button' : undefined}
+                        tabIndex={onLeaderClick ? 0 : undefined}
                         onClick={() => onLeaderClick && onLeaderClick(entry.id)}
+                        onKeyDown={(event) => {
+                          if ((event.key === 'Enter' || event.key === ' ') && onLeaderClick) {
+                            event.preventDefault();
+                            onLeaderClick(entry.id);
+                          }
+                        }}
                       >
                         <div className="flex items-center gap-2 sm:gap-3">
                           {/* Avatar */}
