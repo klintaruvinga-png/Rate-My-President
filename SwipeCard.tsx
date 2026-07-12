@@ -474,6 +474,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
         </div>
       </div>
+      )}
 
       {/* Results card (fades in from center) */}
       {showResults && (

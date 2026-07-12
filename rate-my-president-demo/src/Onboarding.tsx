@@ -118,7 +118,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setShowLocationConsentDialog(false);
+        handleLocationConsent(false);
       }
     };
 

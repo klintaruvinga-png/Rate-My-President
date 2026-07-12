@@ -48,7 +48,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const popupRef = useRef<HTMLDivElement>(null);
   const consentDialogRef = useRef<HTMLDivElement>(null);
   const isGeolocationInProgress = useRef(false);
-  const geolocationTimeoutId = useRef<NodeJS.Timeout | null>(null);
+  const geolocationTimeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
@@ -105,7 +105,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setShowLocationConsentDialog(false);
+        handleLocationConsent(false);
       }
     };
 
@@ -113,19 +113,61 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showLocationConsentDialog]);
 
-  // Move focus to error popup when it opens
-  useEffect(() => {
-    if (showLocationErrorPopup && popupRef.current) {
-      popupRef.current.focus();
-    }
-  }, [showLocationErrorPopup]);
+  // Focus trap helper: traps Tab/Shift+Tab within a dialog and restores focus on unmount
+  const useFocusTrap = (isOpen: boolean, dialogRef: React.RefObject<HTMLDivElement>) => {
+    useEffect(() => {
+      if (!isOpen || !dialogRef.current) return;
 
-  // Move focus to consent dialog when it opens
-  useEffect(() => {
-    if (showLocationConsentDialog && consentDialogRef.current) {
-      consentDialogRef.current.focus();
-    }
-  }, [showLocationConsentDialog]);
+      const dialog = dialogRef.current;
+      const previouslyFocusedElement = document.activeElement as HTMLElement;
+
+      // Move focus into the dialog
+      dialog.focus();
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+
+        const focusableElements = dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        const focusableArray = Array.from(focusableElements);
+        const firstFocusable = focusableArray[0];
+        const lastFocusable = focusableArray[focusableArray.length - 1];
+
+        if (!firstFocusable) return;
+
+        if (e.shiftKey) {
+          // Shift+Tab: wrap from first to last
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable?.focus();
+          }
+        } else {
+          // Tab: wrap from last to first
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable.focus();
+          }
+        }
+      };
+
+      dialog.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        dialog.removeEventListener('keydown', handleKeyDown);
+        // Restore focus to the element that had focus before the dialog opened
+        if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+          previouslyFocusedElement.focus();
+        }
+      };
+    }, [isOpen, dialogRef]);
+  };
+
+  // Apply focus trap to consent dialog
+  useFocusTrap(showLocationConsentDialog, consentDialogRef);
+
+  // Apply focus trap to error popup
+  useFocusTrap(showLocationErrorPopup, popupRef);
 
   // Show location consent dialog when entering country-select screen
   // eslint-disable-next-line react-hooks/exhaustive-deps -- locationConsent intentionally omitted to prevent re-showing dialog after consent
