@@ -288,6 +288,8 @@ export default function Leaderboard({
         <div className="lg:hidden relative" ref={dropdownRef}>
           <button
             onClick={() => setRegionDropdownOpen(!regionDropdownOpen)}
+            aria-expanded={regionDropdownOpen}
+            aria-haspopup="true"
             className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-['Space_Grotesk'] transition-all bg-[oklch(0.20_0.02_250)] text-[oklch(0.95_0.02_250)] hover:bg-[oklch(0.28_0.02_250)]"
           >
             {localRegion === 'global' ? 'Global' : localRegion}

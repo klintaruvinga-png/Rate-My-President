@@ -26,16 +26,39 @@ export default function Leaderboard({
 
     let scrollInterval: ReturnType<typeof setInterval>;
     let scrollTimeout: ReturnType<typeof setTimeout>;
+    let isPaused = false;
 
     const startScroll = () => {
       scrollInterval = setInterval(() => {
-        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
-          // Reset to top when reaching bottom
-          container.scrollTop = 0;
-        } else {
-          container.scrollTop += 1;
+        if (!isPaused) {
+          if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+            // Reset to top when reaching bottom
+            container.scrollTop = 0;
+          } else {
+            container.scrollTop += 1;
+          }
         }
       }, 50); // Slow scroll speed
+    };
+
+    const handleMouseEnter = () => {
+      isPaused = true;
+    };
+
+    const handleMouseLeave = () => {
+      isPaused = false;
+    };
+
+    const handleTouchStart = () => {
+      isPaused = true;
+    };
+
+    const handleTouchEnd = () => {
+      isPaused = false;
+    };
+
+    const handleTouchCancel = () => {
+      isPaused = false;
     };
 
     // Initial 300ms pause before starting scroll
@@ -43,9 +66,20 @@ export default function Leaderboard({
       startScroll();
     }, 300);
 
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener('touchcancel', handleTouchCancel);
+
     return () => {
       clearTimeout(scrollTimeout);
       clearInterval(scrollInterval);
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchcancel', handleTouchCancel);
     };
   }, [entries]);
 
@@ -186,11 +220,18 @@ export default function Leaderboard({
             role="grid"
             aria-label={`Leader rankings for ${selectedWindow === 'day' ? 'today' : selectedWindow === 'week' ? 'this week' : 'all time'}`}
           >
-            <thead className="border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]">
+            <thead className="sticky top-0 z-10 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]">
               <tr>
                 <th
                   className={`px-4 py-3 text-left font-['Inter'] font-600 cursor-pointer transition-colors ${getSortIndicator('rank').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('rank')}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleColumnClick('rank');
+                    }
+                  }}
+                  tabIndex={0}
                   aria-sort={sortState.column === 'rank' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center gap-1">

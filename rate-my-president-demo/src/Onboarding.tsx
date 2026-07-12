@@ -384,12 +384,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
                 <div className="text-3xl inline-block w-10 h-10"><HomeIcon aria-label="Home" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Home</p>
-                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon /></span></div>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon className="w-full h-full" /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon className="w-full h-full" /></span></div>
               </div>
               <div className={`${cardColor} rounded-lg p-4 text-center space-y-2`}>
                 <div className="text-3xl inline-block w-10 h-10"><GlobeIcon aria-label="Global" /></div>
                 <p className="text-xs text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">Global</p>
-                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon /></span></div>
+                <div className="flex justify-center gap-2 text-lg"><span className="inline-block w-5 h-5" aria-hidden="true"><NoLikeIcon className="w-full h-full" /></span><span className="inline-block w-5 h-5" aria-hidden="true"><LikeIcon className="w-full h-full" /></span></div>
               </div>
             </div>
             <div className="space-y-2 text-center">

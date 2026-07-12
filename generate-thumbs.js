@@ -46,6 +46,7 @@ console.log('Thumbnail generation started...');
       hasFailures = true;
     }
   }
+
   console.log('Thumbnail generation complete!');
 
   if (hasFailures) {
