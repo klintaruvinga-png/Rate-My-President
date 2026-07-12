@@ -66,6 +66,10 @@ export default function Leaderboard({
       isPaused = false;
     };
 
+    const handleTouchCancel = () => {
+      isPaused = false;
+    };
+
     // Initial 300ms pause before starting scroll
     scrollTimeout = setTimeout(() => {
       startScroll();
@@ -75,6 +79,7 @@ export default function Leaderboard({
     container.addEventListener('mouseleave', handleMouseLeave);
     container.addEventListener('touchstart', handleTouchStart);
     container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener('touchcancel', handleTouchCancel);
 
     return () => {
       clearTimeout(scrollTimeout);
@@ -83,6 +88,7 @@ export default function Leaderboard({
       container.removeEventListener('mouseleave', handleMouseLeave);
       container.removeEventListener('touchstart', handleTouchStart);
       container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchcancel', handleTouchCancel);
     };
   }, [entries]);
 

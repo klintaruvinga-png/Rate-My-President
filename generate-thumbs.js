@@ -21,6 +21,8 @@ console.log('Thumbnail generation started...');
 
 // Process each avatar
 (async () => {
+  let hasFailures = false;
+
   for (const file of avatarFiles) {
     const inputPath = path.join(avatarsDir, file);
     const outputPath = path.join(thumbsDir, file);
@@ -41,7 +43,12 @@ console.log('Thumbnail generation started...');
       console.log(`✓ Generated thumbnail for ${file}`);
     } catch (error) {
       console.error(`✗ Error processing ${file}:`, error.message);
+      hasFailures = true;
     }
   }
   console.log('Thumbnail generation complete!');
+
+  if (hasFailures) {
+    process.exitCode = 1;
+  }
 })();

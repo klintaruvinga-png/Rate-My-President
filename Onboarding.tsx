@@ -176,6 +176,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleBackScreen = () => {
+    if (isAutoAdvancing) return;
+
     switch (currentScreen) {
       case 'mechanic-home':
         setCurrentScreen('intro');
@@ -209,6 +211,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleComplete = () => {
+    if (isAutoAdvancing) return;
+
     setUserCountry(selectedCountry?.code || null);
     setIsAutoAdvancing(true);
     setTimeout(() => {
