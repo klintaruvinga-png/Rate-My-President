@@ -50,6 +50,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [showLocationErrorPopup, setShowLocationErrorPopup] = useState(false);
   const [showLocationConsentDialog, setShowLocationConsentDialog] = useState(false);
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const [focusedCountryIndex, setFocusedCountryIndex] = useState(0);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
@@ -154,7 +155,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     }, 500);
 
     return () => clearTimeout(delayId);
-  }, [availableCountries, currentScreen]);
+  }, [availableCountries, currentScreen, locationRetryToken]);
 
   // Trigger geolocation only after user explicitly consents
   useEffect(() => {
@@ -310,6 +311,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setShowLocationConsentDialog(false);
     locationConsentHandled.current = true;
     if (!consented) {
+      // Intentionally set userMadeExplicitChoice to permanently block geolocation
+      // This respects the user's privacy choice - declining consent is a permanent decision
       userMadeExplicitChoice.current = true;
     }
   };
@@ -700,6 +703,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     setShowLocationErrorPopup(false);
                     setLocationConsent(null);
                     locationConsentHandled.current = false;
+                    setLocationRetryToken(prev => prev + 1);
                   }}
                   className="flex-1 py-2.5 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
                 >

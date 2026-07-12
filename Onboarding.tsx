@@ -42,6 +42,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [showLocationErrorPopup, setShowLocationErrorPopup] = useState(false);
   const [showLocationConsentDialog, setShowLocationConsentDialog] = useState(false);
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
   const locationConsentHandled = useRef(false);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -141,7 +142,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     }, 500);
 
     return () => clearTimeout(delayId);
-  }, [availableCountries, defaultCountry, currentScreen]);
+  }, [availableCountries, defaultCountry, currentScreen, locationRetryToken]);
 
   // Trigger geolocation only after user explicitly consents
   useEffect(() => {
@@ -298,6 +299,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setShowLocationConsentDialog(false);
     locationConsentHandled.current = true;
     if (!consented) {
+      // Intentionally set userMadeExplicitChoice to permanently block geolocation
+      // This respects the user's privacy choice - declining consent is a permanent decision
       userMadeExplicitChoice.current = true;
     }
   };
@@ -781,8 +784,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </p>
             <div className="flex gap-2">
               <button
-                onClick={() => setShowLocationErrorPopup(false)}
+                onClick={() => {
+                  setShowLocationErrorPopup(false);
+                  setLocationConsent(null);
+                  locationConsentHandled.current = false;
+                  setLocationRetryToken(prev => prev + 1);
+                }}
                 className="flex-1 py-2.5 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
+              >
+                Try again
+              </button>
+              <button
+                onClick={() => setShowLocationErrorPopup(false)}
+                className="flex-1 py-2.5 border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors"
               >
                 Manual search
               </button>
