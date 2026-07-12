@@ -481,7 +481,7 @@ export default function Leaderboard({
                 : filteredEntries.map((entry, index) => (
                     <tr
                       key={entry.id}
-                      className="border-b border-[oklch(0.28_0.02_250)] hover:bg-[oklch(0.20_0.02_250)] transition-colors group motion-safe:animate-[fadeIn_0.2s_ease-out]"
+                      className="border-b border-[oklch(0.28_0.02_250)] hover:bg-[oklch(0.20_0.02_250)] transition-colors group motion-safe:animate-[fadeIn_0.2s_ease-out] [animation-fill-mode:backwards]"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
                       <td className="w-12 px-2 py-2 font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] sm:px-3 sm:py-3">
