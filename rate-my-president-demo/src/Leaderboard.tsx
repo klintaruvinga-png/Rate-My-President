@@ -508,14 +508,12 @@ export default function Leaderboard({
                             onError={(event) => {
                               const target = event.currentTarget as HTMLImageElement;
                               const originalUrl = entry.avatarUrl;
-                              // If current src is already the original URL, go straight to fallback
-                              if (target.src === originalUrl || target.src.endsWith(originalUrl.split('/').pop())) {
-                                if (!target.src.startsWith('data:')) {
-                                  target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="8" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
-                                }
-                              } else if (target.src.includes('/avatars/thumbs/')) {
+                              // Fallback chain: thumb → original → SVG placeholder
+                              if (target.src.includes('/avatars/thumbs/') && !target.src.endsWith(originalUrl)) {
+                                // Try the original URL if we're currently on a thumb
                                 target.src = originalUrl;
                               } else if (!target.src.startsWith('data:')) {
+                                // If we're already on the original or it failed, use SVG fallback
                                 target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="8" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
                               }
                             }}
