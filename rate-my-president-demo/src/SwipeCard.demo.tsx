@@ -154,11 +154,11 @@ export function SwipeCardDemo() {
         showMicroHistory={true}
       />
 
-      {/* Vote History — top-right on desktop only */}
+      {/* Vote history shown top right on desktop only */}
       <div className="hidden lg:block fixed top-80 right-4 bg-[oklch(0.20_0.02_250)] p-4 rounded-lg text-[oklch(0.75_0.02_250)] text-sm max-w-xs border border-[oklch(0.28_0.02_250)] shadow-xl z-40">
-        <h3 className="font-bold mb-2 text-white">Vote History:</h3>
+        <h3 className="font-bold mb-2 text-white">Vote history</h3>
         {voteHistory.length === 0 ? (
-          <p className="opacity-60 text-xs">No votes yet. Try swiping!</p>
+          <p className="opacity-60 text-xs">No votes yet. Swipe to start.</p>
         ) : (
           <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
             {voteHistory.map((vote, idx) => {

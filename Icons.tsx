@@ -234,3 +234,11 @@ export const ChevronDownIcon = ({ className, 'aria-label': ariaLabel, ...props }
     <polyline points="6 9 12 15 18 9" />
   </IconBase>
 );
+
+export const HelpIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Help" {...props}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </IconBase>
+);

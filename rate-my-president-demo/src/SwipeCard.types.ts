@@ -1,5 +1,5 @@
 /**
- * Rate My President — Swipe Card Component Types
+ * Rate My President: Swipe Card Component Types
  *
  * These types define the data structures and callbacks for the SwipeCard component.
  * Import these in any component that uses SwipeCard.
@@ -38,7 +38,7 @@ export interface Headline {
 }
 
 /**
- * Complete card data — everything displayed on a swipe card
+ * Complete card data for everything displayed on a swipe card
  */
 export interface CardData {
   /** Unique identifier for this card */

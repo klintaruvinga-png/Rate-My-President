@@ -383,11 +383,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   return (
     <>
       <div
-        className={`min-h-full ${bgColor} flex flex-col items-center justify-center transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
+        className={`min-h-[calc(100vh-var(--header-height-mobile))] sm:min-h-[calc(100vh-var(--header-height-desktop))] ${bgColor} flex flex-col items-center justify-center transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="w-full max-w-2xl space-y-4 px-2 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 lg:px-8 lg:py-6">
+        <div className="w-full max-w-2xl space-y-4 px-2 py-2 sm:px-4 sm:py-4 md:px-6 md:py-6 lg:px-8 lg:py-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
               <span>Setup</span>
@@ -402,11 +402,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="w-full space-y-4 text-center sm:space-y-5">
             <div className="space-y-2">
               <h1 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:mb-2 sm:text-2xl sm:text-3xl sm:text-4xl">Rate My President</h1>
-              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] leading-snug sm:text-sm sm:text-base sm:text-lg">Setup your daily swipes on two leaders. One from home. One from anywhere.</p>
-              <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk'] leading-snug sm:text-xs sm:text-sm">You can opt out from home swipes on later screen.</p>
+              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] leading-snug sm:text-sm sm:text-base sm:text-lg">Set up two daily swipes. One from your home country. One from anywhere.</p>
+              <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk'] leading-snug sm:text-xs sm:text-sm">You can skip home swipes later.</p>
             </div>
             <SwipeTutorial />
-            <button onClick={handleAdvanceScreen} className="min-h-11 w-full rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-2.5 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90 sm:min-h-11 sm:px-4 sm:py-2.5 sm:min-h-12 sm:py-3">Let's go</button>
+            <button onClick={handleAdvanceScreen} className="min-h-11 w-full rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-2.5 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90 sm:min-h-11 sm:px-4 sm:py-2.5 sm:min-h-12 sm:py-3">Start</button>
           </div>
         )}
 
@@ -414,8 +414,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
               <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:text-3xl">Swipe 1: Your home leader</h2>
-              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Swipe on the leader of your country.</p>
-              <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
+              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Rate the leader of your country.</p>
+              <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can skip home swipes later.</p>
             </div>
             <div className={`${cardColor} rounded-2xl p-5 text-center space-y-4 sm:p-6`}>
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[oklch(0.28_0.02_250)]">
@@ -445,7 +445,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
               <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:text-3xl">Swipe 2: A random global leader</h2>
-              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Then meet someone from anywhere in the world.</p>
+              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">Then rate a leader from anywhere in the world.</p>
             </div>
             <div className={`${cardColor} rounded-2xl p-5 text-center space-y-4 sm:p-6`}>
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[oklch(0.28_0.02_250)]">
@@ -490,7 +490,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
               </div>
             </div>
             <div className="space-y-2 text-center">
-              <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can opt out from home swipes later on this page.</p>
+              <p className="text-xs text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">You can skip home swipes later.</p>
             </div>
             <div className="flex gap-3">
               <button onClick={handleBackScreen} className="flex-1 min-h-12 rounded-xl border border-[oklch(0.75_0.02_250)] bg-transparent px-4 py-3 font-semibold font-['Space_Grotesk'] text-[oklch(0.75_0.02_250)] transition-colors hover:bg-[oklch(0.28_0.02_250)]">Back</button>
@@ -503,8 +503,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
               <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Where are you from?</h2>
-              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. <span className="text-[oklch(0.72_0.15_65)]">Or skip to Global-only mode</span></p>
-              <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">Your precise coordinates will be sent to Nominatim (OpenStreetMap) to detect your country.</p>
+              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We will show your home leader first. <span className="text-[oklch(0.72_0.15_65)]">You can also skip that and use global cards only.</span></p>
+              <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">We use your location to pick your country. We send your coordinates to Nominatim, an OpenStreetMap service, to detect your country.</p>
             </div>
 
             {/* ── Selected-country preview card ── */}
@@ -548,7 +548,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     className="w-full rounded-xl border border-[oklch(0.28_0.02_250)] bg-[oklch(0.28_0.02_250)] px-4 py-3 font-['Space_Grotesk'] text-[oklch(0.95_0.02_250)] outline-none transition-colors focus:border-[oklch(0.62_0.18_142)]"
                   />
                 </div>
-                <div className={`${cardColor} max-h-[min(45vh,320px)] overflow-hidden overflow-y-auto rounded-2xl`} role="listbox" aria-label="Country list">
+                <div className={`${cardColor} max-h-[min(35vh,240px)] sm:max-h-[min(45vh,320px)] overflow-hidden overflow-y-auto rounded-2xl`} role="listbox" aria-label="Country list">
                   {visibleCountries.map((country, index) => (
                     <button
                       key={country.code}
@@ -612,7 +612,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     <MapPinIcon aria-label="Location" />
                   </div>
                   <h2 className="text-4xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-2">No problem</h2>
-                  <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">You'll get Global cards only—for now</p>
+                  <p className="text-xl text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">You will see global cards for now.</p>
                 </div>
                 <p className="text-sm text-[oklch(0.75_0.02_220)] opacity-70 font-['Space_Grotesk']">Add your country anytime in settings</p>
               </>
@@ -625,7 +625,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="w-full space-y-5 text-center">
             <div className="space-y-1">
               <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] sm:text-3xl">No problem</h2>
-              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">You'll get Global cards only—for now</p>
+              <p className="text-base text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] sm:text-lg">You will see global cards for now.</p>
             </div>
             <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 font-['Space_Grotesk']">Add your country anytime in settings</p>
             <div className="flex gap-3">
@@ -660,7 +660,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 Use your location?
               </h3>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mb-4">
-                We can detect your country automatically. Your precise GPS coordinates will be sent to <strong>Nominatim (OpenStreetMap)</strong> to determine your location.
+                We can detect your country automatically. We send your coordinates to <strong>Nominatim (OpenStreetMap)</strong> to determine your location.
               </p>
               <div className="flex gap-2">
                 <button
@@ -695,7 +695,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 Couldn't detect your location
               </h3>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mb-4">
-                This could be due to permission denied, timeout, or network issues. You can still select your country manually or skip for now.
+                This can happen when location access is denied, the request times out, or the network fails. You can still pick your country manually or skip for now.
               </p>
               <div className="flex gap-2">
                 <button

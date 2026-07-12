@@ -303,7 +303,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {/* Overlay Information on Image */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/40 to-transparent px-3 pb-4 pt-12 sm:px-5 sm:pb-6 sm:pt-16">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/40 to-transparent px-4 pb-4 pt-12 sm:px-6 sm:pb-6 sm:pt-16">
             <h2 className="mb-2 text-xl font-bold leading-snug text-white font-['Space_Grotesk'] drop-shadow-lg sm:text-2xl md:text-3xl">
               {cardData.leaderName}
             </h2>
@@ -317,8 +317,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
 
         {/* Bottom Section - Buttons */}
-        <div className="flex min-h-[72px] flex-col items-center justify-center px-3 py-6 sm:min-h-[96px] sm:px-5 sm:py-6 md:py-8">
-          <div className="flex justify-center gap-4 md:gap-6 lg:gap-8 mt-0 sm:mt-0">
+        <div className="flex min-h-[72px] flex-col items-center justify-center px-4 py-6 sm:min-h-[96px] sm:px-6 sm:py-6 md:py-8">
+          <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-8">
             {/* No Like button */}
             <button
               type="button"
@@ -395,7 +395,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             </button>
           </div>
           <p className="mt-2 w-full max-w-[240px] text-center text-[0.68rem] leading-3 text-[oklch(0.75_0.02_250)]/70 font-['Space_Grotesk'] sm:mt-3 sm:max-w-none sm:text-[0.75rem] sm:leading-4">
-            {voteAction ? "Today's vote is locked in." : 'Press and hold to no-like, or swipe to vote.'}
+            {voteAction ? 'Your vote is locked in.' : 'Hold to oppose or swipe to vote.'}
           </p>
         </div>
       </div>
@@ -471,9 +471,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       )}
 
       {showResults && (
-        <div className={`w-[92vw] max-w-[460px] sm:w-[420px] ${topBgColor} rounded-[20px] border border-[oklch(0.28_0.02_250)] p-5 shadow-2xl backdrop-blur-sm transition-all duration-300 sm:p-6 ${showResults ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
+        <div className={`w-[92vw] max-w-[460px] sm:w-[420px] ${topBgColor} rounded-[20px] border border-[oklch(0.28_0.02_250)] p-6 shadow-2xl backdrop-blur-sm transition-all duration-300 sm:p-6 ${showResults ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
           <div className={`transition-all duration-300 ${revealStage === 'idle' ? 'opacity-0' : 'opacity-100'}`}>
-            <div className="text-center mb-2">
+            <div className="text-center mb-4">
               <div className={`text-5xl font-bold ${percentColor} font-['Inter']`}>{card.approvalPercent}%</div>
               <div className={`text-2xl ${trendColor} flex items-center justify-center`}>
                 {card.trend === 'up' ? (
@@ -488,13 +488,13 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
 
           {revealStage !== 'idle' && revealStage !== 'number' && (
-            <div className={`transition-all duration-300 text-center text-lg text-[oklch(0.95_0.02_250)] mb-4 font-['Space_Grotesk'] ${revealStage === 'confirmation' || revealStage === 'news' ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`transition-all duration-300 text-center text-lg text-[oklch(0.95_0.02_250)] mb-6 font-['Space_Grotesk'] ${revealStage === 'confirmation' || revealStage === 'news' ? 'opacity-100' : 'opacity-0'}`}>
               Your opinion has been counted.
             </div>
           )}
 
           {showMicroHistory && card.yesterdayVote && revealStage === 'news' && (
-            <div className="text-center text-xs text-[oklch(0.75_0.02_250)] opacity-60 mb-4 font-['Inter']">
+            <div className="text-center text-xs text-[oklch(0.75_0.02_250)] opacity-60 mb-6 font-['Inter']">
               Yesterday:{' '}
               <span className="inline-block w-4 h-4 align-text-bottom">
                 {card.yesterdayVote === 'like' ? (
@@ -516,7 +516,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           )}
 
           {revealStage === 'news' && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {card.headlines.slice(0, 2).map((headline: { title: string; source: string; date: string; url: string }, idx: number) => (
                 <a
                   key={idx}
@@ -536,7 +536,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           )}
 
           {revealStage === 'news' && (
-            <p className="text-center text-xs text-[oklch(0.75_0.02_250)] opacity-40 mt-6 font-['Space_Grotesk']">Swipe or tap next card to advance</p>
+            <p className="text-center text-xs text-[oklch(0.75_0.02_250)] opacity-40 mt-8 font-['Space_Grotesk']">Swipe or tap next card to advance</p>
           )}
         </div>
       )}

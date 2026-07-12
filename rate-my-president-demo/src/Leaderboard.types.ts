@@ -1,5 +1,5 @@
 /**
- * Rate My President — Leaderboard Component Types
+ * Rate My President: Leaderboard Component Types
  */
 
 /**
