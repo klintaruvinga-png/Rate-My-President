@@ -62,7 +62,7 @@ function App() {
   return (
     <div className="bg-[oklch(0.15_0.04_250)] h-full text-[oklch(0.95_0.02_250)] flex flex-col overflow-hidden">
       {/* Premium Navigation Header */}
-      <header className="sticky top-0 z-50 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)]/95 backdrop-blur">
+      <header className="sticky top-0 z-50 flex-none border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)]/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -237,7 +237,7 @@ function App() {
       )}
 
       {/* Persistent Disclaimer Footer */}
-      <footer className="border-t border-[oklch(0.28_0.02_250)] bg-[oklch(0.13_0.04_250)] px-4 py-3 text-center sm:px-6 sm:py-4">
+      <footer className="flex-none border-t border-[oklch(0.28_0.02_250)] bg-[oklch(0.13_0.04_250)] px-4 py-3 text-center sm:px-6 sm:py-4">
         <p className="mx-auto max-w-2xl text-xs leading-relaxed text-[oklch(0.75_0.02_250)]/80 font-['Inter']">
           This app is for entertainment only. These rankings reflect user opinions, not a scientific or representative poll.
         </p>

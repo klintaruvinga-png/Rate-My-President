@@ -12,6 +12,8 @@
   -moz-osx-font-smoothing: grayscale;
   --header-height-mobile: 104px;
   --header-height-desktop: 121px;
+  --footer-height-mobile: 64px;
+  --footer-height-desktop: 64px;
 }
 
 html,

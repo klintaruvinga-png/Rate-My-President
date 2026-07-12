@@ -383,7 +383,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   return (
     <>
       <div
-        className={`min-h-[calc(100vh-var(--header-height-mobile))] sm:min-h-[calc(100vh-var(--header-height-desktop))] ${bgColor} flex flex-col items-center justify-center transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
+        className={`flex-1 min-h-0 overflow-y-auto ${bgColor} flex flex-col items-center justify-center transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
