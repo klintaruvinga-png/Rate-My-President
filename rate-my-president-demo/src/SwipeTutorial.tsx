@@ -294,7 +294,7 @@ export const SwipeTutorial: React.FC = () => {
       </div>
 
       {/* Core Animation Wrapper */}
-      <div className="w-[160px] h-[150px] relative overflow-visible flex items-center justify-center z-10 sm:w-[200px] sm:h-[190px]">
+      <div className="w-[160px] h-[150px] relative overflow-visible flex items-center justify-center z-10 sm:w-[200px] sm:h-[190px] xr:h-[120px]">
         {/* Mock Card */}
         <div className="w-[110px] h-[135px] bg-[oklch(0.20_0.02_250)] border border-[oklch(0.28_0.02_250)] rounded-2xl overflow-hidden shadow-lg relative animate-tutorial-card will-change-transform sm:w-[140px] sm:h-[170px]">
           {/* Branded Header Image */}

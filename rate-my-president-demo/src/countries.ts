@@ -1,8 +1,8 @@
 /**
- * Rate My President — Shared Country + Leader Data
+ * Rate My President: Shared Country and Leader Data
  *
- * Single source of truth for both the Onboarding country picker
- * and the SwipeCard demo queue builder.
+ * Single source of truth for both the onboarding country picker
+ * and the swipe card demo queue builder.
  */
 
 export interface CountryData {

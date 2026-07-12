@@ -1,5 +1,5 @@
 /**
- * Rate My President — Onboarding Component Types
+ * Rate My President: Onboarding Component Types
  */
 
 /**
