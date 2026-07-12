@@ -448,6 +448,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <div className="space-y-1">
               <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Where are you from?</h2>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We'll show you your leader first. <span className="text-[oklch(0.72_0.15_65)]">You can opt out of Home Swipes by declining location permission</span></p>
+              <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">Your precise coordinates will be sent to Nominatim (OpenStreetMap) to detect your country.</p>
             </div>
 
             {/* ── Selected-country preview card ── */}
@@ -574,7 +575,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </div>
             <p className="text-sm text-[oklch(0.75_0.02_250)] opacity-70 font-['Space_Grotesk']">Add your country anytime in settings</p>
             <button
-              onClick={() => onComplete(null)}
+              onClick={handleComplete}
               className="min-h-11 w-full rounded-xl bg-[oklch(0.62_0.18_142)] px-4 py-2.5 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90 sm:min-h-12 sm:py-3"
             >
               Start swiping

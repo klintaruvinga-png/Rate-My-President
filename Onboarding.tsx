@@ -478,6 +478,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
               We'll show you your leader first. <span className="text-[oklch(0.72_0.15_65)]">You can opt out of Home Swipes by declining location permission</span>
             </p>
+            <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk'] mt-2">
+              Your precise coordinates will be sent to Nominatim (OpenStreetMap) to detect your country.
+            </p>
           </div>
 
           {/* Search input — only shown when no country is confirmed yet */}
@@ -665,7 +668,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           </p>
 
           <button
-            onClick={() => onComplete(null)}
+            onClick={handleComplete}
             className="w-full py-3 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
           >
             Start swiping
