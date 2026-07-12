@@ -35,6 +35,10 @@ export default function Leaderboard({
     const container = scrollContainerRef.current;
     if (!container || !entries || entries.length === 0) return;
 
+    // Respect prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
     let scrollInterval: ReturnType<typeof setInterval> | null = null;
     let scrollTimeout: ReturnType<typeof setTimeout>;
     let isPaused = false;
@@ -320,20 +324,20 @@ export default function Leaderboard({
           </button>
           {timeDropdownOpen && (
             <div className="absolute top-full left-0 mt-2 z-20 bg-[oklch(0.20_0.02_250)] rounded-lg border border-[oklch(0.28_0.02_250)] shadow-lg min-w-[150px]">
-              {timeOptions.map((window) => (
+              {timeOptions.map((timeWindow) => (
                 <button
-                  key={window}
+                  key={timeWindow}
                   onClick={() => {
-                    handleWindowChange(window);
+                    handleWindowChange(timeWindow);
                     setTimeDropdownOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm font-['Space_Grotesk'] transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                    selectedWindow === window
+                    selectedWindow === timeWindow
                       ? 'bg-[oklch(0.62_0.18_142)] text-white'
                       : 'text-[oklch(0.75_0.02_250)] hover:bg-[oklch(0.28_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'
                   }`}
                 >
-                  {timeLabels[window]}
+                  {timeLabels[timeWindow]}
                 </button>
               ))}
             </div>
@@ -421,7 +425,7 @@ export default function Leaderboard({
       {!error && entries.length > 0 && (
         <div className="max-h-[min(64vh,560px)] overflow-auto" ref={scrollContainerRef}>
           <table
-            className="w-full text-sm"
+            className="w-full text-sm min-w-[320px]"
             role="grid"
             aria-label={`Leader rankings for ${selectedWindow === 'day' ? 'today' : selectedWindow === 'week' ? 'this week' : 'all time'}`}
           >
