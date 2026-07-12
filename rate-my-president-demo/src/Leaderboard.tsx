@@ -251,9 +251,9 @@ export default function Leaderboard({
   );
 
   const handleWindowChange = useCallback(
-    (window: 'day' | 'week' | 'all') => {
+    (timeWindow: 'day' | 'week' | 'all') => {
       if (onWindowChange) {
-        onWindowChange(window);
+        onWindowChange(timeWindow);
       }
     },
     [onWindowChange]
@@ -291,7 +291,7 @@ export default function Leaderboard({
       </td>
       <td className="px-2 py-2 sm:px-3 sm:py-3">
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="h-8 w-8 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
+          <div className="h-8 w-8 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-full" />
           <div className="h-3 w-16 sm:h-4 sm:w-24 bg-[oklch(0.28_0.02_250)] rounded" />
         </div>
       </td>
@@ -481,8 +481,8 @@ export default function Leaderboard({
                 : filteredEntries.map((entry, index) => (
                     <tr
                       key={entry.id}
-                      className="border-b border-[oklch(0.28_0.02_250)] hover:bg-[oklch(0.20_0.02_250)] transition-colors group animate-[fadeIn_0.2s_ease-out]"
-                      style={{ animationDelay: `${index * 20}ms` }}
+                      className="border-b border-[oklch(0.28_0.02_250)] hover:bg-[oklch(0.20_0.02_250)] transition-colors group motion-safe:animate-[fadeIn_0.2s_ease-out]"
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
                       <td className="w-12 px-2 py-2 font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] sm:px-3 sm:py-3">
                         #{entry.rank}
@@ -507,10 +507,16 @@ export default function Leaderboard({
                             loading="lazy"
                             onError={(event) => {
                               const target = event.currentTarget as HTMLImageElement;
-                              if (target.src.includes('/avatars/thumbs/')) {
-                                target.src = entry.avatarUrl;
-                              } else {
-                                target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="60" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
+                              const originalUrl = entry.avatarUrl;
+                              // If current src is already the original URL, go straight to fallback
+                              if (target.src === originalUrl || target.src.endsWith(originalUrl.split('/').pop())) {
+                                if (!target.src.startsWith('data:')) {
+                                  target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="8" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
+                                }
+                              } else if (target.src.includes('/avatars/thumbs/')) {
+                                target.src = originalUrl;
+                              } else if (!target.src.startsWith('data:')) {
+                                target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="8" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
                               }
                             }}
                             className="h-8 w-8 sm:h-10 sm:w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0 object-cover"
