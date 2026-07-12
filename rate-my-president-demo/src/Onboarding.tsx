@@ -56,7 +56,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   const countryButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
+  const locationConsentHandled = useRef(false);
   const popupRef = useRef<HTMLDivElement>(null);
+  const consentDialogRef = useRef<HTMLDivElement>(null);
   const isGeolocationInProgress = useRef(false);
   const geolocationTimeoutId = useRef<NodeJS.Timeout | null>(null);
   const screenOrder: OnboardingScreen[] = ['intro', 'mechanic-home', 'mechanic-global', 'mechanic-summary', 'country-select', 'confirmation', 'international-only'];
@@ -95,7 +97,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     }
   };
 
-  // Handle Escape key to close the popup
+  // Handle Escape key to close the error popup
   useEffect(() => {
     if (!showLocationErrorPopup) return;
 
@@ -109,12 +111,33 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showLocationErrorPopup]);
 
-  // Move focus to popup when it opens
+  // Handle Escape key to close the consent dialog
+  useEffect(() => {
+    if (!showLocationConsentDialog) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowLocationConsentDialog(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [showLocationConsentDialog]);
+
+  // Move focus to error popup when it opens
   useEffect(() => {
     if (showLocationErrorPopup && popupRef.current) {
       popupRef.current.focus();
     }
   }, [showLocationErrorPopup]);
+
+  // Move focus to consent dialog when it opens
+  useEffect(() => {
+    if (showLocationConsentDialog && consentDialogRef.current) {
+      consentDialogRef.current.focus();
+    }
+  }, [showLocationConsentDialog]);
 
   // Show location consent dialog when entering country-select screen
   useEffect(() => {
@@ -124,13 +147,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
     // Show consent dialog after a short delay to let user read the screen first
     const delayId = window.setTimeout(() => {
-      if (!userMadeExplicitChoice.current && locationConsent === null) {
+      if (!userMadeExplicitChoice.current && !locationConsentHandled.current) {
         setShowLocationConsentDialog(true);
       }
     }, 500);
 
     return () => clearTimeout(delayId);
-  }, [availableCountries, currentScreen, locationConsent]);
+  }, [availableCountries, currentScreen]);
 
   // Trigger geolocation only after user explicitly consents
   useEffect(() => {
@@ -284,9 +307,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const handleLocationConsent = (consented: boolean) => {
     setLocationConsent(consented);
     setShowLocationConsentDialog(false);
-    if (!consented) {
-      userMadeExplicitChoice.current = true;
-    }
+    locationConsentHandled.current = true;
   };
 
   const handleComplete = () => {
@@ -621,9 +642,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         {showLocationConsentDialog && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div
+              ref={consentDialogRef}
               role="dialog"
               aria-modal="true"
               aria-labelledby="location-consent-title"
+              tabIndex={-1}
               className="bg-[oklch(0.20_0.02_250)] rounded-xl p-6 max-w-sm w-full border border-[oklch(0.62_0.18_142)/0.3]"
             >
               <h3 id="location-consent-title" className="text-lg font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">
