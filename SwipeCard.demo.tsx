@@ -169,13 +169,13 @@ export function SwipeCardDemo() {
               <div key={idx} className="flex justify-between gap-4 border-b border-[oklch(0.28_0.02_250)] pb-1">
                 <span>Leader {idx + 1}:</span>
                 <span className={`font-semibold ${
-                  vote === 'like' 
-                    ? 'text-[oklch(0.62_0.18_142)]' 
-                    : vote === 'nolike' 
-                      ? 'text-[oklch(0.55_0.20_25)]' 
+                  vote === 'like'
+                    ? 'text-[oklch(0.62_0.18_142)]'
+                    : vote === 'nolike'
+                      ? 'text-[oklch(0.55_0.20_25)]'
                       : 'text-[oklch(0.72_0.15_65)]'
                 }`}>
-                  {vote.toUpperCase()}
+                  {vote?.toUpperCase() ?? 'SKIP'}
                 </span>
               </div>
             ))}

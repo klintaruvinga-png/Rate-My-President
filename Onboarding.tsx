@@ -40,10 +40,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
   const [showLocationErrorPopup, setShowLocationErrorPopup] = useState(false);
+  const [showLocationConsentDialog, setShowLocationConsentDialog] = useState(false);
+  const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const [locationRetryToken, setLocationRetryToken] = useState(0);
   const userMadeExplicitChoice = useRef(defaultCountry !== null);
+  const locationConsentHandled = useRef(false);
   const popupRef = useRef<HTMLDivElement>(null);
+  const consentDialogRef = useRef<HTMLDivElement>(null);
   const isGeolocationInProgress = useRef(false);
-  const geolocationTimeoutId = useRef<NodeJS.Timeout | null>(null);
+  const geolocationTimeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
   // When true, hide the search UI and show the selected-country preview card
   const [countryConfirmed, setCountryConfirmed] = useState<boolean>(defaultCountry !== null);
 
@@ -80,7 +85,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     }
   };
 
-  // Handle Escape key to close the popup
+  // Handle Escape key to close the error popup
   useEffect(() => {
     if (!showLocationErrorPopup) return;
 
@@ -94,85 +99,148 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showLocationErrorPopup]);
 
-  // Move focus to popup when it opens
+  // Handle Escape key to close the consent dialog
   useEffect(() => {
-    if (showLocationErrorPopup && popupRef.current) {
-      popupRef.current.focus();
-    }
-  }, [showLocationErrorPopup]);
+    if (!showLocationConsentDialog) return;
 
-  // Detect user's geolocation with delayed request when entering country-select screen
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleLocationConsent(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [showLocationConsentDialog]);
+
+  // Focus trap helper: traps Tab/Shift+Tab within a dialog and restores focus on unmount
+  const useFocusTrap = (isOpen: boolean, dialogRef: React.RefObject<HTMLDivElement>) => {
+    useEffect(() => {
+      if (!isOpen || !dialogRef.current) return;
+
+      const dialog = dialogRef.current;
+      const previouslyFocusedElement = document.activeElement as HTMLElement;
+
+      // Move focus into the dialog
+      dialog.focus();
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+
+        const focusableElements = dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        const focusableArray = Array.from(focusableElements);
+        const firstFocusable = focusableArray[0];
+        const lastFocusable = focusableArray[focusableArray.length - 1];
+
+        if (!firstFocusable) return;
+
+        if (e.shiftKey) {
+          // Shift+Tab: wrap from first to last
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable?.focus();
+          }
+        } else {
+          // Tab: wrap from last to first
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable.focus();
+          }
+        }
+      };
+
+      dialog.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        dialog.removeEventListener('keydown', handleKeyDown);
+        // Restore focus to the element that had focus before the dialog opened
+        if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+          previouslyFocusedElement.focus();
+        }
+      };
+    }, [isOpen, dialogRef]);
+  };
+
+  // Apply focus trap to consent dialog
+  useFocusTrap(showLocationConsentDialog, consentDialogRef);
+
+  // Apply focus trap to error popup
+  useFocusTrap(showLocationErrorPopup, popupRef);
+
+  // Show location consent dialog when entering country-select screen
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- locationConsent intentionally omitted to prevent re-showing dialog after consent
   useEffect(() => {
     if (defaultCountry || currentScreen !== 'country-select') return;
     if (typeof navigator === 'undefined' || !navigator.geolocation || availableCountries.length === 0) return;
+    if (locationConsent !== null || userMadeExplicitChoice.current) return;
+
+    // Show consent dialog after a short delay to let user read the screen first
+    const delayId = window.setTimeout(() => {
+      if (!userMadeExplicitChoice.current && !locationConsentHandled.current) {
+        setShowLocationConsentDialog(true);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayId);
+  }, [availableCountries, defaultCountry, currentScreen, locationRetryToken]);
+
+  // Trigger geolocation only after user explicitly consents
+  useEffect(() => {
+    if (locationConsent !== true) return;
+    if (currentScreen !== 'country-select') return;
+    if (typeof navigator === 'undefined' || !navigator.geolocation || availableCountries.length === 0) return;
     if (isGeolocationInProgress.current) return;
+    if (userMadeExplicitChoice.current) return;
 
     const abortController = new AbortController();
     let isCancelled = false;
     isGeolocationInProgress.current = true;
 
-    // Delay the location request by 1.5 seconds
-    const delayId = window.setTimeout(() => {
-      if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
-        isGeolocationInProgress.current = false;
-        return;
-      }
+    geolocationTimeoutId.current = window.setTimeout(() => {
+      if (isCancelled) return;
+      isCancelled = true;
+      abortController.abort();
+      setLocationStatus('error');
+      setShowLocationErrorPopup(true);
+      isGeolocationInProgress.current = false;
+    }, 8000);
 
-      geolocationTimeoutId.current = window.setTimeout(() => {
-        if (isCancelled) return;
-        isCancelled = true;
-        abortController.abort();
-        setLocationStatus('error');
-        setShowLocationErrorPopup(true);
-        isGeolocationInProgress.current = false;
-      }, 8000);
+    setLocationStatus('requesting');
 
-      setLocationStatus('requesting');
-
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          if (isCancelled || abortController.signal.aborted) {
-            isGeolocationInProgress.current = false;
-            return;
-          }
-
-          try {
-            // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
-              { signal: abortController.signal }
-            );
-            const data = await response.json();
-            const countryCode = data?.address?.country_code?.toUpperCase();
-            const matchedCountry = availableCountries.find(
-              (country) => country.code.toUpperCase() === countryCode
-            );
-
-            if (matchedCountry && !isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
-              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
-              setDetectedCountry(matchedCountry);
-              setSelectedCountry(matchedCountry);
-              setCountryConfirmed(true);
-              userMadeExplicitChoice.current = true;
-              setLocationStatus('success');
-              setCurrentScreen('confirmation');
-            } else {
-              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
-              setLocationStatus('success');
-            }
-          } catch {
-            if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
-              if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
-              isGeolocationInProgress.current = false;
-              return;
-            }
-            setLocationStatus('error');
-            setShowLocationErrorPopup(true);
-            if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
-          }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        if (isCancelled || abortController.signal.aborted) {
           isGeolocationInProgress.current = false;
-        },
-        () => {
+          return;
+        }
+
+        try {
+          // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
+            { signal: abortController.signal }
+          );
+          const data = await response.json();
+          const countryCode = data?.address?.country_code?.toUpperCase();
+          const matchedCountry = availableCountries.find(
+            (country) => country.code.toUpperCase() === countryCode
+          );
+
+          if (matchedCountry && !isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
+            if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+            setDetectedCountry(matchedCountry);
+            setSelectedCountry(matchedCountry);
+            setCountryConfirmed(true);
+            userMadeExplicitChoice.current = true;
+            setLocationStatus('success');
+            setCurrentScreen('confirmation');
+          } else {
+            if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+            setLocationStatus('success');
+          }
+        } catch {
           if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
             if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
             isGeolocationInProgress.current = false;
@@ -181,20 +249,30 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           setLocationStatus('error');
           setShowLocationErrorPopup(true);
           if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+        }
+        isGeolocationInProgress.current = false;
+      },
+      () => {
+        if (isCancelled || abortController.signal.aborted || userMadeExplicitChoice.current) {
+          if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
           isGeolocationInProgress.current = false;
-        },
-        { timeout: 8000 }
-      );
-    }, 1500);
+          return;
+        }
+        setLocationStatus('error');
+        setShowLocationErrorPopup(true);
+        if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
+        isGeolocationInProgress.current = false;
+      },
+      { timeout: 8000 }
+    );
 
     return () => {
       isCancelled = true;
       isGeolocationInProgress.current = false;
-      clearTimeout(delayId);
       if (geolocationTimeoutId.current) clearTimeout(geolocationTimeoutId.current);
       abortController.abort();
     };
-  }, [availableCountries, defaultCountry, currentScreen]);
+  }, [availableCountries, locationConsent, currentScreen]);
 
   const handleAdvanceScreen = () => {
     if (isAutoAdvancing) return;
@@ -257,6 +335,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setSelectedCountry(null);
     setCountryConfirmed(false);
     setCurrentScreen('confirmation');
+  };
+
+  const handleLocationConsent = (consented: boolean) => {
+    setLocationConsent(consented);
+    setShowLocationConsentDialog(false);
+    locationConsentHandled.current = true;
+    if (!consented) {
+      // Intentionally set userMadeExplicitChoice to permanently block geolocation
+      // This respects the user's privacy choice - declining consent is a permanent decision
+      userMadeExplicitChoice.current = true;
+    }
   };
 
   const handleClearCountry = () => {
@@ -684,6 +773,41 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         </div>
       )}
 
+      {/* Location Consent Dialog */}
+      {showLocationConsentDialog && currentScreen === 'country-select' && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div
+            ref={consentDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="location-consent-title"
+            tabIndex={-1}
+            className="bg-[oklch(0.20_0.02_250)] rounded-xl p-6 max-w-sm w-full border border-[oklch(0.62_0.18_142)/0.3]"
+          >
+            <h3 id="location-consent-title" className="text-lg font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk'] mb-3">
+              Use your location?
+            </h3>
+            <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mb-4">
+              We can detect your country automatically. Your precise GPS coordinates will be sent to <strong>Nominatim (OpenStreetMap)</strong> to determine your location.
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleLocationConsent(true)}
+                className="flex-1 py-2.5 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
+              >
+                Yes, use location
+              </button>
+              <button
+                onClick={() => handleLocationConsent(false)}
+                className="flex-1 py-2.5 border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors"
+              >
+                No thanks
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Location Error Popup */}
       {showLocationErrorPopup && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -703,8 +827,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </p>
             <div className="flex gap-2">
               <button
-                onClick={() => setShowLocationErrorPopup(false)}
+                onClick={() => {
+                  setShowLocationErrorPopup(false);
+                  setLocationConsent(null);
+                  locationConsentHandled.current = false;
+                  setLocationRetryToken(prev => prev + 1);
+                }}
                 className="flex-1 py-2.5 bg-[oklch(0.62_0.18_142)] text-white rounded-lg font-semibold font-['Space_Grotesk'] hover:opacity-90 transition-opacity"
+              >
+                Try again
+              </button>
+              <button
+                onClick={() => setShowLocationErrorPopup(false)}
+                className="flex-1 py-2.5 border border-[oklch(0.75_0.02_250)/0.4] text-[oklch(0.75_0.02_250)] rounded-lg font-semibold font-['Space_Grotesk'] hover:bg-[oklch(0.28_0.02_250)] transition-colors"
               >
                 Manual search
               </button>
