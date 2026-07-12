@@ -381,13 +381,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const cardColor = 'bg-[oklch(0.20_0.02_250)]';
 
   return (
-    <div
-      className={`min-h-full ${bgColor} transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className="w-full">
-        <div className="mx-auto w-full max-w-2xl space-y-4 px-2 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 lg:px-8 lg:py-6">
+    <>
+      <div
+        className={`min-h-full ${bgColor} flex flex-col items-center justify-center transition-opacity duration-300 ${isAutoAdvancing ? 'opacity-0' : 'opacity-100'}`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="w-full max-w-2xl space-y-4 px-2 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 lg:px-8 lg:py-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[oklch(0.75_0.02_250)]">
               <span>Setup</span>
@@ -644,7 +644,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </div>
           </div>
         )}
-        </div>{/* /space-y-4 p-4 pr-8 */}
 
         {/* Location Consent Dialog */}
         {showLocationConsentDialog && currentScreen === 'country-select' && (
@@ -729,8 +728,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             </div>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
