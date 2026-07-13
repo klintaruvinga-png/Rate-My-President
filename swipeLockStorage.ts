@@ -29,7 +29,7 @@ export function getDailySwipeState(hasHomeCountry: boolean) {
 
   return {
     count,
-    limit: 1,
+    limit: hasHomeCountry ? 2 : 1,
     currentDay: today,
   };
 }
@@ -40,7 +40,7 @@ export function recordDailySwipe(hasHomeCountry: boolean) {
   }
 
   const { count, currentDay } = getDailySwipeState(hasHomeCountry);
-  const nextCount = Math.min(count + 1, 1);
+  const nextCount = Math.min(count + 1, hasHomeCountry ? 2 : 1);
 
   safeLocalStorage(() => {
     window.localStorage.setItem(LAST_SWIPE_DATE_KEY, currentDay);

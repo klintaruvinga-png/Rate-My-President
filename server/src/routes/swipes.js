@@ -17,7 +17,7 @@ function getSwipeLimit(db, userId) {
   }
   prefStmt.free();
 
-  return 1;
+  return homeCountry ? 2 : 1;
 }
 
 router.post('/log', (req, res) => {
