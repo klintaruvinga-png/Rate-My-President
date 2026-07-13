@@ -1,22 +1,8 @@
 const express = require('express');
 const { getDatabase, saveDatabase } = require('../db/client');
+const { validateUserId } = require('../utils/validateUserId');
 
 const router = express.Router();
-
-function validateUserId(userId) {
-  if (!userId || typeof userId !== 'string') {
-    return false;
-  }
-  // userId should be between 5 and 100 characters
-  if (userId.length < 5 || userId.length > 100) {
-    return false;
-  }
-  // userId should only contain alphanumeric characters, underscores, and hyphens
-  if (!/^[a-zA-Z0-9_-]+$/.test(userId)) {
-    return false;
-  }
-  return true;
-}
 
 const ALLOWED_PREFERENCE_FIELDS = [
   'home_country',

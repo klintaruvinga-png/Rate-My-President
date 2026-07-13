@@ -1,5 +1,6 @@
 const express = require('express');
 const { getDatabase, saveDatabase } = require('../db/client');
+const { validateUserId } = require('../utils/validateUserId');
 const crypto = require('crypto');
 
 const router = express.Router();
@@ -44,11 +45,15 @@ router.post('/register', (req, res) => {
  */
 router.post('/heartbeat', (req, res) => {
   const { userId } = req.body;
-  
+
   if (!userId) {
     return res.status(400).json({ error: 'Missing userId' });
   }
-  
+
+  if (!validateUserId(userId)) {
+    return res.status(400).json({ error: 'Invalid userId format' });
+  }
+
   try {
     const db = getDatabase();
     const lastSeen = new Date().toISOString();

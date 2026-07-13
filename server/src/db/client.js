@@ -23,6 +23,10 @@ async function init() {
       db.run(schema);
       saveDatabase();
     }
+
+    // Enable foreign key constraints
+    db.run('PRAGMA foreign_keys = ON;');
+
     return db;
   })();
   return readyPromise;

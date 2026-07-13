@@ -48,6 +48,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const [hoveredButton, setHoveredButton] = useState<VoteAction>(null);
 
   const holdTimerRef = useRef<number | null>(null);
+  const voteProcessingCancelRef = useRef<{ cancelled: boolean }>({ cancelled: false });
+  const revealTimersRef = useRef<number[]>([]);
   const SWIPE_THRESHOLD = 120;
 
   useEffect(() => {
@@ -76,6 +78,12 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       window.clearTimeout(holdTimerRef.current);
       holdTimerRef.current = null;
     }
+    // Cancel any in-flight vote processing
+    voteProcessingCancelRef.current.cancelled = true;
+    voteProcessingCancelRef.current = { cancelled: false };
+    // Clear reveal timers
+    revealTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    revealTimersRef.current = [];
   }, [card.id]);
 
   useEffect(() => {
@@ -83,6 +91,10 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       if (holdTimerRef.current !== null) {
         window.clearTimeout(holdTimerRef.current);
       }
+      // Cancel any in-flight vote processing
+      voteProcessingCancelRef.current.cancelled = true;
+      // Clear reveal timers
+      revealTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     };
   }, []);
 
@@ -183,7 +195,10 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
     setDragState((prev) => ({ ...prev, isDragging: false, offsetX: targetX, offsetY: targetY }));
 
+    const currentCancel = voteProcessingCancelRef.current;
     setTimeout(async () => {
+      if (currentCancel.cancelled) return;
+
       let allowed = true;
       try {
         const result = onVote(action);
@@ -196,6 +211,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       } catch {
         allowed = false;
       }
+
+      if (currentCancel.cancelled) return;
 
       if (!allowed) {
         setDragState({
@@ -213,8 +230,18 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       setVoteAction(action);
       setShowResults(true);
       setRevealStage('number');
-      setTimeout(() => setRevealStage('confirmation'), 150);
-      setTimeout(() => setRevealStage('news'), 800);
+
+      const timer1 = window.setTimeout(() => {
+        if (currentCancel.cancelled) return;
+        setRevealStage('confirmation');
+      }, 150);
+      const timer2 = window.setTimeout(() => {
+        if (currentCancel.cancelled) return;
+        setRevealStage('news');
+      }, 800);
+
+      revealTimersRef.current.push(timer1, timer2);
+
       setIsFlinging(false);
       setFlingAction(null);
     }, 250);
