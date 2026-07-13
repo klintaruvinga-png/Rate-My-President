@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const geocodeRoutes = require('./routes/geocode');
 const swipeRoutes = require('./routes/swipes');
 const preferenceRoutes = require('./routes/preferences');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use(express.json());
 app.use('/api/geocode', geocodeRoutes);
 app.use('/api/swipes', swipeRoutes);
 app.use('/api/preferences', preferenceRoutes);
+app.use('/api/user', userRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

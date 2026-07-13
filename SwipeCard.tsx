@@ -268,7 +268,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleVote, isFlinging, isLocked, isLoading, voteAction]);
+  }, [handleVote, isFlinging, isLocked, isLoading, voteAction, triggerFling]);
 
   if (isLocked) {
     return (

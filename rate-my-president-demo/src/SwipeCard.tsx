@@ -183,13 +183,38 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
     setDragState((prev) => ({ ...prev, isDragging: false, offsetX: targetX, offsetY: targetY }));
 
-    setTimeout(() => {
+    setTimeout(async () => {
+      let allowed = true;
+      try {
+        const result = onVote(action);
+        if (result instanceof Promise) {
+          const resolved = await result;
+          allowed = resolved !== false;
+        } else {
+          allowed = result !== false;
+        }
+      } catch {
+        allowed = false;
+      }
+
+      if (!allowed) {
+        setDragState({
+          isDragging: false,
+          startX: 0,
+          startY: 0,
+          offsetX: 0,
+          offsetY: 0,
+        });
+        setIsFlinging(false);
+        setFlingAction(null);
+        return;
+      }
+
       setVoteAction(action);
       setShowResults(true);
       setRevealStage('number');
       setTimeout(() => setRevealStage('confirmation'), 150);
       setTimeout(() => setRevealStage('news'), 800);
-      onVote(action);
       setIsFlinging(false);
       setFlingAction(null);
     }, 250);

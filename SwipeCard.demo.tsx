@@ -186,7 +186,7 @@ export function SwipeCardDemo() {
     const voteAction = action ?? 'skip';
     console.log('Vote recorded:', voteAction);
 
-    const userId = getServerUserId(savedCountryCode);
+    const userId = await getServerUserId(savedCountryCode);
     try {
       // First, check server status to ensure the swipe limit has not been reached.
       const today = new Date().toISOString().slice(0, 10);
@@ -239,6 +239,12 @@ export function SwipeCardDemo() {
       setNextResetAt(getNextDailyResetTimestamp());
       advanceQueue();
       setIsVoting(false);
+
+      // Advance queue after results display (2.5 seconds to allow reveal animation)
+      setTimeout(() => {
+        advanceQueue();
+      }, 2500);
+
       return true;
     } catch (error) {
       console.error('Failed to sync swipe to server:', error);
@@ -253,6 +259,12 @@ export function SwipeCardDemo() {
       setNextResetAt(getNextDailyResetTimestamp());
       advanceQueue();
       setIsVoting(false);
+
+      // Advance queue after results display (2.5 seconds to allow reveal animation)
+      setTimeout(() => {
+        advanceQueue();
+      }, 2500);
+
       return true;
     }
   };
@@ -334,8 +346,8 @@ export function SwipeCardDemo() {
         <ul className="space-y-1 opacity-80 text-xs">
           <li>• Swipe left/right (pointer gestures)</li>
           <li>• Swipe up to Skip</li>
-          <li>• Keyboard: D/Right = Like</li>
-          <li>• Keyboard: A/Left = No Like</li>
+          <li>• Keyboard: L/Right = Like</li>
+          <li>• Keyboard: R/Left = No Like</li>
           <li>• Keyboard: S/Up = Skip</li>
           <li>• Mobile: Haptic feedback on vote</li>
         </ul>

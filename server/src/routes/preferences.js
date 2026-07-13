@@ -3,6 +3,21 @@ const { getDatabase, saveDatabase } = require('../db/client');
 
 const router = express.Router();
 
+function validateUserId(userId) {
+  if (!userId || typeof userId !== 'string') {
+    return false;
+  }
+  // userId should be between 5 and 100 characters
+  if (userId.length < 5 || userId.length > 100) {
+    return false;
+  }
+  // userId should only contain alphanumeric characters, underscores, and hyphens
+  if (!/^[a-zA-Z0-9_-]+$/.test(userId)) {
+    return false;
+  }
+  return true;
+}
+
 const ALLOWED_PREFERENCE_FIELDS = [
   'home_country',
   'show_micro_history',
@@ -42,6 +57,10 @@ router.get('/', (req, res) => {
     return res.status(400).json({ error: 'Missing userId' });
   }
 
+  if (!validateUserId(userId)) {
+    return res.status(400).json({ error: 'Invalid userId format' });
+  }
+
   try {
     const db = getDatabase();
     const preferences = getPreferencesByUserId(db, userId);
@@ -76,6 +95,10 @@ router.patch('/', (req, res) => {
 
   if (!userId || !preferences) {
     return res.status(400).json({ error: 'Missing userId or preferences' });
+  }
+
+  if (!validateUserId(userId)) {
+    return res.status(400).json({ error: 'Invalid userId format' });
   }
 
   try {

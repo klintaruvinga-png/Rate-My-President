@@ -7,6 +7,21 @@ function getServerDate() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function validateUserId(userId) {
+  if (!userId || typeof userId !== 'string') {
+    return false;
+  }
+  // userId should be between 5 and 100 characters
+  if (userId.length < 5 || userId.length > 100) {
+    return false;
+  }
+  // userId should only contain alphanumeric characters, underscores, and hyphens
+  if (!/^[a-zA-Z0-9_-]+$/.test(userId)) {
+    return false;
+  }
+  return true;
+}
+
 function getSwipeLimit(db, userId) {
   const prefStmt = db.prepare('SELECT home_country FROM user_preferences WHERE user_id = :userId');
   prefStmt.bind({ ':userId': userId });
@@ -25,6 +40,10 @@ router.post('/log', (req, res) => {
 
   if (!userId || !cardType || !action) {
     return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  if (!validateUserId(userId)) {
+    return res.status(400).json({ error: 'Invalid userId format' });
   }
 
   const validActions = ['like', 'nolike', 'skip'];
@@ -97,6 +116,10 @@ router.get('/status', (req, res) => {
 
   if (!userId) {
     return res.status(400).json({ error: 'Missing userId' });
+  }
+
+  if (!validateUserId(userId)) {
+    return res.status(400).json({ error: 'Invalid userId format' });
   }
 
   try {
