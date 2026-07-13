@@ -16,7 +16,7 @@ const DEFAULT_SHARE_TEXT = 'Check out today\'s leaderboard on Rate My President!
 export function shareToWhatsApp(content: ShareContent): void {
   const { text, url } = content;
   const shareUrl = encodeURIComponent(`${text} ${url}`);
-  window.open(`https://wa.me/?text=${shareUrl}`, '_blank');
+  window.open(`https://wa.me/?text=${shareUrl}`, '_blank', 'noopener,noreferrer');
 }
 
 /**
@@ -25,7 +25,7 @@ export function shareToWhatsApp(content: ShareContent): void {
 export function shareToFacebook(content: ShareContent): void {
   const { url } = content;
   const shareUrl = encodeURIComponent(url);
-  window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`, '_blank');
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`, '_blank', 'noopener,noreferrer');
 }
 
 /**
@@ -35,7 +35,7 @@ export function shareToTwitter(content: ShareContent): void {
   const { text, url } = content;
   const shareText = encodeURIComponent(text);
   const shareUrl = encodeURIComponent(url);
-  window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`, '_blank');
+  window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`, '_blank', 'noopener,noreferrer');
 }
 
 /**
@@ -44,7 +44,7 @@ export function shareToTwitter(content: ShareContent): void {
 export function shareToLinkedIn(content: ShareContent): void {
   const { url } = content;
   const shareUrl = encodeURIComponent(url);
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`, '_blank');
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`, '_blank', 'noopener,noreferrer');
 }
 
 /**

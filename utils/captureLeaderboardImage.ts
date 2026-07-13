@@ -42,23 +42,20 @@ export async function captureLeaderboardImage(
   wrapper.appendChild(disclaimerEl);
   
   document.body.appendChild(wrapper);
-  
+
   try {
     const canvas = await html2canvas(wrapper, {
       backgroundColor,
       scale: 2,
       logging: false,
       useCORS: true,
-      allowTaint: true,
     });
 
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-    document.body.removeChild(wrapper);
 
     if (!blob) throw new Error('Failed to create blob');
     return blob;
-  } catch (error) {
+  } finally {
     document.body.removeChild(wrapper);
-    throw error;
   }
 }

@@ -24,13 +24,18 @@ export default function Leaderboard({
   const [shareMessage, setShareMessage] = useState<string | null>(null);
 
   // Read ?window= query param on mount for deep linking
+  const onWindowChangeRef = useRef(onWindowChange);
+  useEffect(() => {
+    onWindowChangeRef.current = onWindowChange;
+  }, [onWindowChange]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const windowParam = params.get('window');
-    if (windowParam && ['day', 'week', 'month', 'year', 'all'].includes(windowParam)) {
-      onWindowChange?.(windowParam as 'day' | 'week' | 'month' | 'year' | 'all');
+    if (windowParam && ['day', 'week', 'all'].includes(windowParam)) {
+      onWindowChangeRef.current?.(windowParam as 'day' | 'week' | 'all');
     }
-  }, [onWindowChange]);
+  }, []);
 
   // Slow stream-style auto-scroll with 300ms initial pause
   useEffect(() => {

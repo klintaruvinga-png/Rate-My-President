@@ -5,6 +5,8 @@ const path = require('path');
 let SQL = null;
 let db = null;
 let readyPromise = null;
+let isDirty = false;
+let flushTimer = null;
 
 async function init() {
   if (readyPromise) return readyPromise;
@@ -35,12 +37,45 @@ function getDatabase() {
   return db;
 }
 
-function saveDatabase() {
+function saveDatabaseSync() {
   if (!db) return;
   const data = db.export();
   const buffer = Buffer.from(data);
   const dbPath = path.join(__dirname, '../../data/rate-my-president.db');
   fs.writeFileSync(dbPath, buffer);
+  isDirty = false;
 }
 
-module.exports = { init, getDatabase, saveDatabase };
+function saveDatabase() {
+  isDirty = true;
+
+  if (flushTimer) {
+    clearTimeout(flushTimer);
+  }
+
+  flushTimer = setTimeout(() => {
+    if (isDirty) {
+      saveDatabaseSync();
+    }
+  }, 1000);
+}
+
+function flushDatabase() {
+  if (flushTimer) {
+    clearTimeout(flushTimer);
+    flushTimer = null;
+  }
+  if (isDirty) {
+    saveDatabaseSync();
+  }
+}
+
+function closeDatabase() {
+  flushDatabase();
+  if (db) {
+    db.close();
+    db = null;
+  }
+}
+
+module.exports = { init, getDatabase, saveDatabase, flushDatabase, closeDatabase };

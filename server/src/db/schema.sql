@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS swipe_logs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id TEXT NOT NULL,
   date TEXT NOT NULL,
-  card_type TEXT NOT NULL,
-  action TEXT NOT NULL,
+  card_type TEXT NOT NULL CHECK(card_type IN ('home', 'global')),
+  action TEXT NOT NULL CHECK(action IN ('like', 'nolike', 'skip')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(user_id, date, card_type)
 );

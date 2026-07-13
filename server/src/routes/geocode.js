@@ -12,8 +12,12 @@ router.get('/', async (req, res) => {
   
   const latitude = parseFloat(lat);
   const longitude = parseFloat(lon);
-  
+
   if (isNaN(latitude) || isNaN(longitude)) {
+    return res.status(400).json({ error: 'Invalid lat or lon values' });
+  }
+
+  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
     return res.status(400).json({ error: 'Invalid lat or lon values' });
   }
   

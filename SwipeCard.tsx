@@ -13,6 +13,7 @@ import {
 import AnimatedFlag from './AnimatedFlag';
 import type { CardData, VoteAction } from './SwipeCard.types';
 import { shareToWhatsApp, shareToFacebook, shareToTwitter, copyLinkToClipboard } from './utils/socialShare';
+import { useCountdownTimer, formatDuration } from './hooks/useCountdownTimer';
 
 const DEFAULT_SHARE_TEXT = 'Check out today\'s leaderboard on Rate My President!';
 
@@ -29,6 +30,7 @@ interface SwipeCardProps {
   nextResetAt?: number;
   onShareLeaderboard?: () => void;
   onShowLeaderboard?: () => void;
+  shareUrl?: string;
 }
 
 export const SwipeCard: React.FC<SwipeCardProps> = ({
@@ -44,7 +46,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   nextResetAt,
   onShareLeaderboard,
   onShowLeaderboard,
+  shareUrl,
 }) => {
+  const leaderboardUrl = shareUrl || `${window.location.origin}${window.location.pathname}#leaderboard`;
   const [dragState, setDragState] = useState<{
     isDragging: boolean;
     startX: number;
@@ -60,9 +64,10 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const [showResults, setShowResults] = useState(false);
   const [revealStage, setRevealStage] = useState<'idle' | 'number' | 'confirmation' | 'news'>('idle');
   const [hoveredButton, setHoveredButton] = useState<VoteAction>(null);
-  const [remainingMs, setRemainingMs] = useState<number>(() => nextResetAt ? Math.max(0, nextResetAt - Date.now()) : 0);
 
   const draggableRef = useRef<HTMLDivElement>(null);
+
+  const remainingMs = useCountdownTimer(nextResetAt);
 
   const SWIPE_THRESHOLD = 120; // 120px drag threshold
 
@@ -153,34 +158,40 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     event.stopPropagation();
   };
 
-  const formatDuration = (milliseconds: number) => {
-    const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    }
-    if (minutes > 0) {
-      return `${minutes}m ${seconds}s`;
-    }
-    return `${seconds}s`;
-  };
-
+  // Keyboard support - must be before isLocked early return
   useEffect(() => {
-    if (!isLocked || !nextResetAt) {
-      setRemainingMs(0);
-      return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (voteAction || isLoading || isFlinging || isLocked) return;
+
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          handleVote('like');
+          break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          handleVote('nolike');
+          break;
+        case 'ArrowUp':
+        case 's':
+        case 'S':
+          handleVote('skip');
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [voteAction, isLoading, isFlinging, isLocked]);
+
+  const handleVote = (action: VoteAction) => {
+    if (voteAction || isLoading || isFlinging || isLocked) return;
+    if (action) {
+      triggerFling(action);
     }
-
-    setRemainingMs(Math.max(0, nextResetAt - Date.now()));
-    const intervalId = window.setInterval(() => {
-      setRemainingMs(Math.max(0, nextResetAt - Date.now()));
-    }, 1000);
-
-    return () => window.clearInterval(intervalId);
-  }, [isLocked, nextResetAt]);
+  };
 
   if (isLocked) {
     return (
@@ -228,7 +239,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               onClick={() => shareToWhatsApp({
                 title: 'Rate My President',
                 text: DEFAULT_SHARE_TEXT,
-                url: window.location.href
+                url: leaderboardUrl
               })}
               className="p-2 rounded-full bg-[oklch(0.25_0.02_250)] hover:bg-[oklch(0.30_0.02_250)] transition"
               aria-label="Share to WhatsApp"
@@ -242,7 +253,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               onClick={() => shareToFacebook({
                 title: 'Rate My President',
                 text: DEFAULT_SHARE_TEXT,
-                url: window.location.href
+                url: leaderboardUrl
               })}
               className="p-2 rounded-full bg-[oklch(0.25_0.02_250)] hover:bg-[oklch(0.30_0.02_250)] transition"
               aria-label="Share to Facebook"
@@ -256,7 +267,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               onClick={() => shareToTwitter({
                 title: 'Rate My President',
                 text: DEFAULT_SHARE_TEXT,
-                url: window.location.href
+                url: leaderboardUrl
               })}
               className="p-2 rounded-full bg-[oklch(0.25_0.02_250)] hover:bg-[oklch(0.30_0.02_250)] transition"
               aria-label="Share to Twitter"
@@ -268,7 +279,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             <button
               type="button"
               onClick={async () => {
-                const success = await copyLinkToClipboard(window.location.href);
+                const success = await copyLinkToClipboard(leaderboardUrl);
                 if (success) {
                   // Could show a toast notification here
                   console.log('Link copied to clipboard');
@@ -335,41 +346,6 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       setIsFlinging(false);
       setFlingAction(null);
     }, 250);
-  };
-
-  // Keyboard support
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (voteAction || isLoading || isFlinging) return;
-
-      switch (e.key) {
-        case 'ArrowRight':
-        case 'd':
-        case 'D':
-          handleVote('like');
-          break;
-        case 'ArrowLeft':
-        case 'a':
-        case 'A':
-          handleVote('nolike');
-          break;
-        case 'ArrowUp':
-        case 's':
-        case 'S':
-          handleVote('skip');
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [voteAction, isLoading, isFlinging, isLocked]);
-
-  const handleVote = (action: VoteAction) => {
-    if (voteAction || isLoading || isFlinging || isLocked) return;
-    if (action) {
-      triggerFling(action);
-    }
   };
 
   // Interpolate values for stack animation

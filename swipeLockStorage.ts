@@ -25,7 +25,7 @@ export function getDailySwipeState(hasHomeCountry: boolean) {
   const today = getTodayKey();
   const storedDay = safeLocalStorage(() => window.localStorage.getItem(LAST_SWIPE_DATE_KEY), null);
   const rawCount = safeLocalStorage(() => window.localStorage.getItem(DAILY_SWIPE_COUNT_KEY), '0');
-  const count = storedDay === today ? parseInt(rawCount, 10) || 0 : 0;
+  const count = storedDay === today ? parseInt(rawCount || '0', 10) || 0 : 0;
 
   return {
     count,
@@ -61,8 +61,7 @@ export function getSwipeCountRemaining(hasHomeCountry: boolean) {
 
 export function getNextDailyResetTimestamp() {
   const now = new Date();
-  const tomorrow = new Date(now);
-  tomorrow.setHours(24, 0, 0, 0);
+  const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0));
   return tomorrow.getTime();
 }
 
