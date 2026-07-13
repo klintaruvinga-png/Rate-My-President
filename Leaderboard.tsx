@@ -256,7 +256,11 @@ export default function Leaderboard({
           setShareMessage('Share sheet opened.');
           return;
         } catch (error) {
-          // Continue to clipboard fallback.
+          // If user cancelled the share sheet, return early without fallback
+          if (error instanceof Error && error.name === 'AbortError') {
+            return;
+          }
+          // Continue to clipboard fallback for other errors.
         }
       }
     }

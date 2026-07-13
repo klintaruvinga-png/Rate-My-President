@@ -9,26 +9,11 @@ import { getServerUserId } from './utils/userId';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
-function getDeviceId(): string {
-  const DEVICE_ID_KEY = 'rmp_device_id';
-
-  try {
-    let deviceId = window.localStorage.getItem(DEVICE_ID_KEY);
-    if (!deviceId) {
-      deviceId = crypto.randomUUID?.() || `device-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      window.localStorage.setItem(DEVICE_ID_KEY, deviceId);
-    }
-    return deviceId;
-  } catch {
-    return `device-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  }
-}
-
 export function SwipeCardDemo() {
   const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
   const savedCountryCode = getUserCountry();
   const hasHomeCountry = Boolean(savedCountryCode);
-  const userId = getDeviceId();
+  const userId = getServerUserId(savedCountryCode);
   const [dailyState, setDailyState] = useState(() => getDailySwipeState(hasHomeCountry));
   const [nextResetAt, setNextResetAt] = useState(() => getNextDailyResetTimestamp());
   const [shareNotice, setShareNotice] = useState<string | null>(null);
@@ -252,6 +237,7 @@ export function SwipeCardDemo() {
       recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
+      advanceQueue();
       setIsVoting(false);
       return true;
     } catch (error) {
@@ -265,6 +251,7 @@ export function SwipeCardDemo() {
       recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
+      advanceQueue();
       setIsVoting(false);
       return true;
     }

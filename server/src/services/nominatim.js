@@ -25,9 +25,8 @@ function enqueueRequest(task) {
 async function reverseGeocode(lat, lon) {
   const cacheKey = `geocode:${lat.toFixed(4)}:${lon.toFixed(4)}`;
 
-  const cached = cache.get(cacheKey);
-  if (cached) {
-    return cached;
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
   }
 
   return enqueueRequest(async () => {
@@ -55,12 +54,9 @@ async function reverseGeocode(lat, lon) {
       const data = await response.json();
       const countryCode = data?.address?.country_code?.toUpperCase();
 
-      if (countryCode) {
-        cache.set(cacheKey, { countryCode });
-        return { countryCode };
-      }
-
-      return null;
+      const result = countryCode ? { countryCode } : null;
+      cache.set(cacheKey, result);
+      return result;
     } catch (error) {
       clearTimeout(timeoutId);
       console.error('Nominatim geocoding error:', error);
