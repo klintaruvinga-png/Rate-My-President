@@ -22,12 +22,32 @@ export default function Leaderboard({
   const [timeDropdownOpen, setTimeDropdownOpen] = useState(false);
   const timeDropdownRef = useRef<HTMLDivElement>(null);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const shareTimeoutRef = useRef<number | null>(null);
 
   // Read ?window= query param on mount for deep linking
   const onWindowChangeRef = useRef(onWindowChange);
   useEffect(() => {
     onWindowChangeRef.current = onWindowChange;
   }, [onWindowChange]);
+
+  useEffect(() => {
+    if (!shareMessage) return;
+    if (shareTimeoutRef.current) {
+      window.clearTimeout(shareTimeoutRef.current);
+    }
+
+    shareTimeoutRef.current = window.setTimeout(() => {
+      setShareMessage(null);
+      shareTimeoutRef.current = null;
+    }, 3000);
+
+    return () => {
+      if (shareTimeoutRef.current) {
+        window.clearTimeout(shareTimeoutRef.current);
+        shareTimeoutRef.current = null;
+      }
+    };
+  }, [shareMessage]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -229,12 +249,15 @@ export default function Leaderboard({
     const text = `Check today’s leaderboard for ${selectedWindow === 'day' ? 'today' : selectedWindow === 'week' ? 'this week' : 'all time'}.`;
 
     if (typeof navigator !== 'undefined' && 'share' in navigator) {
-      try {
-        await (navigator as ShareNavigator).share({ title, text, url });
-        setShareMessage('Share sheet opened.');
-        return;
-      } catch (error) {
-        // Continue to clipboard fallback.
+      const shareNavigator = navigator as ShareNavigator;
+      if (typeof shareNavigator.share === 'function') {
+        try {
+          await shareNavigator.share({ title, text, url });
+          setShareMessage('Share sheet opened.');
+          return;
+        } catch (error) {
+          // Continue to clipboard fallback.
+        }
       }
     }
 

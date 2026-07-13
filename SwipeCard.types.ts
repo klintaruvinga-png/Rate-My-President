@@ -104,8 +104,11 @@ export interface SwipeCardProps {
   /** Optional card underneath the top card in the stack */
   nextCard?: CardData;
 
-  /** Callback fired when user casts a vote (like/nolike/skip) */
-  onVote: (action: VoteAction) => void;
+  /**
+   * Callback fired when user casts a vote (like/nolike/skip).
+   * Return false to cancel the vote result, or true/undefined to continue.
+   */
+  onVote: (action: VoteAction) => boolean | Promise<boolean>;
 
   /**
    * Optional: Set to true to show a loading state (disables interaction)

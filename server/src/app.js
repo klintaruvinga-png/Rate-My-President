@@ -27,8 +27,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Trust proxy for production reverse proxy
-app.set('trust proxy', true);
+// Trust proxy only when explicitly configured behind a reverse proxy
+const trustProxy = process.env.TRUST_PROXY === 'true';
+app.set('trust proxy', trustProxy);
 
 // Rate limiting
 const limiter = rateLimit({

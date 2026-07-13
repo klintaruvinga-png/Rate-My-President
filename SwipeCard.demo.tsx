@@ -5,6 +5,7 @@ import { availableCountries } from './rate-my-president-demo/src/countries';
 import { getUserCountry } from './onboardingStorage';
 import { getDailySwipeState, recordDailySwipe, getNextDailyResetTimestamp, isSwipeLimitReached } from './swipeLockStorage';
 import { copyLinkToClipboard } from './utils/socialShare';
+import { getServerUserId } from './utils/userId';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
@@ -137,6 +138,8 @@ export function SwipeCardDemo() {
   ];
 
   const [cardsQueue, setCardsQueue] = useState<CardData[]>(initialCards);
+  const currentCard = cardsQueue[0];
+  const nextCard = cardsQueue[1];
 
   const generateRandomCard = (id: string, excludedCodes: string[] = []): CardData => {
     const pool = availableCountries.filter((c) => !excludedCodes.includes(c.code));
@@ -175,15 +178,49 @@ export function SwipeCardDemo() {
     };
   };
 
-  const handleVote = async (action: VoteAction) => {
-    if (isVoting) return; // Prevent multiple simultaneous votes
+  const advanceQueue = () => {
+    setCardsQueue((prev) => {
+      const nextQueue = prev.slice(1);
+      while (nextQueue.length < 3) {
+        const excludedCodes = nextQueue.map((card) => card.countryCode);
+        nextQueue.push(generateRandomCard(`card-${Date.now()}-${Math.random().toString(36).slice(2)}`, excludedCodes));
+      }
+      return nextQueue;
+    });
+  };
+
+  const handleVote = async (action: VoteAction): Promise<boolean> => {
+    if (isVoting) return false;
+    if (!currentCard) {
+      setIsVoting(false);
+      return false;
+    }
+
     setIsVoting(true);
 
     const voteAction = action ?? 'skip';
     console.log('Vote recorded:', voteAction);
 
-    // Try to log the swipe to server
+    const userId = getServerUserId(savedCountryCode);
     try {
+      // First, check server status to ensure the swipe limit has not been reached.
+      const today = new Date().toISOString().slice(0, 10);
+      const statusResponse = await fetch(`${API_BASE_URL}/api/swipes/status?userId=${userId}`);
+      const statusData = await statusResponse.json();
+
+      setDailyState({
+        count: statusData.count,
+        limit: statusData.limit,
+        currentDay: today,
+      });
+
+      if (statusData.count >= statusData.limit) {
+        console.warn('Daily swipe limit reached');
+        setNextResetAt(getNextDailyResetTimestamp());
+        setIsVoting(false);
+        return false;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/swipes/log`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -198,59 +235,41 @@ export function SwipeCardDemo() {
 
       if (result.allowed === false) {
         console.warn('Swipe not allowed by server:', result.reason);
-        // Refresh state from server
         const statusResponse = await fetch(`${API_BASE_URL}/api/swipes/status?userId=${userId}`);
         const statusData = await statusResponse.json();
         const today = new Date().toISOString().slice(0, 10);
         setDailyState({
           count: statusData.count,
           limit: statusData.limit,
-          currentDay: today
+          currentDay: today,
         });
         setNextResetAt(getNextDailyResetTimestamp());
         setIsVoting(false);
-        return; // Don't proceed with the swipe
+        return false;
       }
 
-      // Server allowed the swipe, proceed
       setVoteHistory((prev) => [...prev, voteAction]);
       recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
       setIsVoting(false);
+      return true;
     } catch (error) {
       console.error('Failed to sync swipe to server:', error);
-      // Fallback: check local quota before recording
       if (isSwipeLimitReached(hasHomeCountry)) {
         console.warn('Local quota reached, not recording swipe');
         setIsVoting(false);
-        return;
+        return false;
       }
-      // Fail-open: allow swipe to proceed locally if server is unavailable
       setVoteHistory((prev) => [...prev, voteAction]);
       recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
       setIsVoting(false);
+      return true;
     }
-
-    // After 2.5 seconds (allowing results to show for a brief moment), advance queue
-    setTimeout(() => {
-      setCardsQueue((prev) => {
-        const nextQueue = prev.slice(1);
-        // Ensure there are always at least 3 cards in the queue to maintain stack visuals
-        while (nextQueue.length < 3) {
-          const existingCodes = nextQueue.map((card) => card.countryCode);
-          nextQueue.push(generateRandomCard(`card-${Date.now()}`, existingCodes));
-        }
-        return nextQueue;
-      });
-    }, 2500);
   };
 
-  // Top card and next card in stack
-  const currentCard = cardsQueue[0];
-  const nextCard = cardsQueue[1];
   const swipeLocked = dailyState.count >= dailyState.limit;
   const remainingSwipes = Math.max(0, dailyState.limit - dailyState.count);
 

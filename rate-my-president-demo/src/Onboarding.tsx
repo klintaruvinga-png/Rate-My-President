@@ -188,15 +188,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         }
 
         try {
-          const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+          // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
           const response = await fetch(
-            `${apiBaseUrl}/api/geocode?lat=${position.coords.latitude}&lon=${position.coords.longitude}`,
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
             { signal: abortController.signal }
           );
           const data = await response.json();
-          const countryCode = data.countryCode;
+          const countryCode = data.address?.country_code?.toUpperCase();
           const matchedCountry = availableCountries.find(
-            (country) => country.code.toUpperCase() === countryCode
+            (country) => country.code.toUpperCase() === countryCode?.toUpperCase()
           );
 
           if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
@@ -504,7 +504,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
             <div className="space-y-1">
               <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Where are you from?</h2>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We will show your home leader first. <span className="text-[oklch(0.72_0.15_65)]">You can also skip that and use global cards only.</span></p>
-              <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">We use your location to pick your country. We send your coordinates to our backend, which may process or log them before querying OpenStreetMap to detect your country.</p>
+              <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">We use your location to pick your country. We send your coordinates to Nominatim, an OpenStreetMap service, to detect your country.</p>
             </div>
 
             {/* ── Selected-country preview card ── */}
@@ -660,7 +660,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 Use your location?
               </h3>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mb-4">
-                We can detect your country automatically. We send your coordinates to our backend, which may process or log them before querying <strong>OpenStreetMap</strong> to determine your location.
+                We can detect your country automatically. We send your coordinates to <strong>Nominatim (OpenStreetMap)</strong> to determine your location.
               </p>
               <div className="flex gap-2">
                 <button

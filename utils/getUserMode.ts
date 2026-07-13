@@ -16,7 +16,7 @@ export function getUserMode(): UserMode {
  * Returns the daily swipe limit based on user mode.
  */
 export function getDailySwipeLimit(mode: UserMode): number {
-  return mode === 'home' ? 2 : 1;
+  return 1;
 }
 
 /**

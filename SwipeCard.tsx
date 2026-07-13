@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   HomeIcon,
   GlobeIcon,
@@ -20,7 +20,11 @@ const DEFAULT_SHARE_TEXT = 'Check out today\'s leaderboard on Rate My President!
 interface SwipeCardProps {
   card: CardData;
   nextCard?: CardData;
-  onVote: (action: VoteAction) => void;
+  /**
+   * Callback fired when the user casts a vote.
+   * Return false to cancel the vote result, or true/undefined to continue.
+   */
+  onVote: (action: VoteAction) => boolean | Promise<boolean>;
   isLoading?: boolean;
   showMicroHistory?: boolean;
   headerImageUrl?: string;
@@ -48,7 +52,12 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   onShowLeaderboard,
   shareUrl,
 }) => {
-  const leaderboardUrl = shareUrl || `${window.location.origin}${window.location.pathname}#leaderboard`;
+  const leaderboardUrl = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return shareUrl || '#leaderboard';
+    }
+    return shareUrl || `${window.location.origin}${window.location.pathname}#leaderboard`;
+  }, [shareUrl]);
   const [dragState, setDragState] = useState<{
     isDragging: boolean;
     startX: number;
@@ -67,7 +76,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
   const draggableRef = useRef<HTMLDivElement>(null);
 
-  const remainingMs = useCountdownTimer(nextResetAt);
+  const remainingMs = useCountdownTimer(isLocked ? nextResetAt : undefined);
 
   const SWIPE_THRESHOLD = 120; // 120px drag threshold
 
@@ -158,23 +167,98 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     event.stopPropagation();
   };
 
-  // Keyboard support - must be before isLocked early return
+  const triggerFling = useCallback(async (action: 'like' | 'nolike' | 'skip') => {
+    setIsFlinging(true);
+    setFlingAction(action);
+
+    let targetX = 0;
+    let targetY = 0;
+    if (action === 'like') {
+      targetX = 600;
+    } else if (action === 'nolike') {
+      targetX = -600;
+    } else {
+      targetY = -800;
+    }
+
+    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+
+    setDragState((prev) => ({
+      ...prev,
+      isDragging: false,
+      offsetX: targetX,
+      offsetY: targetY,
+    }));
+
+    setTimeout(async () => {
+      let allowed = true;
+      try {
+        const result = onVote(action);
+        if (result instanceof Promise) {
+          const resolved = await result;
+          allowed = resolved !== false;
+        } else {
+          allowed = result !== false;
+        }
+      } catch {
+        allowed = false;
+      }
+
+      if (!allowed) {
+        setDragState({
+          isDragging: false,
+          startX: 0,
+          startY: 0,
+          offsetX: 0,
+          offsetY: 0,
+        });
+        setIsFlinging(false);
+        setFlingAction(null);
+        return;
+      }
+
+      setVoteAction(action);
+      setShowResults(true);
+      setRevealStage('number');
+      setTimeout(() => setRevealStage('confirmation'), 150);
+      setTimeout(() => setRevealStage('news'), 800);
+
+      setIsFlinging(false);
+      setFlingAction(null);
+    }, 250);
+  }, [onVote]);
+
+  const handleVote = useCallback((action: VoteAction) => {
+    if (voteAction || isLoading || isFlinging || isLocked) return;
+    if (action) {
+      void triggerFling(action);
+    }
+  }, [isFlinging, isLocked, isLoading, triggerFling, voteAction]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (voteAction || isLoading || isFlinging || isLocked) return;
 
       switch (e.key) {
-        case 'ArrowRight':
-        case 'd':
-        case 'D':
-          handleVote('like');
-          break;
         case 'ArrowLeft':
-        case 'a':
-        case 'A':
           handleVote('nolike');
           break;
+        case 'ArrowRight':
+          handleVote('like');
+          break;
         case 'ArrowUp':
+          handleVote('skip');
+          break;
+        case 'l':
+        case 'L':
+          handleVote('like');
+          break;
+        case 'r':
+        case 'R':
+          handleVote('nolike');
+          break;
         case 's':
         case 'S':
           handleVote('skip');
@@ -184,14 +268,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [voteAction, isLoading, isFlinging, isLocked]);
-
-  const handleVote = (action: VoteAction) => {
-    if (voteAction || isLoading || isFlinging || isLocked) return;
-    if (action) {
-      triggerFling(action);
-    }
-  };
+  }, [handleVote, isFlinging, isLocked, isLoading, voteAction]);
 
   if (isLocked) {
     return (
@@ -308,44 +385,6 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       offsetX: 0,
       offsetY: 0,
     });
-  };
-
-  const triggerFling = (action: 'like' | 'nolike' | 'skip') => {
-    setIsFlinging(true);
-    setFlingAction(action);
-    
-    let targetX = 0;
-    let targetY = 0;
-    if (action === 'like') {
-      targetX = 600;
-    } else if (action === 'nolike') {
-      targetX = -600;
-    } else {
-      targetY = -800;
-    }
-    
-    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
-      navigator.vibrate(10);
-    }
-    
-    setDragState((prev) => ({
-      ...prev,
-      isDragging: false,
-      offsetX: targetX,
-      offsetY: targetY,
-    }));
-    
-    setTimeout(() => {
-      setVoteAction(action);
-      setShowResults(true);
-      setRevealStage('number');
-      setTimeout(() => setRevealStage('confirmation'), 150);
-      setTimeout(() => setRevealStage('news'), 800);
-
-      onVote(action);
-      setIsFlinging(false);
-      setFlingAction(null);
-    }, 250);
   };
 
   // Interpolate values for stack animation

@@ -47,17 +47,8 @@ function saveDatabaseSync() {
 }
 
 function saveDatabase() {
-  isDirty = true;
-
-  if (flushTimer) {
-    clearTimeout(flushTimer);
-  }
-
-  flushTimer = setTimeout(() => {
-    if (isDirty) {
-      saveDatabaseSync();
-    }
-  }, 1000);
+  if (!db) return;
+  saveDatabaseSync();
 }
 
 function flushDatabase() {

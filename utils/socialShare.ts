@@ -68,13 +68,16 @@ export async function copyLinkToClipboard(url: string): Promise<boolean> {
  */
 export async function nativeShare(content: ShareContent): Promise<boolean> {
   if (typeof navigator !== 'undefined' && 'share' in navigator) {
-    try {
-      await (navigator as ShareNavigator).share(content);
-      return true;
-    } catch (error) {
-      // User cancelled or share failed
-      console.log('Native share cancelled or failed:', error);
-      return false;
+    const shareNavigator = navigator as ShareNavigator;
+    if (typeof shareNavigator.share === 'function') {
+      try {
+        await shareNavigator.share(content);
+        return true;
+      } catch (error) {
+        // User cancelled or share failed
+        console.log('Native share cancelled or failed:', error);
+        return false;
+      }
     }
   }
   return false;
