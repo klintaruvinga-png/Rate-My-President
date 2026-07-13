@@ -13,14 +13,25 @@ export function SwipeCardDemo() {
   const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
   const savedCountryCode = getUserCountry();
   const hasHomeCountry = Boolean(savedCountryCode);
-  const userId = getServerUserId(savedCountryCode);
+  const [userId, setUserId] = useState<string | null>(null);
   const [dailyState, setDailyState] = useState(() => getDailySwipeState(hasHomeCountry));
   const [nextResetAt, setNextResetAt] = useState(() => getNextDailyResetTimestamp());
   const [shareNotice, setShareNotice] = useState<string | null>(null);
   const [isVoting, setIsVoting] = useState(false);
 
   useEffect(() => {
-    // Sync with server on mount to get accurate swipe count
+    // Initialize userId on mount
+    const initUserId = async () => {
+      const id = await getServerUserId(savedCountryCode);
+      setUserId(id);
+    };
+    initUserId();
+  }, [savedCountryCode]);
+
+  useEffect(() => {
+    // Sync with server when userId is available to get accurate swipe count
+    if (!userId) return;
+
     const syncWithServer = async () => {
       try {
         const statusResponse = await fetch(`${API_BASE_URL}/api/swipes/status?userId=${userId}`);
@@ -237,7 +248,6 @@ export function SwipeCardDemo() {
       recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
-      advanceQueue();
       setIsVoting(false);
 
       // Advance queue after results display (2.5 seconds to allow reveal animation)
@@ -257,7 +267,6 @@ export function SwipeCardDemo() {
       recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
-      advanceQueue();
       setIsVoting(false);
 
       // Advance queue after results display (2.5 seconds to allow reveal animation)

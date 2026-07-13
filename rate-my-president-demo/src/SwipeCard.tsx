@@ -14,7 +14,7 @@ import type { CardData, VoteAction } from './SwipeCard.types';
 interface SwipeCardProps {
   card: CardData;
   nextCard?: CardData;
-  onVote: (action: VoteAction) => void;
+  onVote: (action: VoteAction) => boolean | Promise<boolean>;
   isLoading?: boolean;
   showMicroHistory?: boolean;
   headerImageUrl?: string;
@@ -253,13 +253,13 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
       switch (e.key) {
         case 'ArrowRight':
-        case 'd':
-        case 'D':
+        case 'l':
+        case 'L':
           handleVote('like');
           break;
         case 'ArrowLeft':
-        case 'a':
-        case 'A':
+        case 'r':
+        case 'R':
           handleVote('nolike');
           break;
         case 'ArrowUp':

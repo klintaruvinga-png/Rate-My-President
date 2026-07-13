@@ -42,6 +42,7 @@ router.post('/register', (req, res) => {
 /**
  * Update last seen timestamp for a user
  * This helps track active users and detect abuse patterns
+ * Auto-creates user if they don't exist (for local UUIDs)
  */
 router.post('/heartbeat', (req, res) => {
   const { userId } = req.body;
@@ -58,10 +59,32 @@ router.post('/heartbeat', (req, res) => {
     const db = getDatabase();
     const lastSeen = new Date().toISOString();
     
-    const stmt = db.prepare('UPDATE users SET last_seen = :lastSeen WHERE user_id = :userId');
-    stmt.bind({ ':lastSeen': lastSeen, ':userId': userId });
-    stmt.step();
-    stmt.free();
+    // Check if user exists
+    const checkStmt = db.prepare('SELECT user_id FROM users WHERE user_id = :userId');
+    checkStmt.bind({ ':userId': userId });
+    let userExists = false;
+    if (checkStmt.step()) {
+      userExists = true;
+    }
+    checkStmt.free();
+    
+    if (userExists) {
+      // Update existing user
+      const updateStmt = db.prepare('UPDATE users SET last_seen = :lastSeen WHERE user_id = :userId');
+      updateStmt.bind({ ':lastSeen': lastSeen, ':userId': userId });
+      updateStmt.step();
+      updateStmt.free();
+    } else {
+      // Auto-create user with local UUID
+      const insertStmt = db.prepare('INSERT INTO users (user_id, created_at, last_seen) VALUES (:userId, :createdAt, :lastSeen)');
+      insertStmt.bind({ 
+        ':userId': userId, 
+        ':createdAt': lastSeen,
+        ':lastSeen': lastSeen
+      });
+      insertStmt.step();
+      insertStmt.free();
+    }
     
     saveDatabase();
     
