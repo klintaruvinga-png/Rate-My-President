@@ -118,6 +118,31 @@ export interface SwipeCardProps {
    * @default true
    */
   showMicroHistory?: boolean;
+
+  /**
+   * Optional: Whether the card interaction is disabled because the daily swipe limit has been reached.
+   */
+  isLocked?: boolean;
+
+  /**
+   * Optional: Remaining swipes for the user today.
+   */
+  remainingSwipes?: number;
+
+  /**
+   * Optional: Timestamp when the daily swipe limit resets.
+   */
+  nextResetAt?: number;
+
+  /**
+   * Optional: Callback fired when the user taps the share leaderboard action.
+   */
+  onShareLeaderboard?: () => void;
+
+  /**
+   * Optional: Callback fired when the user taps the show leaderboard action.
+   */
+  onShowLeaderboard?: () => void;
 }
 
 /**

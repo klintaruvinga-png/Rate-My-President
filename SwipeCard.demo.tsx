@@ -1,10 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction } from './SwipeCard.types';
 import { availableCountries } from './rate-my-president-demo/src/countries';
+import { getUserCountry } from './onboardingStorage';
+import { getDailySwipeState, recordDailySwipe, getNextDailyResetTimestamp } from './swipeLockStorage';
 
 export function SwipeCardDemo() {
   const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
+  const savedCountryCode = getUserCountry();
+  const hasHomeCountry = Boolean(savedCountryCode);
+  const [dailyState, setDailyState] = useState(() => getDailySwipeState(hasHomeCountry));
+  const [nextResetAt, setNextResetAt] = useState(() => getNextDailyResetTimestamp());
+  const [shareNotice, setShareNotice] = useState<string | null>(null);
+  const [isVoting, setIsVoting] = useState(false);
+
+  useEffect(() => {
+    // Sync with server on mount to get accurate swipe count
+    const syncWithServer = async () => {
+      try {
+        const userId = savedCountryCode || 'anonymous';
+        const today = new Date().toISOString().slice(0, 10);
+        
+        const statusResponse = await fetch(`http://localhost:3001/api/swipes/status?userId=${userId}&date=${today}`);
+        const statusData = await statusResponse.json();
+        
+        setDailyState({
+          count: statusData.count,
+          limit: statusData.limit,
+          currentDay: today
+        });
+      } catch (error) {
+        console.error('Failed to sync with server on mount:', error);
+        // Fallback to local storage
+        setDailyState(getDailySwipeState(hasHomeCountry));
+      }
+    };
+    
+    syncWithServer();
+    
+    const interval = window.setInterval(() => {
+      setDailyState(getDailySwipeState(hasHomeCountry));
+      setNextResetAt(getNextDailyResetTimestamp());
+    }, 60000);
+
+    return () => window.clearInterval(interval);
+  }, [hasHomeCountry, savedCountryCode]);
 
   // Initial mock cards list
   const initialCards: CardData[] = [
@@ -118,10 +158,75 @@ export function SwipeCardDemo() {
     };
   };
 
-  const handleVote = (action: VoteAction) => {
+  const handleVote = async (action: VoteAction) => {
+    if (isVoting) return; // Prevent multiple simultaneous votes
+    setIsVoting(true);
+
     const voteAction = action ?? 'skip';
-    setVoteHistory((prev) => [...prev, voteAction]);
     console.log('Vote recorded:', voteAction);
+
+    // Check server status first to ensure we have the latest count
+    try {
+      const userId = savedCountryCode || 'anonymous';
+      const today = new Date().toISOString().slice(0, 10);
+      
+      const statusResponse = await fetch(`http://localhost:3001/api/swipes/status?userId=${userId}&date=${today}`);
+      const statusData = await statusResponse.json();
+      
+      // Update local state with server's count
+      setDailyState({
+        count: statusData.count,
+        limit: statusData.limit,
+        currentDay: today
+      });
+      
+      // Check if already at limit
+      if (statusData.count >= statusData.limit) {
+        console.warn('Daily swipe limit reached');
+        setNextResetAt(getNextDailyResetTimestamp());
+        setIsVoting(false);
+        return; // Don't proceed with the swipe
+      }
+      
+      // Now try to log the swipe
+      const response = await fetch('http://localhost:3001/api/swipes/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          date: today,
+          cardType: currentCard.type,
+          action: voteAction,
+        }),
+      });
+      
+      const result = await response.json();
+      
+      if (result.allowed === false) {
+        console.warn('Swipe not allowed by server:', result.reason);
+        // Refresh state from server
+        const newStatusResponse = await fetch(`http://localhost:3001/api/swipes/status?userId=${userId}&date=${today}`);
+        const newStatusData = await newStatusResponse.json();
+        setDailyState({
+          count: newStatusData.count,
+          limit: newStatusData.limit,
+          currentDay: today
+        });
+        setNextResetAt(getNextDailyResetTimestamp());
+        setIsVoting(false);
+        return; // Don't proceed with the swipe
+      }
+    } catch (error) {
+      console.error('Failed to sync swipe to server:', error);
+      // Allow swipe to proceed if server is unavailable (fallback to local)
+    }
+
+    // Only proceed if server allowed the swipe
+    setVoteHistory((prev) => [...prev, voteAction]);
+    recordDailySwipe(hasHomeCountry);
+    setDailyState(getDailySwipeState(hasHomeCountry));
+    setNextResetAt(getNextDailyResetTimestamp());
+    setIsVoting(false);
 
     // After 2.5 seconds (allowing results to show for a brief moment), advance queue
     setTimeout(() => {
@@ -140,6 +245,26 @@ export function SwipeCardDemo() {
   // Top card and next card in stack
   const currentCard = cardsQueue[0];
   const nextCard = cardsQueue[1];
+  const swipeLocked = dailyState.count >= dailyState.limit || isVoting;
+  const remainingSwipes = Math.max(0, dailyState.limit - dailyState.count);
+
+  const handleShareLeaderboard = () => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}#leaderboard`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setShareNotice('Leaderboard link copied to clipboard.');
+      }, () => {
+        setShareNotice('Copy this link to share the leaderboard.');
+      });
+    } else {
+      setShareNotice('Copy this link to share the leaderboard: ' + shareUrl);
+    }
+  };
+
+  const handleShowLeaderboard = () => {
+    setShareNotice('Leaderboard view not available in this demo.');
+    console.log('Show leaderboard pressed');
+  };
 
   if (!currentCard) {
     return (
@@ -156,7 +281,17 @@ export function SwipeCardDemo() {
         nextCard={nextCard}
         onVote={handleVote}
         showMicroHistory={true}
+        isLocked={swipeLocked}
+        remainingSwipes={remainingSwipes}
+        nextResetAt={nextResetAt}
+        onShareLeaderboard={handleShareLeaderboard}
+        onShowLeaderboard={handleShowLeaderboard}
       />
+      {shareNotice && (
+        <div className="mt-3 rounded-2xl border border-[oklch(0.28_0.02_250)] bg-[oklch(0.18_0.03_250)] px-4 py-3 text-sm text-[oklch(0.85_0.02_250)]">
+          {shareNotice}
+        </div>
+      )}
 
       {/* Debug info */}
       <div className="fixed bottom-4 left-4 bg-[oklch(0.20_0.02_250)] p-4 rounded-lg text-[oklch(0.75_0.02_250)] text-sm max-w-xs border border-[oklch(0.28_0.02_250)] shadow-xl z-50">

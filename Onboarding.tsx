@@ -217,15 +217,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         }
 
         try {
-          // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
+            `http://localhost:3001/api/geocode?lat=${position.coords.latitude}&lon=${position.coords.longitude}`,
             { signal: abortController.signal }
           );
           const data = await response.json();
-          const countryCode = data?.address?.country_code?.toUpperCase();
+          const countryCode = data?.countryCode;
           const matchedCountry = availableCountries.find(
-            (country) => country.code.toUpperCase() === countryCode
+            (country) => country.code.toUpperCase() === countryCode?.toUpperCase()
           );
 
           if (matchedCountry && !isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {
