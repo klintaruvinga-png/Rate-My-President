@@ -196,7 +196,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           const data = await response.json();
           const countryCode = data.address?.country_code?.toUpperCase();
           const matchedCountry = availableCountries.find(
-            (country) => country.code.toUpperCase() === countryCode
+            (country) => country.code.toUpperCase() === countryCode?.toUpperCase()
           );
 
           if (!isCancelled && !abortController.signal.aborted && !userMadeExplicitChoice.current) {

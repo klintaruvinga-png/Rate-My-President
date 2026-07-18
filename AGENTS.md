@@ -14,7 +14,7 @@
 - Keep suggested changes aligned with the product constraints and UX rules in the docs.
 
 ## Important product constraints
-- One swipe per user per day. The daily vote is locked server-side and skip consumes the swipe.
+- Swipe limit: 1 per day if user opts out of home country; 2 per day if user sets home country (1 for home leader, 1 for internationals). The daily vote is locked server-side and skip consumes the swipe.
 - The app is a gamified sentiment tracker, not a debate platform, pollster, or betting product.
 - UI tone is split:
   - playful interaction, gestures, voice, reveal motion

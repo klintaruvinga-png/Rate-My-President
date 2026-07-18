@@ -104,8 +104,11 @@ export interface SwipeCardProps {
   /** Optional card underneath the top card in the stack */
   nextCard?: CardData;
 
-  /** Callback fired when user casts a vote (like/nolike/skip) */
-  onVote: (action: VoteAction) => void;
+  /**
+   * Callback fired when user casts a vote (like/nolike/skip).
+   * Return false to cancel the vote result, or true/undefined to continue.
+   */
+  onVote: (action: VoteAction) => boolean | Promise<boolean>;
 
   /**
    * Optional: Set to true to show a loading state (disables interaction)
@@ -118,6 +121,31 @@ export interface SwipeCardProps {
    * @default true
    */
   showMicroHistory?: boolean;
+
+  /**
+   * Optional: Whether the card interaction is disabled because the daily swipe limit has been reached.
+   */
+  isLocked?: boolean;
+
+  /**
+   * Optional: Remaining swipes for the user today.
+   */
+  remainingSwipes?: number;
+
+  /**
+   * Optional: Timestamp when the daily swipe limit resets.
+   */
+  nextResetAt?: number;
+
+  /**
+   * Optional: Callback fired when the user taps the share leaderboard action.
+   */
+  onShareLeaderboard?: () => void;
+
+  /**
+   * Optional: Callback fired when the user taps the show leaderboard action.
+   */
+  onShowLeaderboard?: () => void;
 }
 
 /**

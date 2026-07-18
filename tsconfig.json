@@ -13,6 +13,6 @@
     "types": ["react", "react-dom"],
     "noEmit": true
   },
-  "include": ["*.tsx", "*.ts"],
+  "include": ["*.tsx", "*.ts", "vite-env.d.ts"],
   "exclude": ["node_modules", ".venv", "demo-app", "rate-my-president-demo"]
 }

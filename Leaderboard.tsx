@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { KeyboardEvent } from 'react';
 import { LeaderboardEntry, LeaderboardProps, LeaderboardSortState } from './Leaderboard.types';
-import { TrendUpIcon, TrendDownIcon, ChevronDownIcon } from './Icons';
+import { TrendUpIcon, TrendDownIcon, ChevronDownIcon, ShareIcon } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 
 export default function Leaderboard({
@@ -21,6 +21,41 @@ export default function Leaderboard({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [timeDropdownOpen, setTimeDropdownOpen] = useState(false);
   const timeDropdownRef = useRef<HTMLDivElement>(null);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const shareTimeoutRef = useRef<number | null>(null);
+
+  // Read ?window= query param on mount for deep linking
+  const onWindowChangeRef = useRef(onWindowChange);
+  useEffect(() => {
+    onWindowChangeRef.current = onWindowChange;
+  }, [onWindowChange]);
+
+  useEffect(() => {
+    if (!shareMessage) return;
+    if (shareTimeoutRef.current) {
+      window.clearTimeout(shareTimeoutRef.current);
+    }
+
+    shareTimeoutRef.current = window.setTimeout(() => {
+      setShareMessage(null);
+      shareTimeoutRef.current = null;
+    }, 3000);
+
+    return () => {
+      if (shareTimeoutRef.current) {
+        window.clearTimeout(shareTimeoutRef.current);
+        shareTimeoutRef.current = null;
+      }
+    };
+  }, [shareMessage]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const windowParam = params.get('window');
+    if (windowParam && ['day', 'week', 'all'].includes(windowParam)) {
+      onWindowChangeRef.current?.(windowParam as 'day' | 'week' | 'all');
+    }
+  }, []);
 
   // Slow stream-style auto-scroll with 300ms initial pause
   useEffect(() => {
@@ -199,6 +234,48 @@ export default function Leaderboard({
     const isActive = sortState.column === column;
     const direction = isActive ? (sortState.direction === 'desc' ? '▼' : '▲') : '▲';
     return { direction, isActive };
+  };
+
+  const getShareUrl = () => {
+    if (typeof window === 'undefined') {
+      return `/leaderboard?window=${selectedWindow}`;
+    }
+    return `${window.location.origin}${window.location.pathname}?window=${selectedWindow}`;
+  };
+
+  const handleShare = async () => {
+    const url = getShareUrl();
+    const title = 'Rate My President leaderboard';
+    const text = `Check today’s leaderboard for ${selectedWindow === 'day' ? 'today' : selectedWindow === 'week' ? 'this week' : 'all time'}.`;
+
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      const shareNavigator = navigator as ShareNavigator;
+      if (typeof shareNavigator.share === 'function') {
+        try {
+          await shareNavigator.share({ title, text, url });
+          setShareMessage('Share sheet opened.');
+          return;
+        } catch (error) {
+          // If user cancelled the share sheet, return early without fallback
+          if (error instanceof Error && error.name === 'AbortError') {
+            return;
+          }
+          // Continue to clipboard fallback for other errors.
+        }
+      }
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareMessage('Leaderboard link copied to clipboard.');
+        return;
+      } catch {
+        // ignore and fall through
+      }
+    }
+
+    setShareMessage('Copy this link to share: ' + url);
   };
 
   const timeOptions = ['day', 'week', 'all'] as const;
@@ -461,6 +538,23 @@ export default function Leaderboard({
       )}
 
       {/* Footer: Last Updated */}
+      {!isLoading && !error && entries.length > 0 && (
+        <div className="border-t border-[oklch(0.28_0.02_250)] px-4 py-3 sm:px-6 sm:py-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <button
+              type="button"
+              onClick={handleShare}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[oklch(0.62_0.18_142)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[oklch(0.62_0.18_142)]/90"
+            >
+              <ShareIcon className="w-4 h-4" aria-hidden="true" />
+              Share leaderboard
+            </button>
+            {shareMessage && (
+              <p className="text-xs text-[oklch(0.75_0.02_250)]">{shareMessage}</p>
+            )}
+          </div>
+        </div>
+      )}
       {!isLoading && lastUpdated && (
         <div className="px-4 py-2 sm:px-6 sm:py-3 border-t border-[oklch(0.28_0.02_250)] text-xs font-['Inter'] text-[oklch(0.75_0.02_250)]">
           Updated: {lastUpdated}
