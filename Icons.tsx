@@ -242,3 +242,10 @@ export const HelpIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconP
     <line x1="12" y1="17" x2="12.01" y2="17" />
   </IconBase>
 );
+
+export const ClockIcon = ({ className, 'aria-label': ariaLabel, ...props }: IconProps) => (
+  <IconBase className={className} aria-label={ariaLabel} label="Clock" {...props}>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </IconBase>
+);

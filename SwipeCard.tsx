@@ -9,6 +9,8 @@ import {
   TrendDownIcon,
   ShareIcon,
   BadgeIcon,
+  ClockIcon,
+  LeaderboardIcon,
 } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 import type { CardData, VoteAction } from './SwipeCard.types';
@@ -435,6 +437,85 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const renderCardContent = (cardData: CardData, isBottom = false) => {
     const headerImage = cardData.headerImageUrl || headerImageUrl || cardData.avatarUrl || './assets/Obama Header No BG.png';
     const fallbackAvatar = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="60" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
+    
+    if (isLocked) {
+      return (
+        <div className="flex flex-col relative overflow-hidden rounded-t-[20px]">
+          {/* Countdown Timer Display */}
+          <div className="relative w-full h-[395px] shrink-0 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)] flex flex-col items-center justify-center">
+            {/* Top Left: Clock Icon Badge */}
+            <div className="absolute top-4 left-4 w-4 h-4 text-[oklch(0.72_0.15_65)]">
+              <ClockIcon aria-label="Countdown" />
+            </div>
+
+            {/* Countdown Timer */}
+            <div className="text-center">
+              <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk'] mb-2">Next swipe in</p>
+              <div className="text-5xl md:text-6xl font-bold text-[oklch(0.95_0.02_250)] font-['Inter']">
+                {formatDuration(remainingMs)}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section - Share Buttons */}
+          <div className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-6 md:py-8 min-h-[120px] sm:min-h-[80px] shrink-0">
+            <div className="flex justify-center gap-4 mt-0 sm:mt-0 md:mt-0">
+              {/* WhatsApp Share */}
+              <button
+                type="button"
+                onClick={() => shareToWhatsApp(DEFAULT_SHARE_TEXT, leaderboardUrl)}
+                className="w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] border-2 border-[oklch(0.75_0.02_250)] hover:scale-105 hover:text-[oklch(0.95_0.02_250)] hover:border-[oklch(0.95_0.02_250)]"
+                aria-label="Share to WhatsApp"
+              >
+                <span className="text-xl md:text-2xl">📱</span>
+              </button>
+
+              {/* Facebook Share */}
+              <button
+                type="button"
+                onClick={() => shareToFacebook(DEFAULT_SHARE_TEXT, leaderboardUrl)}
+                className="w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] border-2 border-[oklch(0.75_0.02_250)] hover:scale-105 hover:text-[oklch(0.95_0.02_250)] hover:border-[oklch(0.95_0.02_250)]"
+                aria-label="Share to Facebook"
+              >
+                <span className="text-xl md:text-2xl">📘</span>
+              </button>
+
+              {/* Twitter Share */}
+              <button
+                type="button"
+                onClick={() => shareToTwitter(DEFAULT_SHARE_TEXT, leaderboardUrl)}
+                className="w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] border-2 border-[oklch(0.75_0.02_250)] hover:scale-105 hover:text-[oklch(0.95_0.02_250)] hover:border-[oklch(0.95_0.02_250)]"
+                aria-label="Share to Twitter"
+              >
+                <span className="text-xl md:text-2xl">🐦</span>
+              </button>
+
+              {/* Copy Link */}
+              <button
+                type="button"
+                onClick={() => copyLinkToClipboard(leaderboardUrl)}
+                className="w-11 h-11 md:w-16 md:h-16 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 active:translate-y-[1px] font-['Space_Grotesk'] bg-[oklch(0.28_0.02_250)] text-[oklch(0.75_0.02_250)] border-2 border-[oklch(0.75_0.02_250)] hover:scale-105 hover:text-[oklch(0.95_0.02_250)] hover:border-[oklch(0.95_0.02_250)]"
+                aria-label="Copy link"
+              >
+                <ShareIcon className="w-5 h-5 md:w-6 md:h-6" />
+              </button>
+            </div>
+
+            {/* Go to Leaderboard Button */}
+            {onShowLeaderboard && (
+              <button
+                type="button"
+                onClick={onShowLeaderboard}
+                className="mt-4 min-h-12 w-full rounded-xl border border-[oklch(0.62_0.18_142)] bg-[oklch(0.62_0.18_142)] px-4 py-3 font-semibold font-['Space_Grotesk'] text-white transition-colors hover:opacity-90 flex items-center justify-center gap-2"
+              >
+                <LeaderboardIcon className="w-5 h-5" />
+                View Leaderboard
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    }
     
     return (
       <div className="flex flex-col relative overflow-hidden rounded-t-[20px]">

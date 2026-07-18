@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction } from './SwipeCard.types';
 import { getUserCountry } from './onboardingStorage';
 import { availableCountries } from './countries';
+import { getDailySwipeState, getSwipeCountRemaining, getNextDailyResetTimestamp } from '@root/swipeLockStorage';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -81,7 +82,7 @@ function buildGlobalCard(id: string, excludeCode?: string, existingCodes: string
   };
 }
 
-function buildInitialQueue(homeCode: string | null): CardData[] {
+function buildInitialQueue(homeCode: string | null, dailyLimit: number): CardData[] {
   const queue: CardData[] = [];
 
   if (homeCode) {
@@ -89,8 +90,9 @@ function buildInitialQueue(homeCode: string | null): CardData[] {
     if (homeCard) queue.push(homeCard);
   }
 
-  // Fill to at least 3 cards with global picks
-  while (queue.length < 3) {
+  // Add global cards up to the daily limit
+  const globalCardsNeeded = dailyLimit - queue.length;
+  for (let i = 0; i < globalCardsNeeded; i++) {
     queue.push(
       buildGlobalCard(
         `global-${Date.now()}-${queue.length}`,
@@ -107,27 +109,39 @@ function buildInitialQueue(homeCode: string | null): CardData[] {
 
 export function SwipeCardDemo() {
   const savedCountryCode = getUserCountry();
+  const hasHomeCountry = savedCountryCode !== null;
   const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
-  const [cardsQueue, setCardsQueue] = useState<CardData[]>(() =>
-    buildInitialQueue(savedCountryCode)
-  );
+  const [cardsQueue, setCardsQueue] = useState<CardData[]>(() => {
+    const { limit } = getDailySwipeState(hasHomeCountry);
+    return buildInitialQueue(savedCountryCode, limit);
+  });
+  const [isLimitReached, setIsLimitReached] = useState(false);
 
   const handleVote = (action: VoteAction) => {
     const voteAction = action ?? 'skip';
     setVoteHistory((prev) => [...prev, voteAction]);
     console.log('Vote recorded:', voteAction);
 
+    // Check if limit reached after this vote
+    const { count, limit } = getDailySwipeState(hasHomeCountry);
+    if (count + 1 >= limit) {
+      setIsLimitReached(true);
+    }
+
     setTimeout(() => {
       setCardsQueue((prev) => {
         const nextQueue = prev.slice(1);
-        while (nextQueue.length < 3) {
-          nextQueue.push(
-            buildGlobalCard(
-              `global-${Date.now()}-${nextQueue.length}`,
-              savedCountryCode ?? undefined,
-              nextQueue.map((card) => card.countryCode)
-            )
-          );
+        // Only add more cards if limit not reached
+        if (!isLimitReached && count + 1 < limit) {
+          while (nextQueue.length < 3) {
+            nextQueue.push(
+              buildGlobalCard(
+                `global-${Date.now()}-${nextQueue.length}`,
+                savedCountryCode ?? undefined,
+                nextQueue.map((card) => card.countryCode)
+              )
+            );
+          }
         }
         return nextQueue;
       });
@@ -136,11 +150,33 @@ export function SwipeCardDemo() {
 
   const currentCard = cardsQueue[0];
   const nextCard = cardsQueue[1];
+  const { count, limit } = getDailySwipeState(hasHomeCountry);
+  const remainingSwipes = limit - count;
 
   if (!currentCard) {
     return (
       <div className="flex items-center justify-center">
         <p className="text-white opacity-60">Loading stack...</p>
+      </div>
+    );
+  }
+
+  if (isLimitReached || remainingSwipes <= 0) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center text-center px-4">
+        <div className="space-y-4 max-w-md">
+          <h2 className="text-3xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">
+            Daily limit reached
+          </h2>
+          <p className="text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">
+            You've used all your daily swipes. Come back tomorrow to vote again!
+          </p>
+          <div className="bg-[oklch(0.20_0.02_250)] rounded-xl p-4 border border-[oklch(0.28_0.02_250)]">
+            <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter']">
+              Today's votes: {count}/{limit}
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -152,6 +188,9 @@ export function SwipeCardDemo() {
         nextCard={nextCard}
         onVote={handleVote}
         showMicroHistory={true}
+        isLocked={isLimitReached || remainingSwipes <= 0}
+        nextResetAt={getNextDailyResetTimestamp()}
+        onShowLeaderboard={() => console.log('Navigate to leaderboard')}
       />
 
       {/* Vote history shown top right on desktop only */}

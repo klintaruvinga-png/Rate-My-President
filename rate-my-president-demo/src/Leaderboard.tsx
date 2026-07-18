@@ -286,23 +286,23 @@ export default function Leaderboard({
   // Skeleton loader component
   const SkeletonRow = () => (
     <tr className="border-b border-[oklch(0.28_0.02_250)] motion-safe:animate-pulse">
-      <td className="px-4 py-3 text-[oklch(0.75_0.02_250)]">
-        <div className="h-3 w-5 sm:h-4 sm:w-6 bg-[oklch(0.28_0.02_250)] rounded" />
+      <td className="px-2 py-2 text-[oklch(0.75_0.02_250)] sm:px-4 sm:py-3">
+        <div className="h-2.5 w-4 sm:h-3 sm:w-6 bg-[oklch(0.28_0.02_250)] rounded" />
       </td>
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="h-8 w-8 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
-          <div className="h-3 w-16 sm:h-4 sm:w-24 bg-[oklch(0.28_0.02_250)] rounded" />
+      <td className="px-2 py-2 sm:px-4 sm:py-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          <div className="h-7 w-7 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
+          <div className="h-2.5 w-12 sm:h-3 sm:w-24 bg-[oklch(0.28_0.02_250)] rounded" />
         </div>
       </td>
-      <td className="px-4 py-3 text-right">
-        <div className="h-3 w-10 sm:h-4 sm:w-12 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
+      <td className="px-2 py-2 text-center sm:px-4 sm:py-3">
+        <div className="h-2.5 w-6 sm:h-3 sm:w-12 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
       </td>
-      <td className="hidden px-4 py-3 text-right md:table-cell">
-        <div className="h-3 w-6 sm:h-4 sm:w-8 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
+      <td className="hidden px-4 py-3 text-center md:table-cell">
+        <div className="h-3 w-6 sm:h-4 sm:w-8 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
       </td>
-      <td className="hidden px-4 py-3 text-right lg:table-cell">
-        <div className="h-3 w-12 sm:h-4 sm:w-16 bg-[oklch(0.28_0.02_250)] rounded ml-auto" />
+      <td className="hidden px-4 py-3 text-center lg:table-cell">
+        <div className="h-3 w-12 sm:h-4 sm:w-16 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
       </td>
     </tr>
   );
@@ -432,29 +432,31 @@ export default function Leaderboard({
             <thead className="sticky top-0 z-10 border-b border-[oklch(0.28_0.02_250)] bg-[oklch(0.20_0.02_250)]">
               <tr>
                 <th
-                  className={`px-4 py-3 text-left font-['Inter'] font-600 cursor-pointer transition-colors sm:px-4 sm:py-3 ${getSortIndicator('rank').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
+                  className={`px-2 py-2 text-left font-['Inter'] font-600 cursor-pointer transition-colors sm:px-4 sm:py-3 ${getSortIndicator('rank').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('rank')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'rank')}
                   tabIndex={0}
                   aria-sort={sortState.column === 'rank' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center gap-1">
-                    Rank
+                    <span className="hidden sm:inline">Rank</span>
+                    <span className="sm:hidden">#</span>
                     <span className={`text-xs min-w-4 ${getSortIndicator('rank').isActive ? 'opacity-100' : 'opacity-40'}`}>{getSortIndicator('rank').direction}</span>
                   </div>
                 </th>
-                <th className="px-4 py-3 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] sm:px-4 sm:py-3">
+                <th className="px-2 py-2 text-left font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] sm:px-4 sm:py-3">
                   Leader
                 </th>
                 <th
-                  className={`px-4 py-3 text-center font-['Inter'] font-600 cursor-pointer transition-colors sm:px-4 sm:py-3 ${getSortIndicator('approval').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
+                  className={`px-2 py-2 text-center font-['Inter'] font-600 cursor-pointer transition-colors sm:px-4 sm:py-3 ${getSortIndicator('approval').isActive ? 'text-[oklch(0.95_0.02_250)]' : 'text-[oklch(0.75_0.02_250)] hover:text-[oklch(0.95_0.02_250)]'}`}
                   onClick={() => handleColumnClick('approval')}
                   onKeyDown={(e) => handleHeaderKeyDown(e, 'approval')}
                   tabIndex={0}
                   aria-sort={sortState.column === 'approval' ? (sortState.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
                   <div className="flex items-center justify-center gap-1">
-                    Approval
+                    <span className="hidden sm:inline">Approval</span>
+                    <span className="sm:hidden">%</span>
                     <span className={`text-xs min-w-4 ${getSortIndicator('approval').isActive ? 'opacity-100' : 'opacity-40'}`}>{getSortIndicator('approval').direction}</span>
                   </div>
                 </th>
@@ -484,11 +486,11 @@ export default function Leaderboard({
                       className="border-b border-[oklch(0.28_0.02_250)] hover:bg-[oklch(0.20_0.02_250)] transition-colors group motion-safe:animate-[fadeIn_0.2s_ease-out] [animation-fill-mode:backwards]"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <td className="w-12 px-4 py-3 font-['Inter'] font-600 text-[oklch(0.75_0.02_250)]">
+                      <td className="w-10 px-2 py-2 font-['Inter'] font-600 text-[oklch(0.75_0.02_250)] text-xs sm:w-12 sm:px-4 sm:py-3 sm:text-sm">
                         #{entry.rank}
                       </td>
                       <td
-                        className={`px-4 py-3 ${onLeaderClick ? 'cursor-pointer' : ''}`}
+                        className={`px-2 py-2 sm:px-4 sm:py-3 ${onLeaderClick ? 'cursor-pointer' : ''}`}
                         role={onLeaderClick ? 'button' : undefined}
                         tabIndex={onLeaderClick ? 0 : undefined}
                         onClick={() => onLeaderClick && onLeaderClick(entry.id)}
@@ -499,7 +501,7 @@ export default function Leaderboard({
                           }
                         }}
                       >
-                        <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="flex items-center gap-1.5 sm:gap-3">
                           {/* Avatar */}
                           <img
                             src={resolveAvatarSrc(entry.avatarUrl)}
@@ -517,22 +519,24 @@ export default function Leaderboard({
                                 target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="8" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
                               }
                             }}
-                            className="h-8 w-8 sm:h-10 sm:w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0 object-cover"
+                            className="h-7 w-7 sm:h-10 sm:w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0 object-cover"
                           />
                           {/* Flag + Name */}
-                          {(entry.countryCode || entry.countryFlag) && (
-                            <AnimatedFlag
-                              countryCode={entry.countryCode}
-                              fallbackFlag={entry.countryFlag}
-                              className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
-                            />
-                          )}
-                          <span className="font-['Space_Grotesk'] font-600 text-xs sm:text-sm hover:text-[oklch(0.62_0.18_142)] transition-colors truncate">
-                            {entry.name}
-                          </span>
+                          <div className="flex items-center gap-1 min-w-0 flex-1">
+                            {(entry.countryCode || entry.countryFlag) && (
+                              <AnimatedFlag
+                                countryCode={entry.countryCode}
+                                fallbackFlag={entry.countryFlag}
+                                className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0"
+                              />
+                            )}
+                            <span className="font-['Space_Grotesk'] font-600 text-[11px] sm:text-xs sm:text-sm hover:text-[oklch(0.62_0.18_142)] transition-colors truncate">
+                              {entry.name}
+                            </span>
+                          </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-center font-['Inter'] font-700 text-sm sm:text-base">
+                      <td className="px-2 py-2 text-center font-['Inter'] font-700 text-xs sm:px-4 sm:py-3 sm:text-sm sm:text-base">
                         <span
                           className={entry.approvalPercent >= 50 ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]'}
                         >
