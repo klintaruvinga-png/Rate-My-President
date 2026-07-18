@@ -133,29 +133,29 @@ Review and simplify the fix plan using ponytail's lazy senior dev discipline: de
 
 ### Tests (Non-Trivial Logic Only)
 
-15. **Wilson score edge case test**
-    - Test: zero votes, all positive, all negative, mixed
-    - One test file: server/src/__tests__/wilson.test.js
+- **Wilson score edge case test**
+  - Test: zero votes, all positive, all negative, mixed
+  - One test file: server/src/__tests__/wilson.test.js
 
-16. **Swipe limit logic test**
-    - Test: limit reached, reset at midnight, home vs global
-    - One test file: server/src/__tests__/swipes.test.js
+- **Swipe limit logic test**
+  - Test: limit reached, reset at midnight, home vs global
+  - One test file: server/src/__tests__/swipes.test.js
 
-17. **Onboarding registration flow test**
-    - Test: user country selection, registration API call, userId storage
-    - One test file: frontend/src/__tests__/onboarding.test.ts
+- **Onboarding registration flow test**
+  - Test: user country selection, registration API call, userId storage
+  - One test file: frontend/src/__tests__/onboarding.test.ts
 
-18. **Disclaimer rendering test**
-    - Test: disclaimer component renders required text, sticky footer placement
-    - One test file: frontend/src/__tests__/disclaimer.test.ts
+- **Disclaimer rendering test**
+  - Test: disclaimer component renders required text, sticky footer placement
+  - One test file: frontend/src/__tests__/disclaimer.test.ts
 
-19. **Leaderboard region filtering test**
-    - Test: region dropdown updates query param, filters leaders correctly
-    - One test file: frontend/src/__tests__/leaderboard-filter.test.ts
+- **Leaderboard region filtering test**
+  - Test: region dropdown updates query param, filters leaders correctly
+  - One test file: frontend/src/__tests__/leaderboard-filter.test.ts
 
-20. **Swipe-lock state test**
-    - Test: lock UI shows when limit reached, unlock at reset time, server override
-    - One test file: frontend/src/__tests__/swipe-lock.test.ts
+- **Swipe-lock state test**
+  - Test: lock UI shows when limit reached, unlock at reset time, server override
+  - One test file: frontend/src/__tests__/swipe-lock.test.ts
 
 ---
 

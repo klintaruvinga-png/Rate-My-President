@@ -355,23 +355,25 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setSearchQuery('');
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (isAutoAdvancing) return;
 
     setUserCountry(selectedCountry?.code || null);
     setIsAutoAdvancing(true);
 
-    // Register user with server (fire-and-forget to avoid blocking UI)
+    // Register user with server to ensure userId is recorded before proceeding
     const userId = getLocalUserId();
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-    fetch(`${apiBaseUrl}/api/user/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId }),
-    }).catch((error) => {
+    try {
+      await fetch(`${apiBaseUrl}/api/user/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+    } catch (error) {
       console.error('Failed to register user:', error);
-      // Continue anyway - local storage is set
-    });
+      // Continue anyway - local userId is already set and server will auto-create on first swipe
+    }
 
     setTimeout(() => {
       onComplete(selectedCountry?.code || null);

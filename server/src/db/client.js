@@ -19,23 +19,26 @@ async function init() {
     const dataDir = path.dirname(dbPath);
     if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-    if (fs.existsSync(dbPath)) {
+    const isNewDatabase = !fs.existsSync(dbPath);
+
+    if (isNewDatabase) {
+      db = new SQL.Database();
+    } else {
       const fileBuffer = fs.readFileSync(dbPath);
       db = new SQL.Database(fileBuffer);
-      // Check if presidents table is empty and seed if needed
-      const countStmt = db.prepare('SELECT COUNT(*) as count FROM presidents');
-      countStmt.step();
-      const count = countStmt.getAsObject().count;
-      countStmt.free();
-      if (count === 0) {
-        const seed = fs.readFileSync(path.join(__dirname, 'seed-presidents.sql'), 'utf8');
-        db.run(seed);
-        saveDatabase();
-      }
-    } else {
-      db = new SQL.Database();
-      const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
-      db.run(schema);
+    }
+
+    // Apply schema for both new and existing databases to ensure tables exist
+    const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
+    db.run(schema);
+
+    // Check if presidents table is empty and seed if needed
+    const countStmt = db.prepare('SELECT COUNT(*) as count FROM presidents');
+    countStmt.step();
+    const count = countStmt.getAsObject().count;
+    countStmt.free();
+
+    if (count === 0) {
       const seed = fs.readFileSync(path.join(__dirname, 'seed-presidents.sql'), 'utf8');
       db.run(seed);
       saveDatabase();
