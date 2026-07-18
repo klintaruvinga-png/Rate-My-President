@@ -867,6 +867,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           </div>
         )}
       </div>
+      </div>
     </>
   );
 };

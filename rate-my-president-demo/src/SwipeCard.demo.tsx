@@ -117,7 +117,7 @@ export function SwipeCardDemo() {
   });
   const [isLimitReached, setIsLimitReached] = useState(false);
 
-  const handleVote = (action: VoteAction) => {
+  const handleVote = (action: VoteAction): boolean => {
     const voteAction = action ?? 'skip';
     setVoteHistory((prev) => [...prev, voteAction]);
     console.log('Vote recorded:', voteAction);
@@ -127,6 +127,9 @@ export function SwipeCardDemo() {
     if (count + 1 >= limit) {
       setIsLimitReached(true);
     }
+
+    // Reject the swipe (card snaps back) once the daily limit is reached.
+    const allowed = count < limit;
 
     setTimeout(() => {
       setCardsQueue((prev) => {
@@ -146,6 +149,8 @@ export function SwipeCardDemo() {
         return nextQueue;
       });
     }, 2500);
+
+    return allowed;
   };
 
   const currentCard = cardsQueue[0];
