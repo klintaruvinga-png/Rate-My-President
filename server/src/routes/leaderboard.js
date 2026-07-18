@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
     const { window = 'all', region } = req.query;
 
     // Build date filter based on window
+    const params = [];
     let dateFilter = '';
     const now = new Date();
     let startDate;
@@ -24,12 +25,14 @@ router.get('/', (req, res) => {
     switch (window) {
       case 'day':
         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        dateFilter = `AND sl.created_at >= '${startDate.toISOString()}'`;
+        dateFilter = `AND sl.created_at >= ?`;
+        params.push(startDate.toISOString());
         break;
       case 'week':
         startDate = new Date(now);
         startDate.setDate(now.getDate() - 7);
-        dateFilter = `AND sl.created_at >= '${startDate.toISOString()}'`;
+        dateFilter = `AND sl.created_at >= ?`;
+        params.push(startDate.toISOString());
         break;
       case 'all':
       default:
@@ -40,12 +43,13 @@ router.get('/', (req, res) => {
     // Build region filter
     let regionFilter = '';
     if (region) {
-      regionFilter = `AND p.region = '${region}'`;
+      regionFilter = `AND p.region = ?`;
+      params.push(region);
     }
 
     // Query presidents with their vote counts and Wilson score
     const query = `
-      SELECT 
+      SELECT
         p.id,
         p.name,
         p.country,
@@ -65,6 +69,7 @@ router.get('/', (req, res) => {
     `;
 
     const stmt = db.prepare(query);
+    stmt.bind(params);
     const leaderboard = [];
 
     while (stmt.step()) {

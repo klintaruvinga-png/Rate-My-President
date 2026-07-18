@@ -30,8 +30,8 @@ Review and simplify the fix plan using ponytail's lazy senior dev discipline: de
 
 **5. Testing: Test only non-trivial logic**
 - Original: "Add comprehensive testing suite" with 22 test items
-- Ponytail: Add one test file for Wilson score (edge cases), one for swipe limits. That's it.
-- Rationale: Test what can break. UI components are visual, not logic bugs.
+- Ponytail: Add focused tests for Wilson score edge cases, swipe limits, and functional UI flows. Test what can break, not visual polish.
+- Rationale: Cover non-trivial logic and functional flows (onboarding registration, disclaimer rendering, leaderboard region filtering, swipe-lock state) with targeted tests for behavior and edge cases, not just computation.
 
 **6. Phases: Simplified to priority list**
 - Original: 4 phases with artificial weekly boundaries
@@ -50,18 +50,18 @@ Review and simplify the fix plan using ponytail's lazy senior dev discipline: de
 
 ## Simplified Fix Plan (Ponytail-Optimized)
 
-### P0 - Blocks Launch (Do These First)
+### P0 - Blocks Launch (Critical Path - 5 items)
 
-1. **Add presidents table and seed data**
-   - CREATE TABLE presidents with id, name, country, avatar_url
-   - INSERT 15-25 leaders with flat-vector avatars from assets/portraits
-   - Add GET /api/presidents endpoint
-   - One file: server/src/db/schema.sql (add table), server/src/routes/presidents.js (new)
+1. **[COMPLETED] Add presidents table and seed data**
+   - CREATE TABLE presidents with id, name, country, region, avatar_url, active
+   - INSERT 26 leaders with flat-vector avatars from assets/portraits
+   - Add GET /api/presidents endpoint with region and active filters
+   - Files: server/src/db/schema.sql, server/src/db/seed-presidents.sql, server/src/routes/presidents.js
 
-2. **Implement Wilson score ranking using library**
+2. **[COMPLETED] Implement Wilson score ranking using library**
    - `npm i wilson-score-rank` in server/
    - Use in leaderboard endpoint: `wilsonScore.lowerBound(likes, dislikes)`
-   - One line in server/src/routes/leaderboard.js (create this file)
+   - Implemented in server/src/routes/leaderboard.js
 
 3. **Add disclaimer component**
    - Create Disclaimer.tsx with required text from PRD §8
@@ -73,10 +73,10 @@ Review and simplify the fix plan using ponytail's lazy senior dev discipline: de
    - Replace `rounded-full` with `rounded-[8px]` in Leaderboard.tsx
    - Two string replacements
 
-5. **Add leaderboard data endpoint**
+5. **[COMPLETED] Add leaderboard data endpoint**
    - GET /api/leaderboard with window (day/week/all) and region filters
    - Query presidents table, compute Wilson score per leader
-   - One file: server/src/routes/leaderboard.js
+   - Implemented in server/src/routes/leaderboard.js
 
 ### P1 - Important But Not Blocking
 
@@ -114,10 +114,12 @@ Review and simplify the fix plan using ponytail's lazy senior dev discipline: de
     - One function call
 
 12. **Simple admin endpoints (no UI)**
-    - POST /api/admin/presidents with basic auth header
+    - POST /api/admin/presidents with Bearer token authentication
     - PUT /api/admin/presidents/:id
     - DELETE /api/admin/presidents/:id
-    - Three endpoints, check Authorization header
+    - Three endpoints, require Authorization: Bearer <token> header
+    - Validate ADMIN_TOKEN is non-empty at server startup
+    - Reject requests unless Bearer token matches configured secret (never accept unset/"undefined")
 
 13. **Add Daily Prompt row**
     - Add text row to SwipeCard.tsx
@@ -139,6 +141,22 @@ Review and simplify the fix plan using ponytail's lazy senior dev discipline: de
     - Test: limit reached, reset at midnight, home vs global
     - One test file: server/src/__tests__/swipes.test.js
 
+17. **Onboarding registration flow test**
+    - Test: user country selection, registration API call, userId storage
+    - One test file: frontend/src/__tests__/onboarding.test.ts
+
+18. **Disclaimer rendering test**
+    - Test: disclaimer component renders required text, sticky footer placement
+    - One test file: frontend/src/__tests__/disclaimer.test.ts
+
+19. **Leaderboard region filtering test**
+    - Test: region dropdown updates query param, filters leaders correctly
+    - One test file: frontend/src/__tests__/leaderboard-filter.test.ts
+
+20. **Swipe-lock state test**
+    - Test: lock UI shows when limit reached, unlock at reset time, server override
+    - One test file: frontend/src/__tests__/swipe-lock.test.ts
+
 ---
 
 ## Technical Debt Cleanup (Do While Working)
@@ -149,19 +167,21 @@ Review and simplify the fix plan using ponytail's lazy senior dev discipline: de
 
 ---
 
-## Success Metrics (Simplified)
+## Success Metrics (Measurable)
 
-**Before:**
-- 0/10 critical features
-- No leaderboard data
-- No leader data
-- No news headlines
+**Completed (as of current implementation):**
+- Presidents endpoint: GET /api/presidents returns 26 seeded leaders with region/active filtering
+- Leaderboard endpoint: GET /api/leaderboard returns Wilson score rankings with day/week/all windows
+- Wilson score integration: wilson-score-rank library installed and computing lowerBound(likes, dislikes)
+- Database schema: presidents table with id, name, country, region, avatar_url, active columns
 
-**After:**
-- 10/10 critical features (P0 items)
-- Leaderboard loads with Wilson score
-- 15-25 leaders swipable
-- News headlines on card flip
+**Remaining for MVP launch:**
+- Disclaimer component rendered and sticky in App.tsx layout
+- Avatar shapes updated to rounded-square across SwipeCard and Leaderboard
+- NewsAPI integration delivering headlines per leader
+- Onboarding registration calling POST /api/user/register
+- Region dropdown filtering leaderboard by Africa/Europe/Asia/Americas/Oceania
+- Swipe limit enforcement unified: server as single source of truth
 
 ---
 
@@ -175,9 +195,14 @@ const fetchHeadlines = async (leaderId: string) => {
   return newsAPI.fetch(leaderId); // One source for now
 };
 
-// ponytail: basic auth header check, upgrade to JWT when admin team grows beyond 1-2 people
+// ponytail: Bearer token auth, upgrade to JWT when admin team grows beyond 1-2 people
 const checkAdminAuth = (req) => {
-  return req.headers.authorization === `Bearer ${process.env.ADMIN_TOKEN}`;
+  const token = process.env.ADMIN_TOKEN;
+  if (!token || token === 'undefined') {
+    throw new Error('ADMIN_TOKEN must be set');
+  }
+  const authHeader = req.headers.authorization;
+  return authHeader === `Bearer ${token}`;
 };
 
 // ponytail: client-side swipe limit removed, server is source of truth

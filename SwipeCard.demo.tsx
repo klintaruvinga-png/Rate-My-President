@@ -3,7 +3,7 @@ import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction } from './SwipeCard.types';
 import { availableCountries } from './rate-my-president-demo/src/countries';
 import { getUserCountry } from './onboardingStorage';
-import { getDailySwipeState, recordDailySwipe, getNextDailyResetTimestamp, isSwipeLimitReached } from './swipeLockStorage';
+import { getDailySwipeState, getNextDailyResetTimestamp } from './swipeLockStorage';
 import { copyLinkToClipboard } from './utils/socialShare';
 import { getServerUserId } from './utils/userId';
 
@@ -245,7 +245,6 @@ export function SwipeCardDemo() {
       }
 
       setVoteHistory((prev) => [...prev, voteAction]);
-      recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
       setIsVoting(false);
@@ -258,13 +257,13 @@ export function SwipeCardDemo() {
       return true;
     } catch (error) {
       console.error('Failed to sync swipe to server:', error);
-      if (isSwipeLimitReached(hasHomeCountry)) {
+      // Server unavailable - allow swipe to proceed with local state only
+      if (dailyState.count >= dailyState.limit) {
         console.warn('Local quota reached, not recording swipe');
         setIsVoting(false);
         return false;
       }
       setVoteHistory((prev) => [...prev, voteAction]);
-      recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
       setIsVoting(false);
