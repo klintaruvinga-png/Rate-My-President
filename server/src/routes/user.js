@@ -6,30 +6,51 @@ const crypto = require('crypto');
 const router = express.Router();
 
 /**
- * Generate a secure server-side user ID
- * This prevents client-side ID manipulation and allows server-side tracking
+ * Register a user with their client-generated local UUID
+ * Accepts the client's existing userId to maintain consistency
  */
 router.post('/register', (req, res) => {
   try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'Missing userId' });
+    }
+
+    if (!validateUserId(userId)) {
+      return res.status(400).json({ error: 'Invalid userId format' });
+    }
+
     const db = getDatabase();
-    
-    // Generate a cryptographically secure random user ID
-    const userId = 'user_' + crypto.randomBytes(16).toString('hex');
     const createdAt = new Date().toISOString();
-    
+
+    // Check if user already exists
+    const checkStmt = db.prepare('SELECT user_id FROM users WHERE user_id = :userId');
+    checkStmt.bind({ ':userId': userId });
+    const userExists = checkStmt.step();
+    checkStmt.free();
+
+    if (userExists) {
+      // User already registered, return existing record
+      return res.json({
+        userId,
+        alreadyRegistered: true
+      });
+    }
+
     // Store the user ID in the database
     const stmt = db.prepare('INSERT INTO users (user_id, created_at, last_seen) VALUES (:userId, :createdAt, :lastSeen)');
-    stmt.bind({ 
-      ':userId': userId, 
+    stmt.bind({
+      ':userId': userId,
       ':createdAt': createdAt,
       ':lastSeen': createdAt
     });
     stmt.step();
     stmt.free();
-    
+
     saveDatabase();
-    
-    res.json({ 
+
+    res.json({
       userId,
       createdAt
     });

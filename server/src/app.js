@@ -5,6 +5,8 @@ const geocodeRoutes = require('./routes/geocode');
 const swipeRoutes = require('./routes/swipes');
 const preferenceRoutes = require('./routes/preferences');
 const userRoutes = require('./routes/user');
+const presidentsRoutes = require('./routes/presidents');
+const leaderboardRoutes = require('./routes/leaderboard');
 
 const app = express();
 
@@ -47,6 +49,8 @@ app.use('/api/geocode', geocodeRoutes);
 app.use('/api/swipes', swipeRoutes);
 app.use('/api/preferences', preferenceRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/presidents', presidentsRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

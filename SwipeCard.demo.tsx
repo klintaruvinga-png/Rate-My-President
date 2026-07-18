@@ -3,7 +3,7 @@ import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction } from './SwipeCard.types';
 import { availableCountries } from './rate-my-president-demo/src/countries';
 import { getUserCountry } from './onboardingStorage';
-import { getDailySwipeState, recordDailySwipe, getNextDailyResetTimestamp, isSwipeLimitReached } from './swipeLockStorage';
+import { getDailySwipeState, getNextDailyResetTimestamp } from './swipeLockStorage';
 import { copyLinkToClipboard } from './utils/socialShare';
 import { getServerUserId } from './utils/userId';
 
@@ -227,6 +227,12 @@ export function SwipeCardDemo() {
         }),
       });
 
+      if (!response.ok) {
+        console.error('Swipe log request failed with status:', response.status);
+        setIsVoting(false);
+        return false;
+      }
+
       const result = await response.json();
 
       if (result.allowed === false) {
@@ -245,7 +251,6 @@ export function SwipeCardDemo() {
       }
 
       setVoteHistory((prev) => [...prev, voteAction]);
-      recordDailySwipe(hasHomeCountry);
       setDailyState(getDailySwipeState(hasHomeCountry));
       setNextResetAt(getNextDailyResetTimestamp());
       setIsVoting(false);
@@ -258,23 +263,9 @@ export function SwipeCardDemo() {
       return true;
     } catch (error) {
       console.error('Failed to sync swipe to server:', error);
-      if (isSwipeLimitReached(hasHomeCountry)) {
-        console.warn('Local quota reached, not recording swipe');
-        setIsVoting(false);
-        return false;
-      }
-      setVoteHistory((prev) => [...prev, voteAction]);
-      recordDailySwipe(hasHomeCountry);
-      setDailyState(getDailySwipeState(hasHomeCountry));
-      setNextResetAt(getNextDailyResetTimestamp());
+      // Server unavailable - do not allow swipe since server is source of truth
       setIsVoting(false);
-
-      // Advance queue after results display (2.5 seconds to allow reveal animation)
-      setTimeout(() => {
-        advanceQueue();
-      }, 2500);
-
-      return true;
+      return false;
     }
   };
 

@@ -34,25 +34,10 @@ export function getDailySwipeState(hasHomeCountry: boolean) {
   };
 }
 
-export function recordDailySwipe(hasHomeCountry: boolean) {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  const { count, currentDay } = getDailySwipeState(hasHomeCountry);
-  const nextCount = Math.min(count + 1, hasHomeCountry ? 2 : 1);
-
-  safeLocalStorage(() => {
-    window.localStorage.setItem(LAST_SWIPE_DATE_KEY, currentDay);
-    window.localStorage.setItem(DAILY_SWIPE_COUNT_KEY, String(nextCount));
-    return true;
-  }, undefined);
-}
-
-export function isSwipeLimitReached(hasHomeCountry: boolean) {
-  const { count, limit } = getDailySwipeState(hasHomeCountry);
-  return count >= limit;
-}
+// ponytail: client-side swipe limit removed, server is source of truth
+// Removed: recordDailySwipe() function - server enforces this
+// Removed: isSwipeLimitReached() function - server enforces this
+// Kept: getter functions for display purposes only
 
 export function getSwipeCountRemaining(hasHomeCountry: boolean) {
   const { count, limit } = getDailySwipeState(hasHomeCountry);

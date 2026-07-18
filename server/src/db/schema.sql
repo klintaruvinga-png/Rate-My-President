@@ -31,6 +31,28 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS presidents (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  country TEXT NOT NULL,
+  region TEXT NOT NULL,
+  avatar_url TEXT NOT NULL,
+  active INTEGER DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS news_links (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  president_id TEXT NOT NULL,
+  headline TEXT NOT NULL,
+  source_url TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(president_id) REFERENCES presidents(id) ON DELETE CASCADE
+);
+
 CREATE INDEX IF NOT EXISTS idx_swipe_logs_user_date ON swipe_logs(user_id, date);
 CREATE INDEX IF NOT EXISTS idx_swipe_logs_date ON swipe_logs(date);
 CREATE INDEX IF NOT EXISTS idx_users_last_seen ON users(last_seen);
+CREATE INDEX IF NOT EXISTS idx_presidents_country ON presidents(country);
+CREATE INDEX IF NOT EXISTS idx_presidents_region ON presidents(region);
+CREATE INDEX IF NOT EXISTS idx_news_links_president ON news_links(president_id);
