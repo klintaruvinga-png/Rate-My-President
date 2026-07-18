@@ -6,6 +6,11 @@ let SQL = null;
 let db = null;
 let readyPromise = null;
 
+/**
+ * Initialize the SQLite database.
+ * Loads sql.js, creates or opens the database file, applies schema and seed data if needed.
+ * @returns {Promise<Database>} The initialized database instance
+ */
 async function init() {
   if (readyPromise) return readyPromise;
   readyPromise = (async () => {
@@ -17,6 +22,16 @@ async function init() {
     if (fs.existsSync(dbPath)) {
       const fileBuffer = fs.readFileSync(dbPath);
       db = new SQL.Database(fileBuffer);
+      // Check if presidents table is empty and seed if needed
+      const countStmt = db.prepare('SELECT COUNT(*) as count FROM presidents');
+      countStmt.step();
+      const count = countStmt.getAsObject().count;
+      countStmt.free();
+      if (count === 0) {
+        const seed = fs.readFileSync(path.join(__dirname, 'seed-presidents.sql'), 'utf8');
+        db.run(seed);
+        saveDatabase();
+      }
     } else {
       db = new SQL.Database();
       const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
@@ -34,6 +49,11 @@ async function init() {
   return readyPromise;
 }
 
+/**
+ * Get the database instance.
+ * @returns {Database} The database instance
+ * @throws {Error} If database has not been initialized
+ */
 function getDatabase() {
   if (!db) {
     throw new Error('Database not initialized - call init() first');
@@ -41,6 +61,9 @@ function getDatabase() {
   return db;
 }
 
+/**
+ * Synchronously save the database to disk.
+ */
 function saveDatabaseSync() {
   if (!db) return;
   const data = db.export();
@@ -49,11 +72,17 @@ function saveDatabaseSync() {
   fs.writeFileSync(dbPath, buffer);
 }
 
+/**
+ * Save the database to disk (async wrapper around sync save).
+ */
 function saveDatabase() {
   if (!db) return;
   saveDatabaseSync();
 }
 
+/**
+ * Close the database connection.
+ */
 function closeDatabase() {
   if (db) {
     db.close();

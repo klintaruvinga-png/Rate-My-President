@@ -227,6 +227,12 @@ export function SwipeCardDemo() {
         }),
       });
 
+      if (!response.ok) {
+        console.error('Swipe log request failed with status:', response.status);
+        setIsVoting(false);
+        return false;
+      }
+
       const result = await response.json();
 
       if (result.allowed === false) {
@@ -257,23 +263,9 @@ export function SwipeCardDemo() {
       return true;
     } catch (error) {
       console.error('Failed to sync swipe to server:', error);
-      // Server unavailable - allow swipe to proceed with local state only
-      if (dailyState.count >= dailyState.limit) {
-        console.warn('Local quota reached, not recording swipe');
-        setIsVoting(false);
-        return false;
-      }
-      setVoteHistory((prev) => [...prev, voteAction]);
-      setDailyState(getDailySwipeState(hasHomeCountry));
-      setNextResetAt(getNextDailyResetTimestamp());
+      // Server unavailable - do not allow swipe since server is source of truth
       setIsVoting(false);
-
-      // Advance queue after results display (2.5 seconds to allow reveal animation)
-      setTimeout(() => {
-        advanceQueue();
-      }, 2500);
-
-      return true;
+      return false;
     }
   };
 

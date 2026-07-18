@@ -3,6 +3,11 @@ const { getDatabase } = require('../db/client');
 
 const router = express.Router();
 
+/**
+ * GET /presidents
+ * Returns all presidents with optional region and active filters.
+ * Query params: region (string), active (0|1)
+ */
 router.get('/', (req, res) => {
   try {
     const db = getDatabase();
@@ -41,6 +46,11 @@ router.get('/', (req, res) => {
   }
 });
 
+/**
+ * GET /presidents/:id
+ * Returns a single president by ID.
+ * @param {string} id - President ID
+ */
 router.get('/:id', (req, res) => {
   try {
     const db = getDatabase();
