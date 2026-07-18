@@ -530,7 +530,7 @@ export default function Leaderboard({
                                 className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0"
                               />
                             )}
-                            <span className="font-['Space_Grotesk'] font-600 text-[11px] sm:text-xs sm:text-sm hover:text-[oklch(0.62_0.18_142)] transition-colors truncate">
+                            <span className="font-['Space_Grotesk'] font-600 text-[11px] sm:text-xs lg:text-sm hover:text-[oklch(0.62_0.18_142)] transition-colors truncate">
                               {entry.name}
                             </span>
                           </div>

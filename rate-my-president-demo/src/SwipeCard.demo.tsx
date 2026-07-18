@@ -131,11 +131,6 @@ export function SwipeCardDemo() {
       setSwipeCount(newCount);
       console.log('Vote recorded:', voteAction);
 
-      // Check if limit reached after this vote
-      if (newCount >= dailyLimit) {
-        setIsLimitReached(true);
-      }
-
       setTimeout(() => {
         setCardsQueue((prev) => {
           const nextQueue = prev.slice(1);
@@ -153,15 +148,18 @@ export function SwipeCardDemo() {
           }
           return nextQueue;
         });
+        // Surface the limit screen only AFTER the post-vote reveal has played,
+        // so the final daily swipe's approval/headline reveal is never cut off.
+        if (newCount >= dailyLimit) {
+          setIsLimitReached(true);
+        }
       }, 2500);
     }
-
     return allowed;
   };
 
   const currentCard = cardsQueue[0];
   const nextCard = cardsQueue[1];
-  const remainingSwipes = dailyLimit - swipeCount;
 
   if (!currentCard) {
     return (
@@ -171,7 +169,7 @@ export function SwipeCardDemo() {
     );
   }
 
-  if (isLimitReached || remainingSwipes <= 0) {
+  if (isLimitReached) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-4">
         <div className="space-y-4 max-w-md">
@@ -198,7 +196,7 @@ export function SwipeCardDemo() {
         nextCard={nextCard}
         onVote={handleVote}
         showMicroHistory={true}
-        isLocked={isLimitReached || remainingSwipes <= 0}
+        isLocked={isLimitReached}
         nextResetAt={getNextDailyResetTimestamp()}
         onShowLeaderboard={() => console.log('Navigate to leaderboard')}
       />

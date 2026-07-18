@@ -2,13 +2,7 @@
  * Social media sharing utilities for Rate My President
  */
 
-export interface ShareContent {
-  title: string;
-  text: string;
-  url: string;
-}
-
-const DEFAULT_SHARE_TEXT = 'Check out today\'s leaderboard on Rate My President!';
+const DEFAULT_SHARE_TEXT = 'Check out today's leaderboard on Rate My President!';
 
 /**
  * Share to WhatsApp
@@ -61,13 +55,14 @@ export async function copyLinkToClipboard(url: string): Promise<boolean> {
 
 /**
  * Native Web Share API (fallback to clipboard if not available)
+ * Accepts the same positional (text, url) shape as the platform helpers for consistency.
  */
-export async function nativeShare(content: ShareContent): Promise<boolean> {
+export async function nativeShare(text: string, url: string): Promise<boolean> {
   if (typeof navigator !== 'undefined' && 'share' in navigator) {
     const shareNavigator = navigator as ShareNavigator;
     if (typeof shareNavigator.share === 'function') {
       try {
-        await shareNavigator.share(content);
+        await shareNavigator.share({ title: DEFAULT_SHARE_TEXT, text, url });
         return true;
       } catch (error) {
         // User cancelled or share failed
@@ -82,15 +77,15 @@ export async function nativeShare(content: ShareContent): Promise<boolean> {
 /**
  * Generic share function that tries native share first, then clipboard fallback
  */
-export async function shareContent(content: ShareContent): Promise<{ method: string; success: boolean }> {
+export async function shareContent(text: string, url: string): Promise<{ method: string; success: boolean }> {
   // Try native share first
-  const nativeSuccess = await nativeShare(content);
+  const nativeSuccess = await nativeShare(text, url);
   if (nativeSuccess) {
     return { method: 'native', success: true };
   }
 
   // Fallback to clipboard
-  const clipboardSuccess = await copyLinkToClipboard(content.url);
+  const clipboardSuccess = await copyLinkToClipboard(url);
   if (clipboardSuccess) {
     return { method: 'clipboard', success: true };
   }

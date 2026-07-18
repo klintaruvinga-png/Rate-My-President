@@ -173,6 +173,16 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     return () => clearTimeout(delayId);
   }, [availableCountries, currentScreen, locationRetryToken]);
 
+  // Enforce the 24-hour country-change lock for returning users, independent of
+  // geolocation availability or prior explicit choice. This is the anti-abuse gate:
+  // it must show before the picker even when the user already has a saved country.
+  useEffect(() => {
+    if (currentScreen !== 'country-select') return;
+    if (isCountryLocked()) {
+      setShowCountryLockMessage(true);
+    }
+  }, [currentScreen, locationRetryToken]);
+
   // Trigger geolocation only after user explicitly consents
   useEffect(() => {
     if (locationConsent !== true) return;
@@ -371,6 +381,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const handleClearCountry = () => {
+    // While the 24h country lock is active, do not allow re-selection.
+    if (isCountryLocked()) {
+      setShowCountryLockMessage(true);
+      return;
+    }
     setCountryConfirmed(false);
     setSelectedCountry(null);
     setSearchQuery('');
