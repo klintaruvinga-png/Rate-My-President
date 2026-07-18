@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction } from './SwipeCard.types';
 import { getUserCountry } from './onboardingStorage';
 import { availableCountries } from './countries';
-import { getDailySwipeState, getSwipeCountRemaining, getNextDailyResetTimestamp } from '@root/swipeLockStorage';
+import { getDailySwipeState, getNextDailyResetTimestamp } from '@root/swipeLockStorage';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 

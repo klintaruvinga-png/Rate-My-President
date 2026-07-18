@@ -23,6 +23,12 @@ export interface CountryData {
   name: string;
   flag: string;
   leader?: string;
+  /** Optional avatar image URL (e.g. DiceBear SVG) */
+  avatarUrl?: string;
+  /** Seed used to generate a deterministic avatar when avatarUrl is absent */
+  avatarSeed?: string;
+  /** Background color for a generated avatar (hex without #) */
+  avatarColor?: string;
 }
 
 export interface OnboardingProps {

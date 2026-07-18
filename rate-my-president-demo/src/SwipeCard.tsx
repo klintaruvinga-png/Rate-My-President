@@ -9,19 +9,9 @@ import {
   TrendDownIcon,
 } from '@root/Icons';
 import AnimatedFlag from '@root/AnimatedFlag';
-import type { CardData, VoteAction } from './SwipeCard.types';
+import type { CardData, VoteAction, SwipeCardProps } from './SwipeCard.types';
 
-interface SwipeCardProps {
-  card: CardData;
-  nextCard?: CardData;
-  onVote: (action: VoteAction) => boolean | Promise<boolean>;
-  isLoading?: boolean;
-  showMicroHistory?: boolean;
-  headerImageUrl?: string;
-  totalRated?: number;
-}
-
-export const SwipeCard: React.FC<SwipeCardProps> = ({
+const SwipeCard: React.FC<SwipeCardProps> = ({
   card,
   onVote,
   nextCard,
@@ -29,6 +19,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   showMicroHistory = true,
   headerImageUrl,
   totalRated,
+  isLocked = false,
+  nextResetAt,
+  onShowLeaderboard,
 }) => {
   const [dragState, setDragState] = useState({
     isDragging: false,
@@ -111,7 +104,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (voteAction || isLoading || isFlinging) return;
+    if (voteAction || isLoading || isFlinging || isLocked) return;
     if (isInteractiveTarget(e.target)) return;
 
     setDragState({ isDragging: true, startX: e.clientX, startY: e.clientY, offsetX: 0, offsetY: 0 });
@@ -249,7 +242,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (voteAction || isLoading || isFlinging) return;
+      if (voteAction || isLoading || isFlinging || isLocked) return;
 
       switch (e.key) {
         case 'ArrowRight':
@@ -272,10 +265,10 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [voteAction, isLoading, isFlinging]);
+  }, [voteAction, isLoading, isFlinging, isLocked]);
 
   const handleVote = (action: VoteAction) => {
-    if (voteAction || isLoading || isFlinging) return;
+    if (voteAction || isLoading || isFlinging || isLocked) return;
     if (action) {
       triggerFling(action);
     }
@@ -485,7 +478,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             <div
               role="region"
               aria-label="Daily leader card"
-              className={`absolute inset-0 rounded-[20px] cursor-grab select-none overflow-hidden ${topBgColor} border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm ${dragState.isDragging ? 'cursor-grabbing' : ''} ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+              className={`absolute inset-0 rounded-[20px] cursor-grab select-none overflow-hidden ${topBgColor} border border-[oklch(0.28_0.02_250)] shadow-2xl backdrop-blur-sm ${dragState.isDragging ? 'cursor-grabbing' : ''} ${(isLoading || isLocked) ? 'opacity-50 pointer-events-none' : ''}`}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -518,6 +511,32 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
               {renderCardContent(card)}
             </div>
+
+            {isLocked && (
+              <div
+                className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 rounded-[20px] bg-[oklch(0.15_0.04_250)]/85 px-6 text-center backdrop-blur-sm"
+                role="status"
+                aria-live="polite"
+              >
+                <div className="text-3xl font-bold text-[oklch(0.72_0.15_65)] font-['Space_Grotesk']">
+                  Daily votes used
+                </div>
+                <p className="max-w-[260px] text-sm text-[oklch(0.75_0.02_250)] font-['Inter']">
+                  {nextResetAt
+                    ? `Next vote unlocks ${new Date(nextResetAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.`
+                    : 'Come back tomorrow for your next swipe.'}
+                </p>
+                {onShowLeaderboard && (
+                  <button
+                    type="button"
+                    onClick={onShowLeaderboard}
+                    className="mt-2 min-h-12 rounded-xl bg-[oklch(0.62_0.18_142)] px-5 py-3 font-semibold text-white font-['Space_Grotesk'] transition-opacity hover:opacity-90"
+                  >
+                    View leaderboard
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

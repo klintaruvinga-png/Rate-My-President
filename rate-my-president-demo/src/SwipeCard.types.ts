@@ -118,6 +118,25 @@ export interface SwipeCardProps {
    * @default true
    */
   showMicroHistory?: boolean;
+
+  /** Optional: Override the header image URL for the card */
+  headerImageUrl?: string;
+
+  /** Optional: Total number of leaders rated by the user (history pill) */
+  totalRated?: number;
+
+  /**
+   * Optional: When true, the daily vote limit is reached. Interaction is
+   * disabled and a locked overlay (with reset time) is shown.
+   * @default false
+   */
+  isLocked?: boolean;
+
+  /** Epoch ms of the next daily reset; shown in the locked overlay */
+  nextResetAt?: number;
+
+  /** Called when the user taps "View leaderboard" in the locked overlay */
+  onShowLeaderboard?: () => void;
 }
 
 /**
