@@ -21,6 +21,8 @@ async function init() {
       db = new SQL.Database();
       const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
       db.run(schema);
+      const seed = fs.readFileSync(path.join(__dirname, 'seed-presidents.sql'), 'utf8');
+      db.run(seed);
       saveDatabase();
     }
 

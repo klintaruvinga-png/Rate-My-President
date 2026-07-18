@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GlobeIcon, HomeIcon, LikeIcon, NoLikeIcon, SkipIcon, CountryIcon, BadgeIcon } from './Icons';
 import AnimatedFlag from './AnimatedFlag';
 import { setUserCountry } from './onboardingStorage';
+import { getLocalUserId } from './utils/userId';
 
 type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation' | 'international-only';
 type LocationStatus = 'idle' | 'requesting' | 'success' | 'error';
@@ -354,11 +355,26 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setSearchQuery('');
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (isAutoAdvancing) return;
 
     setUserCountry(selectedCountry?.code || null);
     setIsAutoAdvancing(true);
+
+    // Register user with server
+    try {
+      const userId = getLocalUserId();
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      await fetch(`${apiBaseUrl}/api/user/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+    } catch (error) {
+      console.error('Failed to register user:', error);
+      // Continue anyway - local storage is set
+    }
+
     setTimeout(() => {
       onComplete(selectedCountry?.code || null);
     }, 300);
