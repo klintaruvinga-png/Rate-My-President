@@ -5,6 +5,30 @@ import type { LeaderboardProps, LeaderboardSortState } from './Leaderboard.types
 import AnimatedFlag from '@root/AnimatedFlag';
 import { TrendUpIcon, TrendDownIcon } from '@root/Icons';
 
+// Skeleton loader component (module-level to avoid re-creation on each render)
+const SkeletonRow = () => (
+  <tr className="border-b border-[oklch(0.28_0.02_250)] motion-safe:animate-pulse">
+    <td className="px-2 py-2 text-[oklch(0.75_0.02_250)] sm:px-4 sm:py-3">
+      <div className="h-2.5 w-4 sm:h-3 sm:w-6 bg-[oklch(0.28_0.02_250)] rounded" />
+    </td>
+    <td className="px-2 py-2 sm:px-4 sm:py-3">
+      <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="h-7 w-7 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
+        <div className="h-2.5 w-12 sm:h-3 sm:w-24 bg-[oklch(0.28_0.02_250)] rounded" />
+      </div>
+    </td>
+    <td className="px-2 py-2 text-center sm:px-4 sm:py-3">
+      <div className="h-2.5 w-6 sm:h-3 sm:w-12 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
+    </td>
+    <td className="hidden px-4 py-3 text-center md:table-cell">
+      <div className="h-3 w-6 sm:h-4 sm:w-8 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
+    </td>
+    <td className="hidden px-4 py-3 text-center lg:table-cell">
+      <div className="h-3 w-12 sm:h-4 sm:w-16 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
+    </td>
+  </tr>
+);
+
 export default function Leaderboard({
   entries,
   isLoading = false,
@@ -282,30 +306,6 @@ export default function Leaderboard({
       handleColumnClick(column);
     }
   };
-
-  // Skeleton loader component
-  const SkeletonRow = () => (
-    <tr className="border-b border-[oklch(0.28_0.02_250)] motion-safe:animate-pulse">
-      <td className="px-2 py-2 text-[oklch(0.75_0.02_250)] sm:px-4 sm:py-3">
-        <div className="h-2.5 w-4 sm:h-3 sm:w-6 bg-[oklch(0.28_0.02_250)] rounded" />
-      </td>
-      <td className="px-2 py-2 sm:px-4 sm:py-3">
-        <div className="flex items-center gap-1.5 sm:gap-3">
-          <div className="h-7 w-7 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
-          <div className="h-2.5 w-12 sm:h-3 sm:w-24 bg-[oklch(0.28_0.02_250)] rounded" />
-        </div>
-      </td>
-      <td className="px-2 py-2 text-center sm:px-4 sm:py-3">
-        <div className="h-2.5 w-6 sm:h-3 sm:w-12 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
-      </td>
-      <td className="hidden px-4 py-3 text-center md:table-cell">
-        <div className="h-3 w-6 sm:h-4 sm:w-8 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
-      </td>
-      <td className="hidden px-4 py-3 text-center lg:table-cell">
-        <div className="h-3 w-12 sm:h-4 sm:w-16 bg-[oklch(0.28_0.02_250)] rounded mx-auto" />
-      </td>
-    </tr>
-  );
 
   return (
     <div className="w-full overflow-hidden rounded-[24px] border border-[oklch(0.28_0.02_250)] bg-[oklch(0.15_0.04_250)] text-[oklch(0.95_0.02_250)] shadow-[0_20px_60px_rgba(0,0,0,0.18)]">

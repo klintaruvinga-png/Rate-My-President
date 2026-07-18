@@ -3,7 +3,7 @@ import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction } from './SwipeCard.types';
 import { getUserCountry } from './onboardingStorage';
 import { availableCountries } from './countries';
-import { getDailySwipeState, getNextDailyResetTimestamp } from '@root/swipeLockStorage';
+import { getNextDailyResetTimestamp } from '@root/swipeLockStorage';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -110,53 +110,58 @@ function buildInitialQueue(homeCode: string | null, dailyLimit: number): CardDat
 export function SwipeCardDemo() {
   const savedCountryCode = getUserCountry();
   const hasHomeCountry = savedCountryCode !== null;
+  const dailyLimit = hasHomeCountry ? 2 : 1;
   const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
+  const [swipeCount, setSwipeCount] = useState(0);
   const [cardsQueue, setCardsQueue] = useState<CardData[]>(() => {
-    const { limit } = getDailySwipeState(hasHomeCountry);
-    return buildInitialQueue(savedCountryCode, limit);
+    return buildInitialQueue(savedCountryCode, dailyLimit);
   });
   const [isLimitReached, setIsLimitReached] = useState(false);
 
   const handleVote = (action: VoteAction): boolean => {
     const voteAction = action ?? 'skip';
-    setVoteHistory((prev) => [...prev, voteAction]);
-    console.log('Vote recorded:', voteAction);
 
-    // Check if limit reached after this vote
-    const { count, limit } = getDailySwipeState(hasHomeCountry);
-    if (count + 1 >= limit) {
-      setIsLimitReached(true);
-    }
+    // In production, this would call the server API and derive allowed/count from the response
+    // For demo: simulate server behavior by tracking count locally
+    const newCount = swipeCount + 1;
+    const allowed = swipeCount < dailyLimit;
 
-    // Reject the swipe (card snaps back) once the daily limit is reached.
-    const allowed = count < limit;
+    if (allowed) {
+      setVoteHistory((prev) => [...prev, voteAction]);
+      setSwipeCount(newCount);
+      console.log('Vote recorded:', voteAction);
 
-    setTimeout(() => {
-      setCardsQueue((prev) => {
-        const nextQueue = prev.slice(1);
-        // Only add more cards if limit not reached
-        if (!isLimitReached && count + 1 < limit) {
-          while (nextQueue.length < 3) {
-            nextQueue.push(
-              buildGlobalCard(
-                `global-${Date.now()}-${nextQueue.length}`,
-                savedCountryCode ?? undefined,
-                nextQueue.map((card) => card.countryCode)
-              )
-            );
+      // Check if limit reached after this vote
+      if (newCount >= dailyLimit) {
+        setIsLimitReached(true);
+      }
+
+      setTimeout(() => {
+        setCardsQueue((prev) => {
+          const nextQueue = prev.slice(1);
+          // Only add more cards if limit not reached
+          if (newCount < dailyLimit) {
+            while (nextQueue.length < 3) {
+              nextQueue.push(
+                buildGlobalCard(
+                  `global-${Date.now()}-${nextQueue.length}`,
+                  savedCountryCode ?? undefined,
+                  nextQueue.map((card) => card.countryCode)
+                )
+              );
+            }
           }
-        }
-        return nextQueue;
-      });
-    }, 2500);
+          return nextQueue;
+        });
+      }, 2500);
+    }
 
     return allowed;
   };
 
   const currentCard = cardsQueue[0];
   const nextCard = cardsQueue[1];
-  const { count, limit } = getDailySwipeState(hasHomeCountry);
-  const remainingSwipes = limit - count;
+  const remainingSwipes = dailyLimit - swipeCount;
 
   if (!currentCard) {
     return (
@@ -178,7 +183,7 @@ export function SwipeCardDemo() {
           </p>
           <div className="bg-[oklch(0.20_0.02_250)] rounded-xl p-4 border border-[oklch(0.28_0.02_250)]">
             <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter']">
-              Today's votes: {count}/{limit}
+              Today's votes: {swipeCount}/{dailyLimit}
             </p>
           </div>
         </div>

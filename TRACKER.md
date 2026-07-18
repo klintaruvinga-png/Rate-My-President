@@ -1,14 +1,14 @@
 # Rate My President — Progress Tracker
 
 Product type: gamified sentiment tracker (swipe + leaderboards).
-Status: docs-first, now has working code (SwipeCard, server, demo-app).
+Status: buildable React/Vite/TypeScript implementation (`rate-my-president-demo/`) + Express 5 backend.
 Last updated: 2026-07-18
 
 ## Active workstreams
 
 | ID | Workstream | Status | Owner | Notes |
 |----|-----------|--------|-------|-------|
-| RMP-01 | Core swipe mechanic + server-side daily lock | In progress | Kudzie | swipeLockStorage.ts enforces 1/2-per-day lock |
+| RMP-01 | Core swipe mechanic + server-side daily lock | In progress | Kudzie | Server enforces 1/2-per-day lock via `/api/swipes/log` endpoint |
 | RMP-02 | Leaderboard (Wilson-score ranking) | In progress | Kudzie | Leaderboard.tsx + LEADERBOARD_*.md specs exist |
 | RMP-03 | Onboarding flow | In progress | Kudzie | Onboarding.tsx + ONBOARDING_*.md specs exist |
 | RMP-04 | News headline allowlist ingestion | Not started | — | Must be mechanical from approved source list, not curated |

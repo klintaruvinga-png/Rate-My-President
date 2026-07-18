@@ -434,6 +434,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     };
   };
 
+  // Memoize presidential card to prevent re-randomization on every render
+  const memoizedPresidentialCard = useMemo(() => {
+    return selectedCountry ? buildPresidentialCard(selectedCountry) : null;
+  }, [selectedCountry]);
+
   return (
     <>
       <div
@@ -682,15 +687,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 
                 {/* Presidential Card Preview */}
                 <div className={`${cardColor} rounded-2xl overflow-hidden shadow-xl`}>
-                  {(() => {
-                    const cardData = buildPresidentialCard(selectedCountry);
+                  {memoizedPresidentialCard && (() => {
+                    const cardData = memoizedPresidentialCard;
                     const percentColor = cardData.approvalPercent >= 50 ? 'text-[oklch(0.62_0.18_142)]' : 'text-[oklch(0.55_0.20_25)]';
                     const trendColor = cardData.trend === 'up'
                       ? 'text-[oklch(0.62_0.18_142)]'
                       : cardData.trend === 'down'
                         ? 'text-[oklch(0.55_0.20_25)]'
                         : 'text-[oklch(0.75_0.02_250)]';
-                    
+
                     return (
                       <div className="flex flex-col relative overflow-hidden">
                         {/* Header Image */}

@@ -239,7 +239,7 @@ function App() {
       {/* Persistent Disclaimer Footer */}
       <footer className="flex-none border-t border-[oklch(0.28_0.02_250)] bg-[oklch(0.13_0.04_250)] px-4 py-3 text-center sm:px-6 sm:py-4">
         <p className="mx-auto max-w-2xl text-xs leading-relaxed text-[oklch(0.75_0.02_250)]/80 font-['Inter']">
-          This app is for entertainment only. These rankings reflect user opinions, not a scientific or representative poll.
+          Entertainment product. Reflects activity of app users only — not a scientific or representative poll.
         </p>
       </footer>
     </div>

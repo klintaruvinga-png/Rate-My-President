@@ -11,10 +11,10 @@
 - **Onboarding Flow**: Full implementation with country selection, mechanic explanations, and consent dialogs
 - **Swipe Cards**: Complete with gesture detection, vote handling, and queue management
 - **Leaderboard**: Interactive with sorting, window switching (day/week/all), and mock data
-- **News Ticker**: Implemented with static headlines from approved sources
+- **News Ticker**: Implemented with static demo headlines (production integration pending)
 - **Navigation**: Tab-based navigation (Onboarding/Swipe/Leaderboard/Help)
 - **Responsive Design**: Mobile-first with desktop optimizations
-- **Accessibility**: WCAG 2.1 AA compliance with ARIA labels and keyboard support
+- **Accessibility**: ARIA labels and keyboard support implemented (WCAG 2.1 AA verification pending)
 - **Storage**: LocalStorage for onboarding completion and user country preference
 
 ### Backend (Express Server)
@@ -70,10 +70,10 @@
 - [ ] Implement user session persistence
 
 #### 3. Daily Vote Logic
-- [ ] Implement server-side daily reset logic
-- [ ] Add vote limit enforcement (1 home + 1 global per day)
+- [x] Implement server-side daily reset logic
+- [x] Add vote limit enforcement (1 home + 1 global per day)
 - [ ] Track streaks and voting history
-- [ ] Handle timezone considerations for daily resets
+- [x] Handle timezone considerations for daily resets
 
 #### 4. Domain & HTTPS Setup
 - [ ] Configure domain name
@@ -195,15 +195,16 @@
 - The demo app is fully functional for manual testing
 - Backend API structure is complete and ready for integration
 - Design system is consistent across all components
-- HTTPS is the only blocking item for geolocation feature
 - Manual country selection provides a complete fallback flow
 
 ---
 
 ## Next Steps
 
-1. **Immediate**: Set up domain and HTTPS to enable geolocation
-2. **Short-term**: Complete frontend-backend integration
-3. **Medium-term**: Implement authentication and daily vote logic
-4. **Long-term**: Deploy to production and monitor metrics
+Outstanding blockers before production deployment:
+1. **Frontend-Backend Integration**: Connect demo app to backend API endpoints (swipes, leaderboard, preferences)
+2. **Authentication & User Management**: Implement registration, login, and JWT token management
+3. **Domain & HTTPS Setup**: Required for geolocation API in browsers
+4. **News Headline Integration**: Connect to approved news source API
+5. **Accessibility Verification**: Complete WCAG 2.1 AA audit and fix any issues
 
