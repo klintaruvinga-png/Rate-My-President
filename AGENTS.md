@@ -1,73 +1,46 @@
 # Rate My President — AI Agent Guide
 
 ## Project snapshot
-- This workspace currently contains product and design documentation only.
-- Key files:
-  - `rate-my-president-prd.md` — product requirements, core mechanics, data model, trust/safety policy.
-  - `rate-my-president-design-theory.md` — visual system, motion tone, and interaction guidance.
-- No source code, build scripts, or tests were detected in the workspace at the time of writing.
+This is a **real, buildable codebase**, not docs-only. It is a gamified swipe-to-rate app (React + Vite + TypeScript frontend, Express 5 + sql.js backend).
 
-## Agent behavior
-- Use the PRD and design theory docs as the authoritative source for feature decisions.
-- Do not assume an existing implementation or default tech stack.
-- Ask the user before generating any scaffolding, code, or architecture not supported by the current workspace.
-- Keep suggested changes aligned with the product constraints and UX rules in the docs.
+- **Frontend (source of truth):** `rate-my-president-demo/` — `npm run build` = `tsc -b && vite build`. This is the app that ships.
+- **Backend:** `server/` — Express 5 REST API + sql.js (WASM SQLite). Daily swipe-lock enforced server-side.
+- **Shared modules:** component files at repo root (`Icons.tsx`, `AnimatedFlag.tsx`, `swipeLockStorage.ts`, `assets/`) are imported by the demo via the `@root` alias (`vite.config.ts` maps `@root` → repo root). These are shared, not duplicate.
+- **Docs:** PRD / design theory / PRODUCT.md / DESIGN.md / onboarding + leaderboard integration notes live at repo root and in `docs/`.
 
-## Important product constraints
-- Swipe limit: 1 per day if user opts out of home country; 2 per day if user sets home country (1 for home leader, 1 for internationals). The daily vote is locked server-side and skip consumes the swipe.
-- The app is a gamified sentiment tracker, not a debate platform, pollster, or betting product.
-- UI tone is split:
-  - playful interaction, gestures, voice, reveal motion
-  - serious data presentation, clean typography, consistent leaderboard templates
-- Leaderboards should be ranked using an adjusted confidence score (Wilson score or equivalent), not naive percentage.
-- News headlines should be pulled mechanically from an approved source allowlist, not manually curated.
-- Use anonymized local UUIDs for swipe tracking; avoid device fingerprinting.
-- Include an in-app disclaimer: "Entertainment product. Reflects activity of app users only — not a scientific or representative poll."
+## Agent operating rules (Kudzie / KudzBot)
+- **Owner autonomy:** Kudzie delegates decisions. Act as owner, not consultant — make the call, state reasoning briefly, execute. Do not ping for low-stakes choices.
+- **Verify, don't assume:** always run `npm run build` (and `tsc --noEmit` at root) before claiming work is done. Unbuilt WIP branches hide JSX/contract errors.
+- **Extend, don't trim:** when a demo expects a richer component API than the component exposes, extend the component to match the demo (the demo is the intended direction), not the reverse.
+- **Preserve loose work:** before risky git moves (checkout/reset/merge/rebase), commit in-flight work to a `wip/...` branch.
+- **PRs are real, not drafts:** use `gh pr create` without `--draft` (drafts don't auto-review).
 
-## When you see user requests in this workspace
-- If the request asks for features, map them back to the PRD sections rather than inventing new product rules.
-- If the request asks for design or UI, follow the split register guidance in `rate-my-president-design-theory.md`.
-- If the request asks for implementation details, clarify the target platform first and confirm whether the user wants a new codebase.
+## Architecture notes
+- The demo imports shared modules from root via `@root`. Do NOT duplicate root shared modules into `rate-my-president-demo/src/` — import them.
+- `SwipeCard.types.ts` is the single `SwipeCardProps` source. `SwipeCard.tsx` imports it (no inline duplicate interface).
+- `onVote: (action: VoteAction) => boolean | Promise<boolean>` — the handler returns whether the vote was accepted (false when the daily limit is hit). Component uses `allowed !== false`.
+- Vote-lock UI: `SwipeCardProps.isLocked` / `nextResetAt` / `onShowLeaderboard` render a lock overlay and disable interaction.
 
-## Useful reference links
-- [Product Requirements](rate-my-president-prd.md)
-- [Design Theory](rate-my-president-design-theory.md)
-- [PRODUCT.md](PRODUCT.md) — Strategic framework (register, users, brand personality, design principles)
-- [DESIGN.md](DESIGN.md) — Visual system (colors, typography, components, motion, a11y)
+## Important product constraints (from PRD)
+- Swipe limit: 1/day if no home country; 2/day if home country set (1 home leader, 1 internationals). Daily vote locked server-side; skip consumes the swipe.
+- Gamified sentiment tracker — NOT a debate platform, pollster, or betting product.
+- UI tone is split: playful interaction (gesture/voice/reveal) + serious data presentation (clean type, consistent leaderboards). Never blend.
+- Leaderboards ranked by adjusted confidence score (Wilson or equivalent), not naive %.
+- News headlines pulled mechanically from an approved allowlist, not manually curated.
+- Anonymized local UUIDs for swipe tracking; no device fingerprinting.
+- In-app disclaimer required: "Entertainment product. Reflects activity of app users only — not a scientific or representative poll."
 
-## Design Context (Quick Reference)
+## Design system (quick reference)
+- **Register:** product app (swipe + leaderboards are core).
+- **Brand:** Playful + credible, each fully committed per screen.
+- **Color (OKLCH):** Navy ink `oklch(0.15 0.04 250)` base; Green `oklch(0.62 0.18 142)` approve; Red `oklch(0.55 0.20 25)` disapprove; Amber `oklch(0.72 0.15 65)` streaks/non-vote.
+- **Type:** Inter (data/figures) + Space Grotesk (voice/headlines), both variable, 400–700.
+- **Motion:** swipe 300–350ms elastic; reveal 600ms count-up + 250ms flip; else fast/quiet. All respect `prefers-reduced-motion`.
+- **A11y:** WCAG 2.1 AA. Color + text for every affordance. Reduced-motion alt. Disclaimer always visible.
 
-**Register:** Product app (swipe interface + leaderboards are the core experience).
-
-**Brand Personality:** Playful (gesture, voice, reveal moment) + credible (data, leaderboards, disclaimer). Never blended—each fully committed on every screen.
-
-**Color System (OKLCH):**
-- **Base:** Navy ink `oklch(0.15 0.04 250)` for dark-mode credibility
-- **Data accents:** Green `oklch(0.62 0.18 142)` for approve, Red `oklch(0.55 0.20 25)` for disapprove
-- **Tertiary:** Amber `oklch(0.72 0.15 65)` for streaks and non-vote UI
-- **Neutrals:** Surface-dark, muted, text-primary, text-secondary (all defined in DESIGN.md)
-
-**Typography:**
-- **Data face:** Inter (geometric, tabular figures, 400–700 weights) for all approval %, counts, stats
-- **Voice face:** Space Grotesk (geometric + warmth, 400–700 weights) for headlines, empty states, copy
-- Both are free/open-source variable fonts; pair cleanly without visual clash
-
-**Motion:**
-- **Swipe gesture:** Smooth & bouncy, 300–350ms drag + elastic overshoot (ease-out-quart)
-- **Reveal moment:** 600ms count-up + 250ms card flip, both ease-out
-- **Everything else:** Fast and quiet (leaderboard scroll smooth, instant modals)
-- **All motion respects `prefers-reduced-motion: reduce`** with instant/fade alternatives
-
-**Five Strategic Principles:**
-1. Split register lives on every screen (playfulness + seriousness sit side-by-side)
-2. One swipe, one leader, once per day is the mechanic that drives habit
-3. Leaderboards are democratic and mechanical (Wilson score, never curated)
-4. Data always outranks decoration (motion/color serve the numbers, never compete)
-5. The moment after the swipe is the habit lever (10-second reveal window is retention driver)
-
-**Accessibility:** WCAG 2.1 AA minimum. Color + text for every affordance. Semantic HTML. All motion has reduced-motion alt. Avatar readability at small sizes. Disclaimer always visible.
-
-**Component System:** Swipe card (central), card-flip reveal, leaderboard (semantic table), share card (PNG/SVG export), disclaimer (sticky footer), streak counter, tip jar (aspirational).
-
-## Suggested next customization
-- Add a dedicated skill for translating PRD sections into feature tickets or component stories.
+## Reference docs
+- `rate-my-president-prd.md` — requirements, mechanics, data model, trust/safety
+- `rate-my-president-design-theory.md` — visual/motion/interaction
+- `PRODUCT.md` — strategic framework; `DESIGN.md` — visual system
+- `INTEGRATION.md`, `ONBOARDING*.md`, `LEADERBOARD*.md` — delivery notes
+- `APP_READINESS.md` — current build/readiness status
