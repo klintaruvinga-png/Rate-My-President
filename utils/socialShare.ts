@@ -2,7 +2,7 @@
  * Social media sharing utilities for Rate My President
  */
 
-const DEFAULT_SHARE_TEXT = 'Check out today's leaderboard on Rate My President!';
+const DEFAULT_SHARE_TEXT = "Check out today's leaderboard on Rate My President!";
 
 /**
  * Share to WhatsApp

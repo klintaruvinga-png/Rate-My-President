@@ -8,7 +8,7 @@ Last updated: 2026-07-18
 
 | ID | Workstream | Status | Owner | Notes |
 |----|-----------|--------|-------|-------|
-| RMP-01 | Core swipe mechanic + server-side daily lock | In progress | Kudzie | Server enforces 1/2-per-day lock via `/api/swipes/log` endpoint |
+| RMP-01 | Core swipe mechanic + server-side daily lock | In progress | Kudzie | Server enforces one home vote plus one global vote per day via `/api/swipes/log` endpoint |
 | RMP-02 | Leaderboard (Wilson-score ranking) | In progress | Kudzie | Leaderboard.tsx + LEADERBOARD_*.md specs exist |
 | RMP-03 | Onboarding flow | In progress | Kudzie | Onboarding.tsx + ONBOARDING_*.md specs exist |
 | RMP-04 | News headline allowlist ingestion | Not started | — | Must be mechanical from approved source list, not curated |

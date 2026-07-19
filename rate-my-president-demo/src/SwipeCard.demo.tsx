@@ -107,7 +107,7 @@ function buildInitialQueue(homeCode: string | null, dailyLimit: number): CardDat
 
 // ── component ─────────────────────────────────────────────────────────────────
 
-export function SwipeCardDemo() {
+export function SwipeCardDemo({ onNavigateToLeaderboard }: { onNavigateToLeaderboard?: () => void } = {}) {
   const savedCountryCode = getUserCountry();
   const hasHomeCountry = savedCountryCode !== null;
   const dailyLimit = hasHomeCountry ? 2 : 1;
@@ -145,13 +145,21 @@ export function SwipeCardDemo() {
                 )
               );
             }
+          } else {
+            // Keep final card in queue to display lock overlay
+            if (nextQueue.length === 0) {
+              return prev;
+            }
           }
           return nextQueue;
         });
         // Surface the limit screen only AFTER the post-vote reveal has played,
         // so the final daily swipe's approval/headline reveal is never cut off.
         if (newCount >= dailyLimit) {
-          setIsLimitReached(true);
+          // Delay to allow lock overlay to display on final card first
+          setTimeout(() => {
+            setIsLimitReached(true);
+          }, 1000);
         }
       }, 2500);
     }
@@ -196,9 +204,9 @@ export function SwipeCardDemo() {
         nextCard={nextCard}
         onVote={handleVote}
         showMicroHistory={true}
-        isLocked={isLimitReached}
+        isLocked={swipeCount >= dailyLimit && !isLimitReached}
         nextResetAt={getNextDailyResetTimestamp()}
-        onShowLeaderboard={() => console.log('Navigate to leaderboard')}
+        onShowLeaderboard={onNavigateToLeaderboard}
       />
 
       {/* Vote history shown top right on desktop only */}

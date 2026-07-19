@@ -186,7 +186,7 @@ function App() {
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && (
             <div className="flex-1 flex flex-col justify-center min-h-0 py-0 sm:py-1">
-              <SwipeCardDemo />
+              <SwipeCardDemo onNavigateToLeaderboard={() => handleTabChange('leaderboard')} />
             </div>
           )}
           {activeTab === 'leaderboard' && <LeaderboardDemo />}
