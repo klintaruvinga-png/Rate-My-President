@@ -1,29 +1,41 @@
 # Rate My President — Progress Tracker
 
-Product type: gamified sentiment tracker (swipe + leaderboards).
-Status: buildable React/Vite/TypeScript implementation (`rate-my-president-demo/`) + Express 5 backend.
-Last updated: 2026-07-18
+Product type: web-app
+Status: active
+Priority: high
+Last updated: 2026-07-19
+Synced from: EOM/projects.json
 
-## Active workstreams
+## Milestones
 
-| ID | Workstream | Status | Owner | Notes |
-|----|-----------|--------|-------|-------|
-| RMP-01 | Core swipe mechanic + server-side daily lock | In progress | Kudzie | Server enforces one home vote plus one global vote per day via `/api/swipes/log` endpoint |
-| RMP-02 | Leaderboard (Wilson-score ranking) | In progress | Kudzie | Leaderboard.tsx + LEADERBOARD_*.md specs exist |
-| RMP-03 | Onboarding flow | In progress | Kudzie | Onboarding.tsx + ONBOARDING_*.md specs exist |
-| RMP-04 | News headline allowlist ingestion | Not started | — | Must be mechanical from approved source list, not curated |
-| RMP-05 | Disclaimer + trust/safety policy | Partial | Kudzie | Disclaimer.tsx present; policy in PRD |
-| RMP-06 | Build/test pipeline | Missing | — | No package.json test script; no CI |
+| Milestone | Due | Status |
+|-----------|-----|--------|
+| Frontend-Backend integration | — | blocked |
+| Production deployment (HTTPS + domain) | — | pending |
 
-## Blockers / risks
+## Workstreams / Tasks
 
-- No automated tests despite real code existing (SwipeCard, server). Risk: regressions on swipe-lock and leaderboard math go undetected.
-- Product scope still docs-first in AGENTS.md but code now outpaces it. AGENTS.md should be updated to reflect current state.
+| ID | Task | Status | Owner |
+|----|------|--------|-------|
+| RMP-01 | Core swipe mechanic + server-side daily lock | In progress | Kudzie |
+| RMP-02 | Leaderboard (Wilson-score ranking) | In progress | Kudzie |
+| RMP-03 | Onboarding flow | In progress | Kudzie |
+| RMP-04 | News headline allowlist ingestion (mechanical, not curated) | Not started | — |
+| RMP-05 | Disclaimer + trust/safety policy | Partial | Kudzie |
+| RMP-06 | Build/test pipeline + CI | Missing | — |
+| RMP-07 | Connect demo app to backend API (swipes/leaderboard/preferences) | Not started | — |
+| RMP-08 | Auth & user management (JWT, session persistence) | Not started | — |
+| RMP-09 | Domain + HTTPS setup (geolocation requires HTTPS) | Pending | Kudzie |
+| RMP-10 | Automated tests (unit/integration/E2E) | Not started | — |
 
-## Definition of done (per workstream)
+## Blockers / Risks
 
-Each workstream is done when: code matches PRD section, manual verification logged, and (where applicable) a test covers the lock/score logic.
+- RMP-07 (blocked by RMP-09 HTTPS) (high)
+- RMP-06 (no test scaffolding) (med)
+
+## Notes
+
+React+Vite+TS frontend + Express5/sql.js backend. Ready for integration testing. Highest-leverage next: wire demo to API (RMP-07) after HTTPS.
 
 ## Changelog
-
-- 2026-07-18 — Tracker created. Captured RMP-01..06 from current repo state.
+- 2026-07-19 — Synced from EOM/projects.json by sync_trackers.py
