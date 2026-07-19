@@ -35,7 +35,8 @@ Synced from: EOM/projects.json
 
 ## Notes
 
-React+Vite+TS frontend + Express5/sql.js backend. Ready for integration testing. Highest-leverage next: wire demo to API (RMP-07) after HTTPS.
+React+Vite+TS frontend + Express5/sql.js backend. Integration testing blocked until HTTPS (RMP-09) is complete and RMP-07 wires demo to API. Highest-leverage next: wire demo to API (RMP-07) after HTTPS.
 
 ## Changelog
+
 - 2026-07-19 — Synced from EOM/projects.json by sync_trackers.py
