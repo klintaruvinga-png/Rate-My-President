@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import OnboardingDemo from './Onboarding.demo';
 import SwipeCardDemo from './SwipeCard.demo';
-import LeaderboardDemo from './Leaderboard.demo';
+import Leaderboard from './Leaderboard';
+import { api } from './api/client';
+import { getUserId } from './utils/userId';
+import type { VoteAction } from './SwipeCard.types';
+import type { ApiLeaderboardEntry } from './api/client';
 import headerImage from '@root/assets/Obama Header No BG.png';
 import NewsTicker from './NewsTicker';
 // LeaderTicker not used in this demo shell
@@ -19,6 +23,43 @@ function App() {
 
     return getHasCompletedOnboarding() ? 'swipe' : 'onboarding';
   });
+
+  const [leaderboardEntries, setLeaderboardEntries] = useState<import('./Leaderboard.types').LeaderboardEntry[]>([]);
+
+  const loadLeaderboard = async () => {
+    try {
+      const raw: ApiLeaderboardEntry[] = await api.getLeaderboard('all');
+      const entries: import('./Leaderboard.types').LeaderboardEntry[] = raw.map((e) => ({
+        id: String(e.id),
+        rank: e.rank ?? 0,
+        name: e.name,
+        avatarUrl: e.avatar_url ?? '',
+        approvalPercent: typeof e.approval_rate === 'number' ? e.approval_rate : Number(e.approval_rate) || 0,
+        trend: (e.wilson_score ?? 0) >= 0 ? 'up' : 'down',
+        voteCount: e.total_votes ?? 0,
+        region: e.region,
+        countryCode: undefined,
+        countryFlag: undefined,
+      }));
+      setLeaderboardEntries(entries);
+    } catch (err) {
+      console.error('Leaderboard load error:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadLeaderboard();
+  }, []);
+
+  const handleSwipe = async (action: VoteAction, cardId: string) => {
+    if (!action) return;
+    try {
+      await api.logSwipe(getUserId(), cardId, action as 'approve' | 'disapprove' | 'skip');
+      loadLeaderboard();
+    } catch (err) {
+      console.error('Swipe persist error:', err);
+    }
+  };
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const helpCloseButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -186,10 +227,10 @@ function App() {
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && (
             <div className="flex-1 flex flex-col justify-center min-h-0 py-0 sm:py-1">
-              <SwipeCardDemo onNavigateToLeaderboard={() => handleTabChange('leaderboard')} />
+              <SwipeCardDemo onNavigateToLeaderboard={() => handleTabChange('leaderboard')} onSwipe={handleSwipe} />
             </div>
           )}
-          {activeTab === 'leaderboard' && <LeaderboardDemo />}
+          {activeTab === 'leaderboard' && <Leaderboard entries={leaderboardEntries} />}
         </div>
       </main>
 

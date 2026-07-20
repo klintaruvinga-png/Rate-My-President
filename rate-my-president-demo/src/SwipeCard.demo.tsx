@@ -107,7 +107,13 @@ function buildInitialQueue(homeCode: string | null, dailyLimit: number): CardDat
 
 // ── component ─────────────────────────────────────────────────────────────────
 
-export function SwipeCardDemo({ onNavigateToLeaderboard }: { onNavigateToLeaderboard?: () => void } = {}) {
+export function SwipeCardDemo({
+  onNavigateToLeaderboard,
+  onSwipe,
+}: {
+  onNavigateToLeaderboard?: () => void;
+  onSwipe?: (action: VoteAction, cardId: string) => void;
+} = {}) {
   const savedCountryCode = getUserCountry();
   const hasHomeCountry = savedCountryCode !== null;
   const dailyLimit = hasHomeCountry ? 2 : 1;
@@ -130,6 +136,11 @@ export function SwipeCardDemo({ onNavigateToLeaderboard }: { onNavigateToLeaderb
       setVoteHistory((prev) => [...prev, voteAction]);
       setSwipeCount(newCount);
       console.log('Vote recorded:', voteAction);
+
+      // Persist to backend (best-effort; server enforces daily limit)
+      if (onSwipe && currentCard) {
+        onSwipe(voteAction, currentCard.id);
+      }
 
       setTimeout(() => {
         setCardsQueue((prev) => {
