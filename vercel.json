@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd rate-my-president-demo && npm run build",
+  "outputDirectory": "rate-my-president-demo/dist",
+  "installCommand": "cd rate-my-president-demo && npm install",
+  "framework": "vite"
+}
