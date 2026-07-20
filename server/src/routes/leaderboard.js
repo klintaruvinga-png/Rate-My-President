@@ -16,7 +16,7 @@ const router = express.Router();
 function calculateWilsonScore(likes, dislikes) {
   const n = likes + dislikes;
   if (n === 0) return 0;
-  return wilsonScore.lowerBound(likes, dislikes);
+  return wilsonScore.lowerBound(likes, likes + dislikes);
 }
 
 /**
