@@ -7,12 +7,14 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS swipe_logs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id TEXT NOT NULL,
+  president_id TEXT,
   date TEXT NOT NULL,
   card_type TEXT NOT NULL CHECK(card_type IN ('home', 'global')),
   action TEXT NOT NULL CHECK(action IN ('like', 'nolike', 'skip')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(user_id, date, card_type),
-  FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
+  FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY(president_id) REFERENCES presidents(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS user_preferences (

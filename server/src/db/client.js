@@ -32,6 +32,21 @@ async function init() {
     const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
     db.run(schema);
 
+    // Migration: ensure swipe_logs.president_id exists on deployed DBs created
+    // before the column was added (CREATE TABLE IF NOT EXISTS skips existing tables).
+    const colCheck = db.prepare("PRAGMA table_info(swipe_logs)");
+    let hasPresidentId = false;
+    while (colCheck.step()) {
+      const row = colCheck.get();
+      if (row[1] === 'president_id') hasPresidentId = true;
+    }
+    colCheck.free();
+    if (!hasPresidentId) {
+      db.run('ALTER TABLE swipe_logs ADD COLUMN president_id TEXT;');
+      db.run('CREATE INDEX IF NOT EXISTS idx_swipe_logs_president ON swipe_logs(president_id);');
+      saveDatabaseSync();
+    }
+
     // Check if presidents table is empty and seed if needed
     const countStmt = db.prepare('SELECT COUNT(*) as count FROM presidents');
     countStmt.step();
