@@ -5,13 +5,20 @@
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 const API = `${BASE}/api`;
 
-export interface LeaderboardEntry {
+export interface ApiLeaderboardEntry {
   president_id: string | number;
+  id: string | number;
   name: string;
+  country?: string;
+  region?: string;
+  avatar_url?: string;
   likes: number;
   dislikes: number;
-  wilson_score: number;
+  skips?: number;
+  total_votes?: number;
   approval_rate?: number;
+  wilson_score?: number;
+  rank?: number;
 }
 
 export interface SwipeStatus {
@@ -50,10 +57,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   // GET /api/leaderboard?window=day|week|all&region=Africa
-  getLeaderboard(window: 'day' | 'week' | 'all' = 'all', region?: string): Promise<LeaderboardEntry[]> {
+  getLeaderboard(window: 'day' | 'week' | 'all' = 'all', region?: string): Promise<ApiLeaderboardEntry[]> {
     const q = new URLSearchParams({ window });
     if (region) q.set('region', region);
-    return request<LeaderboardEntry[]>(`/leaderboard?${q.toString()}`);
+    return request<ApiLeaderboardEntry[]>(`/leaderboard?${q.toString()}`);
   },
 
   // GET /api/presidents
