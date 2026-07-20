@@ -22,9 +22,9 @@ function getSwipeLimit(db, userId) {
 }
 
 router.post('/log', (req, res) => {
-  const { userId, cardType, action } = req.body;
+  const { userId, presidentId, cardType, action } = req.body;
 
-  if (!userId || !cardType || !action) {
+  if (!userId || !presidentId || !cardType || !action) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -83,8 +83,8 @@ router.post('/log', (req, res) => {
     }
 
     // Log the swipe
-    const insertStmt = db.prepare('INSERT INTO swipe_logs (user_id, date, card_type, action) VALUES (:userId, :date, :cardType, :action)');
-    insertStmt.bind({ ':userId': userId, ':date': date, ':cardType': cardType, ':action': action });
+    const insertStmt = db.prepare('INSERT INTO swipe_logs (user_id, president_id, date, card_type, action) VALUES (:userId, :presidentId, :date, :cardType, :action)');
+    insertStmt.bind({ ':userId': userId, ':presidentId': presidentId, ':date': date, ':cardType': cardType, ':action': action });
     insertStmt.step();
     insertStmt.free();
 
