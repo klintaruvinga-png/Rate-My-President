@@ -112,7 +112,7 @@ export function SwipeCardDemo({
   onSwipe,
 }: {
   onNavigateToLeaderboard?: () => void;
-  onSwipe?: (action: VoteAction, cardId: string) => void;
+  onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => void;
 } = {}) {
   const savedCountryCode = getUserCountry();
   const hasHomeCountry = savedCountryCode !== null;
@@ -139,7 +139,7 @@ export function SwipeCardDemo({
 
       // Persist to backend (best-effort; server enforces daily limit)
       if (onSwipe && currentCard) {
-        onSwipe(voteAction, currentCard.id);
+        onSwipe(voteAction, currentCard.id, currentCard.type);
       }
 
       setTimeout(() => {

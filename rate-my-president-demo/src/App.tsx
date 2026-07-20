@@ -51,10 +51,10 @@ function App() {
     loadLeaderboard();
   }, []);
 
-  const handleSwipe = async (action: VoteAction, cardId: string) => {
+  const handleSwipe = async (action: VoteAction, cardId: string, cardType: 'home' | 'global') => {
     if (!action) return;
     try {
-      await api.logSwipe(getUserId(), cardId, action as 'approve' | 'disapprove' | 'skip');
+      await api.logSwipe(getUserId(), cardId, cardType, action);
       loadLeaderboard();
     } catch (err) {
       console.error('Swipe persist error:', err);

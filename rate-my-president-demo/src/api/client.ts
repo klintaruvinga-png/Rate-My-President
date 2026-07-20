@@ -73,11 +73,11 @@ export const api = {
     return request<SwipeStatus>(`/swipes/status?userId=${encodeURIComponent(userId)}`);
   },
 
-  // POST /api/swipes/log  { userId, cardType, action }
-  logSwipe(userId: string, cardType: string, action: 'approve' | 'disapprove' | 'skip'): Promise<{ ok: boolean }> {
+  // POST /api/swipes/log  { userId, presidentId, cardType, action }
+  logSwipe(userId: string, presidentId: string, cardType: 'home' | 'global', action: 'like' | 'nolike' | 'skip'): Promise<{ ok: boolean }> {
     return request<{ ok: boolean }>('/swipes/log', {
       method: 'POST',
-      body: JSON.stringify({ userId, cardType, action }),
+      body: JSON.stringify({ userId, presidentId, cardType, action }),
     });
   },
 
