@@ -33,17 +33,21 @@ export interface President {
 
 export interface UserRegisterResponse {
   userId: string;
-  token?: string;
+  createdAt?: string;
+  alreadyRegistered?: true;
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
     ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...init?.headers,
+    },
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error ?? `Request failed: ${res.status}`);
+    throw new Error(body.error ?? body.reason ?? `Request failed: ${res.status}`);
   }
   return res.json() as Promise<T>;
 }
@@ -67,24 +71,24 @@ export const api = {
   },
 
   // POST /api/swipes/log  { userId, cardType, action }
-  logSwipe(userId: string, cardType: string, action: 'approve' | 'disapprove' | 'skip'): Promise<{ ok: boolean }> {
-    return request<{ ok: boolean }>('/swipes/log', {
+  logSwipe(userId: string, cardType: 'home' | 'global', action: 'like' | 'nolike' | 'skip'): Promise<{ allowed: true }> {
+    return request<{ allowed: true }>('/swipes/log', {
       method: 'POST',
       body: JSON.stringify({ userId, cardType, action }),
     });
   },
 
-  // POST /api/user/register  { deviceId }
-  registerUser(deviceId: string): Promise<UserRegisterResponse> {
+  // POST /api/user/register  { userId }
+  registerUser(userId: string): Promise<UserRegisterResponse> {
     return request<UserRegisterResponse>('/user/register', {
       method: 'POST',
-      body: JSON.stringify({ deviceId }),
+      body: JSON.stringify({ userId }),
     });
   },
 
   // POST /api/user/heartbeat  { userId }
-  heartbeat(userId: string): Promise<{ ok: boolean }> {
-    return request<{ ok: boolean }>('/user/heartbeat', {
+  heartbeat(userId: string): Promise<{ success: true; lastSeen: string }> {
+    return request<{ success: true; lastSeen: string }>('/user/heartbeat', {
       method: 'POST',
       body: JSON.stringify({ userId }),
     });
