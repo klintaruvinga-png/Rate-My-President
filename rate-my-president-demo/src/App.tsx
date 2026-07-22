@@ -83,14 +83,16 @@ function App() {
     api.registerUser(userId).catch((err) => console.error('User register error:', err));
   }, []);
 
-  const handleSwipe = async (action: VoteAction, cardId: string, cardType: 'home' | 'global') => {
-    if (!action) return;
+  const handleSwipe = async (action: VoteAction, cardId: string, cardType: 'home' | 'global'): Promise<boolean> => {
+    if (!action) return false;
     try {
-      await api.logSwipe(userId, cardId, cardType, action);
+      const res = await api.logSwipe(userId, cardId, cardType, action);
       loadLeaderboard();
       refreshSwipeStatus();
+      return res.allowed !== false;
     } catch (err) {
       console.error('Swipe persist error:', err);
+      return false;
     }
   };
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);

@@ -108,7 +108,7 @@ export function SwipeCardDemo({
   homeCountryCode?: string | null;
   swipeStatus?: SwipeStatusView | null;
   onNavigateToLeaderboard?: () => void;
-  onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => void;
+  onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => Promise<boolean> | void;
 } = {}) {
   const dailyLimit = swipeStatus?.limit ?? (homeCountryCode ? 2 : 1);
   const used = swipeStatus?.used ?? 0;
@@ -120,6 +120,7 @@ export function SwipeCardDemo({
     buildQueue(presidents, homeCountryCode, remaining || 1)
   );
   const [isLimitReached, setIsLimitReached] = useState(locked);
+  const [swipeError, setSwipeError] = useState<string | null>(null);
 
   // Rebuild the queue when real data / lock state arrives from the server.
   useEffect(() => {
@@ -136,34 +137,43 @@ export function SwipeCardDemo({
     if (!currentCard) return false;
 
     setVoteHistory((prev) => [...prev, voteAction]);
-    if (onSwipe) {
-      onSwipe(voteAction, currentCard.id, currentCard.type);
-    }
+    setSwipeError(null);
 
-    // Animate the reveal, then advance the queue. The server is the source of
-    // truth for the lock (swipeStatus), so we only refill what's allowed.
-    setTimeout(() => {
-      setCardsQueue((prev) => {
-        const nextQueue = prev.slice(1);
-        const newUsed = used + voteHistory.length + 1;
-        if (!locked && newUsed < dailyLimit && presidents.length) {
-          const more = buildQueue(
-            presidents,
-            homeCountryCode,
-            Math.max(0, dailyLimit - newUsed)
-          );
-          // Append one fresh card if we're below the on-screen buffer.
-          if (nextQueue.length < 1 && more.length) {
-            nextQueue.push(more[0]);
-          }
+    // Persist to the server and only advance the queue if it succeeds.
+    // This prevents the "queue freezes / skips on error" bug: a failed swipe
+    // keeps the current card so the user can retry.
+    const persist = async () => {
+      try {
+        const ok = onSwipe ? await onSwipe(voteAction, currentCard.id, currentCard.type) : true;
+        if (!ok) {
+          setSwipeError('Vote could not be saved. Please try again.');
+          return;
         }
-        return nextQueue;
-      });
-      // If the server now reports the limit reached, show the lock overlay.
-      if (remaining <= 1) {
-        setTimeout(() => setIsLimitReached(true), 600);
+        // Advance the queue (server is source of truth for the lock).
+        setCardsQueue((prev) => {
+          const nextQueue = prev.slice(1);
+          const newUsed = used + voteHistory.length + 1;
+          if (!locked && newUsed < dailyLimit && presidents.length) {
+            const more = buildQueue(
+              presidents,
+              homeCountryCode,
+              Math.max(0, dailyLimit - newUsed)
+            );
+            if (nextQueue.length < 1 && more.length) {
+              nextQueue.push(more[0]);
+            }
+          }
+          return nextQueue;
+        });
+        if (remaining <= 1) {
+          setTimeout(() => setIsLimitReached(true), 600);
+        }
+      } catch (err) {
+        console.error('Swipe persist error:', err);
+        setSwipeError('Vote could not be saved. Please try again.');
       }
-    }, 2500);
+    };
+    void persist();
 
     return true;
   };
@@ -201,6 +211,15 @@ export function SwipeCardDemo({
 
   return (
     <div className="h-full flex flex-col">
+      {swipeError && (
+        <div
+          role="alert"
+          className="mb-2 rounded-lg border border-[oklch(0.55_0.20_25)] bg-[oklch(0.30_0.10_25)] px-3 py-2 text-sm text-[oklch(0.85_0.08_25)]"
+        >
+          {swipeError}
+        </div>
+      )}
+
       <SwipeCard
         card={currentCard}
         nextCard={nextCard}

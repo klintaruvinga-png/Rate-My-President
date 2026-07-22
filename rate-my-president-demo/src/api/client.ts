@@ -89,8 +89,10 @@ export const api = {
   },
 
   // POST /api/swipes/log  { userId, presidentId, cardType, action }
-  logSwipe(userId: string, presidentId: string, cardType: 'home' | 'global', action: 'like' | 'nolike' | 'skip'): Promise<{ ok: boolean }> {
-    return request<{ ok: boolean }>('/swipes/log', {
+  // Backend returns { allowed: boolean } (and { allowed:false, reason } on
+  // limit). The previous { ok: boolean } type was wrong (Devin review).
+  logSwipe(userId: string, presidentId: string, cardType: 'home' | 'global', action: 'like' | 'nolike' | 'skip'): Promise<{ allowed: boolean; reason?: string }> {
+    return request<{ allowed: boolean; reason?: string }>('/swipes/log', {
       method: 'POST',
       body: JSON.stringify({ userId, presidentId, cardType, action }),
     });

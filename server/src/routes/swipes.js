@@ -16,6 +16,20 @@ async function getSwipeLimit(userId) {
   return rows.length > 0 && rows[0].home_country ? 2 : 1;
 }
 
+// Idempotently ensure the user row exists before we log a swipe. This removes
+// the registration/swipe race: a swipe arriving before /api/user/register
+// completes would otherwise violate the swipe_logs.user_id FK. ON CONFLICT
+// keeps this safe if the user registered a moment earlier.
+async function ensureUser(userId) {
+  const now = new Date().toISOString();
+  await query(
+    `INSERT INTO users (user_id, created_at, last_seen)
+     VALUES (:userId, :createdAt, :lastSeen)
+     ON CONFLICT (user_id) DO UPDATE SET last_seen = :lastSeen`,
+    { ':userId': userId, ':createdAt': now, ':lastSeen': now }
+  );
+}
+
 router.post('/log', async (req, res) => {
   const { userId, presidentId, cardType, action } = req.body;
 
@@ -39,6 +53,10 @@ router.post('/log', async (req, res) => {
   }
 
   try {
+    // Guarantee the user row exists so the swipe_logs FK can't fail on a
+    // register/swipe race.
+    await ensureUser(userId);
+
     const date = getServerDate();
 
     // Already voted today for this card type?
