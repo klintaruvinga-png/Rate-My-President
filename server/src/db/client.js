@@ -29,7 +29,15 @@ let readyPromise = null;
  */
 function bindParams(sql, params) {
   if (params == null) return { sql, values: [] };
-  if (Array.isArray(params)) return { sql, values: params };
+
+  // Positional array form (e.g. presidents/:id, filtered presidents,
+  // leaderboard window/region). SQLite uses '?' placeholders; Postgres needs
+  // '$1', '$2', ... so translate them here.
+  if (Array.isArray(params)) {
+    let i = 0;
+    const sqlOut = sql.replace(/\?/g, () => `$${++i}`);
+    return { sql: sqlOut, values: params };
+  }
 
   const values = [];
   const sqlOut = sql.replace(/:([a-zA-Z_][a-zA-Z0-9_]*)/g, (match, key) => {
