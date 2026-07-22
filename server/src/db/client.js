@@ -5,6 +5,26 @@ const path = require('path');
 let SQL = null;
 let db = null;
 let readyPromise = null;
+// Resolved at init() time. Defaults to the repo-local data dir for dev.
+// In prod this MUST point at a mounted, persistent volume (e.g. /data/...),
+// otherwise the container FS is ephemeral and the DB resets every deploy.
+let dbPath = null;
+
+/**
+ * Cheap writability probe for the resolved DB directory. Surfaces volume
+ * misconfiguration early in the deploy log instead of failing silently on
+ * the first save.
+ */
+function isDirWritable(dir) {
+  try {
+    const probe = path.join(dir, `.rmp-write-probe-${Date.now()}`);
+    fs.writeFileSync(probe, '');
+    fs.unlinkSync(probe);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Initialize the SQLite database.
@@ -15,9 +35,26 @@ async function init() {
   if (readyPromise) return readyPromise;
   readyPromise = (async () => {
     SQL = await initSqlJs();
-    const dbPath = path.join(__dirname, '../../data/rate-my-president.db');
+
+    // DB_PATH lets us point the SQLite file at a persistent volume.
+    // If unset, fall back to repo-local ./data (dev). NEVER rely on the
+    // fallback in production — the container FS is wiped on every redeploy.
+    dbPath = process.env.DB_PATH
+      ? path.resolve(process.env.DB_PATH)
+      : path.join(__dirname, '../../data/rate-my-president.db');
+
     const dataDir = path.dirname(dbPath);
     if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
+    console.log(`[db] database path: ${dbPath}`);
+    const writable = isDirWritable(dataDir);
+    console.log(`[db] dir writable: ${writable}`);
+    if (!writable) {
+      throw new Error(`Database directory is not writable: ${dataDir}`);
+    }
+    if (!process.env.DB_PATH) {
+      console.warn('[db] WARNING: DB_PATH not set — using ephemeral repo-local path. Data will NOT survive deploys.');
+    }
 
     const isNewDatabase = !fs.existsSync(dbPath);
 
@@ -83,10 +120,11 @@ function getDatabase() {
  * Synchronously save the database to disk.
  */
 function saveDatabaseSync() {
-  if (!db) return;
+  if (!db || !dbPath) return;
   const data = db.export();
   const buffer = Buffer.from(data);
-  const dbPath = path.join(__dirname, '../../data/rate-my-president.db');
+  const dataDir = path.dirname(dbPath);
+  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
   fs.writeFileSync(dbPath, buffer);
 }
 
