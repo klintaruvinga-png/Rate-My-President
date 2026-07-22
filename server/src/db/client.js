@@ -47,7 +47,11 @@ async function init() {
     if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
     console.log(`[db] database path: ${dbPath}`);
-    console.log(`[db] dir writable: ${isDirWritable(dataDir)}`);
+    const writable = isDirWritable(dataDir);
+    console.log(`[db] dir writable: ${writable}`);
+    if (!writable) {
+      throw new Error(`Database directory is not writable: ${dataDir}`);
+    }
     if (!process.env.DB_PATH) {
       console.warn('[db] WARNING: DB_PATH not set — using ephemeral repo-local path. Data will NOT survive deploys.');
     }
