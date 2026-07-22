@@ -26,7 +26,7 @@ Synced from: EOM/projects.json
 | RMP-10 | Automated tests (unit/integration/E2E) | In progress | KudzBot |
 | RMP-11 | Country lock redesign (permanent lock, safety model) — RELEASE DEPENDENCY | scheduled_for_planning | pipeline-planning-agent |
 | RMP-12 | Atomic swipe-limit fix (pg_advisory_xact_lock) — authored in autoclosed PR #38, deferred to later PR | deferred | Kudzie |
-| RMP-13 | Backend pg pool resilience (Railway proxy 500s on writes) — fixed | done | KudzBot |
+| RMP-13 | Backend pg pool hardening (retry on transient Railway-proxy drops + pool error handler) — defensive; observed write 500 was a test-harness quoting artifact, not a confirmed prod bug | done | KudzBot |
 
 ## Notes
 
@@ -35,4 +35,4 @@ React+Vite+TS frontend + Express5/Postgres backend (Railway managed Postgres, `D
 ## Changelog
 - 2026-07-22 — Synced from EOM/projects.json by sync_trackers.py
 - 2026-07-22 — RMP-07 progress: wired demo to backend (getPresidents→real cards, getSwipeStatus→lock, registerUser, updatePreferences→2/day limit); fixed SwipeCardDemo→SwipeCard.demo import case (would break Vercel build). Build green. RMP-12 atomic swipe fix still deferred.
-- 2026-07-22 — RMP-13 fixed: frontend bundled API base = Railway URL (was localhost:3001 → ERR_CONNECTION_REFUSED); registerUser now sends {userId} (was {deviceId} → 400 Missing userId); server pg pool retries transient Railway-proxy drops (intermittent 500 on writes). Live stability test: 6/6 register+swipe cycles pass.
+- 2026-07-22 — RMP-13: frontend bundled API base = Railway URL (was localhost:3001 → ERR_CONNECTION_REFUSED); registerUser now sends {userId} (was {deviceId} → 400 Missing userId). Server pg pool hardened (retry transient Railway-proxy drops + pool error handler). NOTE: an observed write-500 during verification was a test-harness curl quoting artifact (body arrived as `'{userId:..}'`), NOT a confirmed prod bug; live API is stable (8/8 register+swipe cycles with correct requests). The hardening remains valid defensive code.
