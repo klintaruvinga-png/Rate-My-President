@@ -4,6 +4,21 @@ const { validateUserId } = require('../utils/validateUserId');
 
 const router = express.Router();
 
+// Normalize client action vocabulary to the canonical stored values.
+// The UI uses "approve/oppose" in copy; older cached client bundles may still
+// send "approve"/"disapprove". Mapping them keeps the API tolerant of naming
+// drift (and stale browser caches) instead of 400'ing valid votes.
+const ACTION_ALIASES = {
+  approve: 'like',
+  disapprove: 'nolike',
+  oppose: 'nolike',
+  reject: 'nolike',
+};
+function normalizeAction(action) {
+  if (!action) return action;
+  return ACTION_ALIASES[action] || action;
+}
+
 function getServerDate() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -32,6 +47,7 @@ async function ensureUser(userId) {
 
 router.post('/log', async (req, res) => {
   const { userId, presidentId, cardType, action } = req.body;
+  const normalizedAction = normalizeAction(action);
 
   if (!userId || !presidentId || !cardType || !action) {
     console.error('[swipes/log] 400 Missing required fields. Body:', JSON.stringify(req.body));
@@ -42,7 +58,7 @@ router.post('/log', async (req, res) => {
     return res.status(400).json({ error: 'Invalid userId format', received: req.body });
   }
   const validActions = ['like', 'nolike', 'skip'];
-  if (!validActions.includes(action)) {
+  if (!validActions.includes(normalizedAction)) {
     console.error('[swipes/log] 400 Invalid action. Body:', JSON.stringify(req.body));
     return res.status(400).json({ error: 'Invalid action', received: req.body });
   }
@@ -89,7 +105,7 @@ router.post('/log', async (req, res) => {
       'INSERT INTO swipe_logs (user_id, president_id, date, card_type, action) VALUES (:userId, :presidentId, :date, :cardType, :action)',
       {
         ':userId': userId, ':presidentId': presidentId, ':date': date,
-        ':cardType': cardType, ':action': action
+        ':cardType': cardType, ':action': normalizedAction
       }
     );
 
