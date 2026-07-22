@@ -1,20 +1,21 @@
+-- Postgres schema for Rate My President.
+-- Column names preserved from the prior SQLite schema so route code maps 1:1.
+-- Boolean-ish flags kept as INTEGER (1/0) to match existing read paths.
+
 CREATE TABLE IF NOT EXISTS users (
   user_id TEXT PRIMARY KEY,
-  created_at TIMESTAMP NOT NULL,
-  last_seen TIMESTAMP NOT NULL
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  last_seen TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS swipe_logs (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id TEXT NOT NULL,
-  president_id TEXT,
-  date TEXT NOT NULL,
-  card_type TEXT NOT NULL CHECK(card_type IN ('home', 'global')),
-  action TEXT NOT NULL CHECK(action IN ('like', 'nolike', 'skip')),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(user_id, date, card_type),
-  FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-  FOREIGN KEY(president_id) REFERENCES presidents(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS presidents (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  country TEXT NOT NULL,
+  region TEXT NOT NULL,
+  avatar_url TEXT NOT NULL,
+  active INTEGER DEFAULT 1,
+  created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS user_preferences (
@@ -29,26 +30,29 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   data_collection_opt_in INTEGER DEFAULT 0,
   theme TEXT DEFAULT 'dark',
   language TEXT DEFAULT 'en',
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS presidents (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  country TEXT NOT NULL,
-  region TEXT NOT NULL,
-  avatar_url TEXT NOT NULL,
-  active INTEGER DEFAULT 1,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS swipe_logs (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  president_id TEXT,
+  date TEXT NOT NULL,
+  card_type TEXT NOT NULL CHECK(card_type IN ('home', 'global')),
+  action TEXT NOT NULL CHECK(action IN ('like', 'nolike', 'skip')),
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, date, card_type),
+  FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY(president_id) REFERENCES presidents(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS news_links (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id SERIAL PRIMARY KEY,
   president_id TEXT NOT NULL,
   headline TEXT NOT NULL,
   source_url TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW(),
   FOREIGN KEY(president_id) REFERENCES presidents(id) ON DELETE CASCADE
 );
 

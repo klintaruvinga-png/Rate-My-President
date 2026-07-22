@@ -1,149 +1,150 @@
-const initSqlJs = require('sql.js');
-const fs = require('fs');
-const path = require('path');
+// Postgres-backed DB client (replaces the previous sql.js / SQLite-WASM setup).
+//
+// Why Postgres: the SQLite file lived on the container's ephemeral filesystem,
+// so all votes/leaderboards reset on every deploy. Railway's managed Postgres
+// add-on persists across deploys and is not subject to the volume-size cap
+// that blocked the previous approach.
+//
+// Connection is sourced from DATABASE_URL (Railway injects this automatically
+// for a linked Postgres service). In local dev, set DATABASE_URL to a local
+// Postgres, or fall back to the PG default socket if unset.
 
-let SQL = null;
-let db = null;
+const { Pool } = require('pg');
+
+let pool = null;
 let readyPromise = null;
-// Resolved at init() time. Defaults to the repo-local data dir for dev.
-// In prod this MUST point at a mounted, persistent volume (e.g. /data/...),
-// otherwise the container FS is ephemeral and the DB resets every deploy.
-let dbPath = null;
 
 /**
- * Cheap writability probe for the resolved DB directory. Surfaces volume
- * misconfiguration early in the deploy log instead of failing silently on
- * the first save.
+ * Convert a sql.js-style query with `:named` placeholders into Postgres
+ * `$n` positional form, returning the rewritten SQL and an ordered values
+ * array. Accepts either a values object ({':userId': ...}) or an array
+ * (positional, passed through untouched).
+ *
+ * This lets the existing route queries keep their :named bindings without a
+ * full rewrite, while mapping onto node-postgres' positional params.
+ *
+ * @param {string} sql
+ * @param {object|Array<any>|undefined} params
+ * @returns {{ sql: string, values: Array<any> }}
  */
-function isDirWritable(dir) {
-  try {
-    const probe = path.join(dir, `.rmp-write-probe-${Date.now()}`);
-    fs.writeFileSync(probe, '');
-    fs.unlinkSync(probe);
-    return true;
-  } catch {
-    return false;
+function bindParams(sql, params) {
+  if (params == null) return { sql, values: [] };
+
+  // Positional array form (e.g. presidents/:id, filtered presidents,
+  // leaderboard window/region). SQLite uses '?' placeholders; Postgres needs
+  // '$1', '$2', ... so translate them here.
+  if (Array.isArray(params)) {
+    let i = 0;
+    const sqlOut = sql.replace(/\?/g, () => `$${++i}`);
+    return { sql: sqlOut, values: params };
   }
+
+  const values = [];
+  const sqlOut = sql.replace(/:([a-zA-Z_][a-zA-Z0-9_]*)/g, (match, key) => {
+    const namedKey = `:${key}`;
+    if (!(namedKey in params)) {
+      // Leave untouched if the key isn't provided; Postgres will surface a
+      // clear error rather than silently misbinding.
+      return match;
+    }
+    values.push(params[namedKey]);
+    return `$${values.length}`;
+  });
+  return { sql: sqlOut, values };
 }
 
 /**
- * Initialize the SQLite database.
- * Loads sql.js, creates or opens the database file, applies schema and seed data if needed.
- * @returns {Promise<Database>} The initialized database instance
+ * Run a query. `params` may be a :named object (converted to $n) or a
+ * positional array. Always returns the row array (pg result rows).
+ * @param {string} sql
+ * @param {object|Array<any>|undefined} params
+ * @returns {Promise<Array<object>>}
  */
+async function query(sql, params) {
+  if (!pool) {
+    throw new Error('Database not initialized - call init() first');
+  }
+  const { sql: rewritten, values } = bindParams(sql, params);
+  const result = await pool.query(rewritten, values);
+  return result.rows;
+}
+
 async function init() {
   if (readyPromise) return readyPromise;
   readyPromise = (async () => {
-    SQL = await initSqlJs();
-
-    // DB_PATH lets us point the SQLite file at a persistent volume.
-    // If unset, fall back to repo-local ./data (dev). NEVER rely on the
-    // fallback in production — the container FS is wiped on every redeploy.
-    dbPath = process.env.DB_PATH
-      ? path.resolve(process.env.DB_PATH)
-      : path.join(__dirname, '../../data/rate-my-president.db');
-
-    const dataDir = path.dirname(dbPath);
-    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-
-    console.log(`[db] database path: ${dbPath}`);
-    const writable = isDirWritable(dataDir);
-    console.log(`[db] dir writable: ${writable}`);
-    if (!writable) {
-      throw new Error(`Database directory is not writable: ${dataDir}`);
-    }
-    if (!process.env.DB_PATH) {
-      console.warn('[db] WARNING: DB_PATH not set — using ephemeral repo-local path. Data will NOT survive deploys.');
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error(
+        'DATABASE_URL is not set. Link a Railway Postgres service or set it locally.'
+      );
     }
 
-    const isNewDatabase = !fs.existsSync(dbPath);
+    pool = new Pool({
+      connectionString,
+      // Railway's Postgres uses a pooled proxy URL on a different port for
+      // the connection pooler; ssl is required for the direct URL.
+      ssl: process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : false,
+      max: 10,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 5000,
+    });
 
-    if (isNewDatabase) {
-      db = new SQL.Database();
-    } else {
-      const fileBuffer = fs.readFileSync(dbPath);
-      db = new SQL.Database(fileBuffer);
+    // Verify connectivity before proceeding.
+    const client = await pool.connect();
+    try {
+      await client.query('SELECT 1');
+    } finally {
+      client.release();
     }
 
-    // Apply schema for both new and existing databases to ensure tables exist
-    const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
-    db.run(schema);
+    console.log('[db] connected to Postgres');
+    await applySchema();
+    await seedIfEmpty();
 
-    // Migration: ensure swipe_logs.president_id exists on deployed DBs created
-    // before the column was added (CREATE TABLE IF NOT EXISTS skips existing tables).
-    const colCheck = db.prepare("PRAGMA table_info(swipe_logs)");
-    let hasPresidentId = false;
-    while (colCheck.step()) {
-      const row = colCheck.get();
-      if (row[1] === 'president_id') hasPresidentId = true;
-    }
-    colCheck.free();
-    if (!hasPresidentId) {
-      db.run('ALTER TABLE swipe_logs ADD COLUMN president_id TEXT;');
-      db.run('CREATE INDEX IF NOT EXISTS idx_swipe_logs_president ON swipe_logs(president_id);');
-      saveDatabaseSync();
-    }
-
-    // Check if presidents table is empty and seed if needed
-    const countStmt = db.prepare('SELECT COUNT(*) as count FROM presidents');
-    countStmt.step();
-    const count = countStmt.getAsObject().count;
-    countStmt.free();
-
-    if (count === 0) {
-      const seed = fs.readFileSync(path.join(__dirname, 'seed-presidents.sql'), 'utf8');
-      db.run(seed);
-      saveDatabase();
-    }
-
-    // Enable foreign key constraints
-    db.run('PRAGMA foreign_keys = ON;');
-
-    return db;
+    return pool;
   })();
   return readyPromise;
 }
 
-/**
- * Get the database instance.
- * @returns {Database} The database instance
- * @throws {Error} If database has not been initialized
- */
-function getDatabase() {
-  if (!db) {
+async function applySchema() {
+  const schema = require('fs').readFileSync(
+    require('path').join(__dirname, 'schema.sql'),
+    'utf8'
+  );
+  // Postgres runs multiple statements via a single query when separated by ;
+  // node-postgres supports multi-statement strings.
+  await pool.query(schema);
+  console.log('[db] schema applied');
+}
+
+async function seedIfEmpty() {
+  const { rows } = await pool.query('SELECT COUNT(*)::int AS count FROM presidents');
+  const count = rows[0]?.count ?? 0;
+  if (count > 0) return;
+
+  const seed = require('fs').readFileSync(
+    require('path').join(__dirname, 'seed-presidents.sql'),
+    'utf8'
+  );
+  await pool.query(seed);
+  console.log('[db] presidents seeded');
+}
+
+function getPool() {
+  if (!pool) {
     throw new Error('Database not initialized - call init() first');
   }
-  return db;
+  return pool;
 }
 
-/**
- * Synchronously save the database to disk.
- */
-function saveDatabaseSync() {
-  if (!db || !dbPath) return;
-  const data = db.export();
-  const buffer = Buffer.from(data);
-  const dataDir = path.dirname(dbPath);
-  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-  fs.writeFileSync(dbPath, buffer);
-}
-
-/**
- * Save the database to disk (async wrapper around sync save).
- */
-function saveDatabase() {
-  if (!db) return;
-  saveDatabaseSync();
-}
-
-/**
- * Close the database connection.
- */
-function closeDatabase() {
-  if (db) {
-    db.close();
-    db = null;
+async function closeDatabase() {
+  if (pool) {
+    await pool.end();
+    pool = null;
+    readyPromise = null;
   }
 }
 
-module.exports = { init, getDatabase, saveDatabase, closeDatabase };
+module.exports = { init, getPool, query, closeDatabase };
