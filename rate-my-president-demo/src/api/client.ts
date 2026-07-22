@@ -104,11 +104,11 @@ export const api = {
     });
   },
 
-  // POST /api/user/register  { deviceId }
+  // POST /api/user/register  { userId }
   registerUser(deviceId: string): Promise<UserRegisterResponse> {
     return request<UserRegisterResponse>('/user/register', {
       method: 'POST',
-      body: JSON.stringify({ deviceId }),
+      body: JSON.stringify({ userId: deviceId }),
     });
   },
 
