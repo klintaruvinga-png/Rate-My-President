@@ -2,7 +2,7 @@
 // Scaffold for RMP-07 (demo <-> backend integration). Components import from here.
 // No component is wired to this yet; that is the RMP-07 build step.
 
-const BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+const BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001').replace(/\/$/, '');
 const API = `${BASE}/api`;
 
 export interface ApiLeaderboardEntry {

@@ -11,16 +11,45 @@ const leaderboardRoutes = require('./routes/leaderboard');
 const app = express();
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'];
+// Production: set ALLOWED_ORIGINS to a comma-separated list of your frontend
+// origin(s), e.g. "https://rmp.xyz,https://www.rmp.xyz". If unset, we allow
+// localhost dev origins plus the known Railway/Vercel deployment domains so the
+// app is not CORS-blocked on first deploy; tighten via ALLOWED_ORIGINS in prod.
+const DEFAULT_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'https://rate-my-president-production.up.railway.app'
+];
+
+function parseAllowedOrigins() {
+  if (process.env.ALLOWED_ORIGINS) {
+    return process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean);
+  }
+  return DEFAULT_ORIGINS;
+}
+
+const allowedOrigins = parseAllowedOrigins();
+
+// Allow exact matches, or any subdomain of vercel.app / railway.app (the
+// platforms this app deploys to). Tighten with ALLOWED_ORIGINS in production.
+function isOriginAllowed(origin) {
+  if (!origin) return false;
+  if (allowedOrigins.indexOf(origin) !== -1) return true;
+  try {
+    const host = new URL(origin).host;
+    return host.endsWith('.vercel.app') || host.endsWith('.railway.app');
+  } catch {
+    return false;
+  }
+}
 
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (isOriginAllowed(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
