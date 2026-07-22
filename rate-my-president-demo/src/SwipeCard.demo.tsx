@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction, CardType } from './SwipeCard.types';
-import type { President, SwipeStatus } from './api/client';
+import type { President, SwipeStatusView } from './api/client';
 import { availableCountries } from './countries';
 import { getNextDailyResetTimestamp } from '@root/swipeLockStorage';
 
@@ -16,28 +16,28 @@ const today = new Date().toLocaleDateString('en-GB', {
   year: 'numeric',
 });
 
-// Country code from a DB president row (home_country) may be null/uppercase;
-// normalize to match availableCountries.code.
-function normalizeCode(code: string | null | undefined): string | null {
-  if (!code) return null;
-  return code.toUpperCase();
+// Country code from a DB president row's `country` field (a NAME, e.g.
+// "United States"); resolve to the curated availableCountries entry (which
+// carries display name, flag, avatar) by matching on country name.
+function countryEntryFromName(name: string | null | undefined) {
+  if (!name) return undefined;
+  return availableCountries.find((c) => c.name === name);
 }
 
 // Build a real CardData from a DB president row, bridged to the curated
-// availableCountries entry (which carries display name, flag, and avatar).
-// The card id is the REAL DB president id so votes persist against real rows.
+// availableCountries entry. The card id is the REAL DB president id so votes
+// persist against real rows.
 function buildCardFromPresident(president: President, type: CardType): CardData | null {
   if (president.id === undefined || president.id === null) return null;
-  const code = normalizeCode(president.home_country);
-  const country = code ? availableCountries.find((c) => c.code === code) : undefined;
+  const country = countryEntryFromName(president.country);
   const leaderName = president.name ?? country?.leader ?? 'Unknown';
   const avatarUrl =
-    country?.avatarUrl ?? makeAvatarUrl(president.name ?? code ?? 'X', '2f4f4f');
+    country?.avatarUrl ?? makeAvatarUrl(president.name ?? country?.code ?? 'X', '2f4f4f');
 
   return {
     id: String(president.id),
     type,
-    countryCode: country?.code ?? code ?? '',
+    countryCode: country?.code ?? '',
     countryName: country?.name ?? '',
     countryFlag: country?.flag ?? '',
     leaderName,
@@ -70,15 +70,17 @@ function shuffle<T>(arr: T[]): T[] {
 
 // Build the day's queue from real presidents: the user's home leader first
 // (if present), then global leaders up to the server-reported remaining count.
+// Home matching compares the user's stored country CODE (e.g. 'US') against
+// each president's resolved country code (derived from its country NAME).
 function buildQueue(presidents: President[], homeCode: string | null, remaining: number): CardData[] {
   if (!presidents.length || remaining <= 0) return [];
 
-  const normHome = normalizeCode(homeCode);
+  const normHome = homeCode ? homeCode.toUpperCase() : null;
   const homePresident = normHome
-    ? presidents.find((p) => normalizeCode(p.home_country) === normHome)
+    ? presidents.find((p) => countryEntryFromName(p.country)?.code === normHome)
     : undefined;
 
-  const globals = shuffle(presidents.filter((p) => normalizeCode(p.home_country) !== normHome));
+  const globals = shuffle(presidents.filter((p) => countryEntryFromName(p.country)?.code !== normHome));
 
   const queue: CardData[] = [];
   if (homePresident) {
@@ -104,7 +106,7 @@ export function SwipeCardDemo({
 }: {
   presidents?: President[];
   homeCountryCode?: string | null;
-  swipeStatus?: SwipeStatus | null;
+  swipeStatus?: SwipeStatusView | null;
   onNavigateToLeaderboard?: () => void;
   onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => void;
 } = {}) {

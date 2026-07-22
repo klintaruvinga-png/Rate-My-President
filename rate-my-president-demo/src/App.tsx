@@ -26,7 +26,7 @@ function App() {
 
   const [leaderboardEntries, setLeaderboardEntries] = useState<import('./Leaderboard.types').LeaderboardEntry[]>([]);
   const [presidents, setPresidents] = useState<import('./api/client').President[]>([]);
-  const [swipeStatus, setSwipeStatus] = useState<import('./api/client').SwipeStatus | null>(null);
+  const [swipeStatus, setSwipeStatus] = useState<import('./api/client').SwipeStatusView | null>(null);
   const [userId] = useState<string>(() => getUserId());
 
   const loadLeaderboard = async () => {
@@ -61,8 +61,15 @@ function App() {
 
   const refreshSwipeStatus = async () => {
     try {
-      const status = await api.getSwipeStatus(userId);
-      setSwipeStatus(status);
+      const raw = await api.getSwipeStatus(userId);
+      const used = raw.count;
+      const limit = raw.limit;
+      setSwipeStatus({
+        limit,
+        used,
+        remaining: Math.max(0, limit - used),
+        locked: used >= limit,
+      });
     } catch (err) {
       console.error('Swipe status error:', err);
     }

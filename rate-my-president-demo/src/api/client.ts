@@ -1,6 +1,5 @@
 // RMP API client — typed wrapper around the Express backend (server/).
-// Scaffold for RMP-07 (demo <-> backend integration). Components import from here.
-// No component is wired to this yet; that is the RMP-07 build step.
+import type { VoteAction } from '../SwipeCard.types';
 
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001').replace(/\/$/, '');
 const API = `${BASE}/api`;
@@ -21,15 +20,21 @@ export interface ApiLeaderboardEntry {
   rank?: number;
 }
 
-export interface SwipeStatus {
-  userId: string;
-  date: string;
+// API response shape for GET /api/swipes/status (count/limit/swipes).
+export interface SwipeStatusApi {
+  count: number;
+  limit: number;
+  swipes: { cardType: 'home' | 'global'; action: VoteAction }[];
+}
+
+// View-model shape the swipe UI consumes (derived from SwipeStatusApi).
+export interface SwipeStatusView {
   limit: number;
   used: number;
   remaining: number;
   locked: boolean;
-  nextResetAt?: string;
 }
+
 
 export interface President {
   id: string | number;
@@ -74,8 +79,8 @@ export const api = {
   },
 
   // GET /api/swipes/status?userId=...
-  getSwipeStatus(userId: string): Promise<SwipeStatus> {
-    return request<SwipeStatus>(`/swipes/status?userId=${encodeURIComponent(userId)}`);
+  getSwipeStatus(userId: string): Promise<SwipeStatusApi> {
+    return request<SwipeStatusApi>(`/swipes/status?userId=${encodeURIComponent(userId)}`);
   },
 
   // POST /api/swipes/log  { userId, presidentId, cardType, action }
