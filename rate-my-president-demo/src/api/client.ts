@@ -1,7 +1,12 @@
 // RMP API client — typed wrapper around the Express backend (server/).
 import type { VoteAction } from '../SwipeCard.types';
 
-const BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001').replace(/\/$/, '');
+// Production API base. Injected at build time via VITE_API_BASE_URL (set in
+// .env.production / Vercel). Falls back to the live Railway URL so a deployed
+// build always talks to the backend even if the env var is absent. Local dev
+// overrides via a .env file (VITE_API_BASE_URL=http://localhost:3001).
+const PROD_API_BASE = 'https://rate-my-president-production.up.railway.app';
+const BASE = (import.meta.env.VITE_API_BASE_URL ?? PROD_API_BASE).replace(/\/$/, '');
 const API = `${BASE}/api`;
 
 export interface ApiLeaderboardEntry {
