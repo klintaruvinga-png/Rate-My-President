@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { getDailySwipeState } from '@root/swipeLockStorage';
 
 // getDailySwipeState encodes the product swipe-limit rule (RMP PRD):
@@ -37,6 +37,7 @@ describe('getDailySwipeState', () => {
     } else {
       globalThis.window = REAL_WINDOW;
     }
+    vi.useRealTimers();
   });
 
   it('returns limit 1 when no home country is set', () => {
@@ -58,6 +59,10 @@ describe('getDailySwipeState', () => {
   });
 
   it('reports stored count for the current day, zeroed on a new day', () => {
+    // Freeze time to avoid flakiness near midnight
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-06-15T12:00:00Z'));
+
     const today = new Date().toISOString().slice(0, 10);
     const ls = makeStorage({
       'rate-my-president-last-swipe-date': today,
