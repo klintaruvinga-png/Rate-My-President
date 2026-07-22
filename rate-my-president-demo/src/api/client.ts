@@ -35,6 +35,11 @@ export interface President {
   id: string | number;
   name: string;
   country?: string;
+  home_country?: string | null;
+  party?: string | null;
+  region?: string | null;
+  date?: string | null;
+  active?: number | null;
   avatarUrl?: string;
 }
 
@@ -78,6 +83,14 @@ export const api = {
     return request<{ ok: boolean }>('/swipes/log', {
       method: 'POST',
       body: JSON.stringify({ userId, presidentId, cardType, action }),
+    });
+  },
+
+  // PATCH /api/preferences  { userId, preferences: { home_country, ... } }
+  updatePreferences(userId: string, preferences: Record<string, unknown>): Promise<{ ok: boolean }> {
+    return request<{ ok: boolean }>('/preferences', {
+      method: 'PATCH',
+      body: JSON.stringify({ userId, preferences }),
     });
   },
 

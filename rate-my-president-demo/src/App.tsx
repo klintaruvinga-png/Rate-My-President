@@ -10,7 +10,7 @@ import type { ApiLeaderboardEntry } from './api/client';
 import headerImage from '@root/assets/Obama Header No BG.png';
 import NewsTicker from './NewsTicker';
 // LeaderTicker not used in this demo shell
-import { getHasCompletedOnboarding, setHasCompletedOnboarding, setUserCountry } from './onboardingStorage';
+import { getHasCompletedOnboarding, setHasCompletedOnboarding, setUserCountry, getUserCountry } from './onboardingStorage';
 import { availableCountries } from './countries';
 import { preloadFlags } from './flagPreloader';
 import { HomeIcon, SwipeIcon, LeaderboardIcon, HelpIcon } from '@root/Icons';
@@ -25,6 +25,9 @@ function App() {
   });
 
   const [leaderboardEntries, setLeaderboardEntries] = useState<import('./Leaderboard.types').LeaderboardEntry[]>([]);
+  const [presidents, setPresidents] = useState<import('./api/client').President[]>([]);
+  const [swipeStatus, setSwipeStatus] = useState<import('./api/client').SwipeStatus | null>(null);
+  const [userId] = useState<string>(() => getUserId());
 
   const loadLeaderboard = async () => {
     try {
@@ -47,15 +50,38 @@ function App() {
     }
   };
 
+  const loadPresidents = async () => {
+    try {
+      const list = await api.getPresidents();
+      setPresidents(list);
+    } catch (err) {
+      console.error('Presidents load error:', err);
+    }
+  };
+
+  const refreshSwipeStatus = async () => {
+    try {
+      const status = await api.getSwipeStatus(userId);
+      setSwipeStatus(status);
+    } catch (err) {
+      console.error('Swipe status error:', err);
+    }
+  };
+
   useEffect(() => {
     loadLeaderboard();
+    loadPresidents();
+    refreshSwipeStatus();
+    // Register this browser's anonymous UUID with the backend (idempotent).
+    api.registerUser(userId).catch((err) => console.error('User register error:', err));
   }, []);
 
   const handleSwipe = async (action: VoteAction, cardId: string, cardType: 'home' | 'global') => {
     if (!action) return;
     try {
-      await api.logSwipe(getUserId(), cardId, cardType, action);
+      await api.logSwipe(userId, cardId, cardType, action);
       loadLeaderboard();
+      refreshSwipeStatus();
     } catch (err) {
       console.error('Swipe persist error:', err);
     }
@@ -93,6 +119,10 @@ function App() {
     setHasCompletedOnboarding(true);
     // Persist (or clear) the home country so the swipe stack shows it immediately
     setUserCountry(countryCode);
+    // Tell the backend so the server-side daily limit (1 vs 2 swipes) is correct.
+    api.updatePreferences(userId, { home_country: countryCode }).catch((err) =>
+      console.error('Preferences update error:', err)
+    );
     setActiveTab('swipe');
   };
 
@@ -227,7 +257,13 @@ function App() {
           {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
           {activeTab === 'swipe' && (
             <div className="flex-1 flex flex-col justify-center min-h-0 py-0 sm:py-1">
-              <SwipeCardDemo onNavigateToLeaderboard={() => handleTabChange('leaderboard')} onSwipe={handleSwipe} />
+              <SwipeCardDemo
+                presidents={presidents}
+                homeCountryCode={getUserCountry()}
+                swipeStatus={swipeStatus}
+                onNavigateToLeaderboard={() => handleTabChange('leaderboard')}
+                onSwipe={handleSwipe}
+              />
             </div>
           )}
           {activeTab === 'leaderboard' && <Leaderboard entries={leaderboardEntries} />}

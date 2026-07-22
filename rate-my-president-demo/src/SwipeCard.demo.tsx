@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SwipeCard from './SwipeCard';
-import type { CardData, VoteAction } from './SwipeCard.types';
-import { getUserCountry } from './onboardingStorage';
+import type { CardData, VoteAction, CardType } from './SwipeCard.types';
+import type { President, SwipeStatus } from './api/client';
 import { availableCountries } from './countries';
 import { getNextDailyResetTimestamp } from '@root/swipeLockStorage';
 
@@ -10,177 +10,166 @@ import { getNextDailyResetTimestamp } from '@root/swipeLockStorage';
 const makeAvatarUrl = (seed: string, color: string) =>
   `https://api.dicebear.com/7.x/initials/svg?seed=${seed}&backgroundColor=${color}`;
 
-const randomItem = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
-
 const today = new Date().toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
 });
 
-function buildHomeCard(countryCode: string): CardData | null {
-  const country = availableCountries.find((c) => c.code === countryCode);
-  if (!country) return null;
-  const avatarUrl = country.avatarUrl ?? makeAvatarUrl(country.avatarSeed ?? country.code, country.avatarColor ?? '2f4f4f');
+// Country code from a DB president row (home_country) may be null/uppercase;
+// normalize to match availableCountries.code.
+function normalizeCode(code: string | null | undefined): string | null {
+  if (!code) return null;
+  return code.toUpperCase();
+}
+
+// Build a real CardData from a DB president row, bridged to the curated
+// availableCountries entry (which carries display name, flag, and avatar).
+// The card id is the REAL DB president id so votes persist against real rows.
+function buildCardFromPresident(president: President, type: CardType): CardData | null {
+  if (president.id === undefined || president.id === null) return null;
+  const code = normalizeCode(president.home_country);
+  const country = code ? availableCountries.find((c) => c.code === code) : undefined;
+  const leaderName = president.name ?? country?.leader ?? 'Unknown';
+  const avatarUrl =
+    country?.avatarUrl ?? makeAvatarUrl(president.name ?? code ?? 'X', '2f4f4f');
+
   return {
-    id: `home-${country.code}-${Date.now()}`,
-    type: 'home',
-    countryCode: country.code,
-    countryName: country.name,
-    countryFlag: country.flag,
-    leaderName: country.leader ?? country.name,
-    avatarUrl: avatarUrl,
+    id: String(president.id),
+    type,
+    countryCode: country?.code ?? code ?? '',
+    countryName: country?.name ?? '',
+    countryFlag: country?.flag ?? '',
+    leaderName,
+    avatarUrl,
     headerImageUrl: avatarUrl,
-    approvalPercent: Math.floor(Math.random() * 100),
-    trend: randomItem(['up', 'down', 'neutral'] as const),
-    headlines: [
-      {
-        title: `${country.leader ?? country.name} addresses the nation`,
-        source: 'Reuters',
-        date: today,
-        url: 'https://reuters.com',
-      },
-    ],
+    approvalPercent: 0,
+    trend: 'neutral',
+    headlines: country
+      ? [
+          {
+            title: `${leaderName} in the news`,
+            source: 'Reuters',
+            date: today,
+            url: 'https://reuters.com',
+          },
+        ]
+      : [],
     yesterdayVote: undefined,
   };
 }
 
-function buildGlobalCard(id: string, excludeCode?: string, existingCodes: string[] = []): CardData {
-  const excludedCodes = [excludeCode, ...existingCodes].filter((code): code is string => Boolean(code));
-  let pool = availableCountries.filter((c) => !excludedCodes.includes(c.code));
-
-  if (pool.length === 0) {
-    pool = availableCountries.filter((c) => !existingCodes.includes(c.code));
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
-
-  if (pool.length === 0) {
-    pool = availableCountries;
-  }
-
-  const country = randomItem(pool);
-  const avatarUrl = country.avatarUrl ?? makeAvatarUrl(country.avatarSeed ?? country.code, country.avatarColor ?? '2f4f4f');
-  return {
-    id: `${id}-${Math.random().toString(36).slice(2, 8)}`,
-    type: 'global',
-    countryCode: country.code,
-    countryName: country.name,
-    countryFlag: country.flag,
-    leaderName: country.leader ?? country.name,
-    avatarUrl: avatarUrl,
-    headerImageUrl: avatarUrl,
-    approvalPercent: Math.floor(Math.random() * 100),
-    trend: randomItem(['up', 'down', 'neutral'] as const),
-    headlines: [
-      {
-        title: `${country.leader ?? country.name} speaks at international summit`,
-        source: 'Reuters',
-        date: today,
-        url: 'https://reuters.com',
-      },
-    ],
-    yesterdayVote: undefined,
-  };
+  return a;
 }
 
-function buildInitialQueue(homeCode: string | null, dailyLimit: number): CardData[] {
+// Build the day's queue from real presidents: the user's home leader first
+// (if present), then global leaders up to the server-reported remaining count.
+function buildQueue(presidents: President[], homeCode: string | null, remaining: number): CardData[] {
+  if (!presidents.length || remaining <= 0) return [];
+
+  const normHome = normalizeCode(homeCode);
+  const homePresident = normHome
+    ? presidents.find((p) => normalizeCode(p.home_country) === normHome)
+    : undefined;
+
+  const globals = shuffle(presidents.filter((p) => normalizeCode(p.home_country) !== normHome));
+
   const queue: CardData[] = [];
-
-  if (homeCode) {
-    const homeCard = buildHomeCard(homeCode);
+  if (homePresident) {
+    const homeCard = buildCardFromPresident(homePresident, 'home');
     if (homeCard) queue.push(homeCard);
   }
-
-  // Add global cards up to the daily limit
-  const globalCardsNeeded = dailyLimit - queue.length;
-  for (let i = 0; i < globalCardsNeeded; i++) {
-    queue.push(
-      buildGlobalCard(
-        `global-${Date.now()}-${queue.length}`,
-        homeCode ?? undefined,
-        queue.map((card) => card.countryCode)
-      )
-    );
+  for (const p of globals) {
+    if (queue.length >= remaining) break;
+    const card = buildCardFromPresident(p, 'global');
+    if (card) queue.push(card);
   }
-
   return queue;
 }
 
 // ── component ─────────────────────────────────────────────────────────────────
 
 export function SwipeCardDemo({
+  presidents = [],
+  homeCountryCode = null,
+  swipeStatus = null,
   onNavigateToLeaderboard,
   onSwipe,
 }: {
+  presidents?: President[];
+  homeCountryCode?: string | null;
+  swipeStatus?: SwipeStatus | null;
   onNavigateToLeaderboard?: () => void;
   onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => void;
 } = {}) {
-  const savedCountryCode = getUserCountry();
-  const hasHomeCountry = savedCountryCode !== null;
-  const dailyLimit = hasHomeCountry ? 2 : 1;
+  const dailyLimit = swipeStatus?.limit ?? (homeCountryCode ? 2 : 1);
+  const used = swipeStatus?.used ?? 0;
+  const locked = swipeStatus?.locked ?? used >= dailyLimit;
+  const remaining = swipeStatus?.remaining ?? Math.max(0, dailyLimit - used);
+
   const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
-  const [swipeCount, setSwipeCount] = useState(0);
-  const [cardsQueue, setCardsQueue] = useState<CardData[]>(() => {
-    return buildInitialQueue(savedCountryCode, dailyLimit);
-  });
-  const [isLimitReached, setIsLimitReached] = useState(false);
+  const [cardsQueue, setCardsQueue] = useState<CardData[]>(() =>
+    buildQueue(presidents, homeCountryCode, remaining || 1)
+  );
+  const [isLimitReached, setIsLimitReached] = useState(locked);
+
+  // Rebuild the queue when real data / lock state arrives from the server.
+  useEffect(() => {
+    setIsLimitReached(locked);
+    if (!locked && presidents.length) {
+      setCardsQueue(buildQueue(presidents, homeCountryCode, remaining || 1));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presidents, homeCountryCode, locked, remaining]);
 
   const handleVote = (action: VoteAction): boolean => {
     const voteAction = action ?? 'skip';
+    const currentCard = cardsQueue[0];
+    if (!currentCard) return false;
 
-    // In production, this would call the server API and derive allowed/count from the response
-    // For demo: simulate server behavior by tracking count locally
-    const newCount = swipeCount + 1;
-    const allowed = swipeCount < dailyLimit;
-
-    if (allowed) {
-      setVoteHistory((prev) => [...prev, voteAction]);
-      setSwipeCount(newCount);
-      console.log('Vote recorded:', voteAction);
-
-      // Persist to backend (best-effort; server enforces daily limit)
-      if (onSwipe && currentCard) {
-        onSwipe(voteAction, currentCard.id, currentCard.type);
-      }
-
-      setTimeout(() => {
-        setCardsQueue((prev) => {
-          const nextQueue = prev.slice(1);
-          // Only add more cards if limit not reached
-          if (newCount < dailyLimit) {
-            while (nextQueue.length < 3) {
-              nextQueue.push(
-                buildGlobalCard(
-                  `global-${Date.now()}-${nextQueue.length}`,
-                  savedCountryCode ?? undefined,
-                  nextQueue.map((card) => card.countryCode)
-                )
-              );
-            }
-          } else {
-            // Keep final card in queue to display lock overlay
-            if (nextQueue.length === 0) {
-              return prev;
-            }
-          }
-          return nextQueue;
-        });
-        // Surface the limit screen only AFTER the post-vote reveal has played,
-        // so the final daily swipe's approval/headline reveal is never cut off.
-        if (newCount >= dailyLimit) {
-          // Delay to allow lock overlay to display on final card first
-          setTimeout(() => {
-            setIsLimitReached(true);
-          }, 1000);
-        }
-      }, 2500);
+    setVoteHistory((prev) => [...prev, voteAction]);
+    if (onSwipe) {
+      onSwipe(voteAction, currentCard.id, currentCard.type);
     }
-    return allowed;
+
+    // Animate the reveal, then advance the queue. The server is the source of
+    // truth for the lock (swipeStatus), so we only refill what's allowed.
+    setTimeout(() => {
+      setCardsQueue((prev) => {
+        const nextQueue = prev.slice(1);
+        const newUsed = used + voteHistory.length + 1;
+        if (!locked && newUsed < dailyLimit && presidents.length) {
+          const more = buildQueue(
+            presidents,
+            homeCountryCode,
+            Math.max(0, dailyLimit - newUsed)
+          );
+          // Append one fresh card if we're below the on-screen buffer.
+          if (nextQueue.length < 1 && more.length) {
+            nextQueue.push(more[0]);
+          }
+        }
+        return nextQueue;
+      });
+      // If the server now reports the limit reached, show the lock overlay.
+      if (remaining <= 1) {
+        setTimeout(() => setIsLimitReached(true), 600);
+      }
+    }, 2500);
+
+    return true;
   };
 
   const currentCard = cardsQueue[0];
   const nextCard = cardsQueue[1];
 
-  if (!currentCard) {
+  if (!currentCard && !locked) {
     return (
       <div className="flex items-center justify-center">
         <p className="text-white opacity-60">Loading stack...</p>
@@ -188,7 +177,7 @@ export function SwipeCardDemo({
     );
   }
 
-  if (isLimitReached) {
+  if (isLimitReached || locked) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-4">
         <div className="space-y-4 max-w-md">
@@ -200,7 +189,7 @@ export function SwipeCardDemo({
           </p>
           <div className="bg-[oklch(0.20_0.02_250)] rounded-xl p-4 border border-[oklch(0.28_0.02_250)]">
             <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter']">
-              Today's votes: {swipeCount}/{dailyLimit}
+              Today's votes: {used}/{dailyLimit}
             </p>
           </div>
         </div>
@@ -215,7 +204,7 @@ export function SwipeCardDemo({
         nextCard={nextCard}
         onVote={handleVote}
         showMicroHistory={true}
-        isLocked={swipeCount >= dailyLimit && !isLimitReached}
+        isLocked={false}
         nextResetAt={getNextDailyResetTimestamp()}
         onShowLeaderboard={onNavigateToLeaderboard}
       />
@@ -228,16 +217,14 @@ export function SwipeCardDemo({
         ) : (
           <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
             {voteHistory.map((vote, idx) => {
-              const voteLabel = vote === 'like'
-                ? 'APPROVE'
-                : vote === 'nolike'
-                  ? 'OPPOSE'
-                  : 'SKIP';
-              const voteColor = vote === 'like'
-                ? 'text-[oklch(0.62_0.18_142)]'
-                : vote === 'nolike'
-                  ? 'text-[oklch(0.55_0.20_25)]'
-                  : 'text-[oklch(0.72_0.15_65)]';
+              const voteLabel =
+                vote === 'like' ? 'APPROVE' : vote === 'nolike' ? 'OPPOSE' : 'SKIP';
+              const voteColor =
+                vote === 'like'
+                  ? 'text-[oklch(0.62_0.18_142)]'
+                  : vote === 'nolike'
+                    ? 'text-[oklch(0.55_0.20_25)]'
+                    : 'text-[oklch(0.72_0.15_65)]';
 
               return (
                 <div
@@ -245,9 +232,7 @@ export function SwipeCardDemo({
                   className="flex justify-between gap-4 border-b border-[oklch(0.28_0.02_250)] pb-1 text-xs"
                 >
                   <span>Leader {idx + 1}:</span>
-                  <span className={`font-semibold ${voteColor}`}>
-                    {voteLabel}
-                  </span>
+                  <span className={`font-semibold ${voteColor}`}>{voteLabel}</span>
                 </div>
               );
             })}
