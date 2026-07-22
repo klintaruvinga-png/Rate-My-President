@@ -54,8 +54,29 @@ function bindParams(sql, params) {
 }
 
 /**
+ * Transient Postgres/connection errors that should be retried once (Railway's
+ * pooled proxy terminates idle connections; the next query on a dead one
+ * fails until the pool recycles). Codes: ECONNRESET/ENOTFOUND/ECONNREFUSED
+ * (TCP), 57P01/57P02 (admin shutdown/timeout), 08006/08003/08004 (connection
+ * failure), 08P01 (protocol). Also catches the generic "terminated" message.
+ */
+const TRANSIENT_DB_CODES = new Set([
+  'ECONNRESET', 'ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT',
+  '57P01', '57P02', '08006', '08003', '08004', '08P01',
+]);
+function isTransientDbError(err) {
+  if (!err) return false;
+  if (TRANSIENT_DB_CODES.has(err.code)) return true;
+  const msg = String(err.message || '');
+  return /connection (terminated|closed)|terminated unexpectedly|server closed the connection/i.test(msg);
+}
+
+/**
  * Run a query. `params` may be a :named object (converted to $n) or a
  * positional array. Always returns the row array (pg result rows).
+ * Retries once on transient connection errors (the pool hands out a fresh
+ * connection on retry), which eliminates the intermittent 500s seen under
+ * Railway's Postgres proxy.
  * @param {string} sql
  * @param {object|Array<any>|undefined} params
  * @returns {Promise<Array<object>>}
@@ -65,8 +86,17 @@ async function query(sql, params) {
     throw new Error('Database not initialized - call init() first');
   }
   const { sql: rewritten, values } = bindParams(sql, params);
-  const result = await pool.query(rewritten, values);
-  return result.rows;
+  try {
+    const result = await pool.query(rewritten, values);
+    return result.rows;
+  } catch (err) {
+    if (isTransientDbError(err)) {
+      console.warn('[db] transient error, retrying once:', err.message);
+      const result = await pool.query(rewritten, values);
+      return result.rows;
+    }
+    throw err;
+  }
 }
 
 async function init() {
@@ -89,6 +119,13 @@ async function init() {
       max: 10,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,
+    });
+
+    // A dead idle connection must not crash the process or poison the pool.
+    // pg auto-removes the failed client; we just log and let the pool recover.
+    // Without this handler, an idle-client error throws globally.
+    pool.on('error', (err) => {
+      console.error('[db] pool idle client error (recovered):', err.message);
     });
 
     // Verify connectivity before proceeding.
