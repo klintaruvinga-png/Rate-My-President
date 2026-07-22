@@ -29,6 +29,7 @@ Synced from: EOM/projects.json
 ## Planned Updates (design decisions)
 
 ### RMP-11 — Country lock is permanent, not 24h-changeable  (RELEASE DEPENDENCY)
+
 **Status:** Planned. **Release blocker:** yes — the app must not ship the current 24h-changeable country flow; permanent lock is a trust/safety guarantee, not a nice-to-have.
 **Problem:** current design lets users change home country every 24h. That is the wrong model and defeats the product's safety intent.
 
@@ -39,6 +40,7 @@ Synced from: EOM/projects.json
 
 **Implementation notes (for when built):**
 - Home country stored once, immutable after first set (server-side enforcement, not client).
+- Migrate `onboardingStorage.ts` (client-side 24h lock via localStorage: setCountryLock/isCountryLocked/clearCountryLock) and `Onboarding.tsx` (which contains the "Change" country UI path and 24h lock message) off of the client-side 24-hour lock model and onto immutable server-side country storage.
 - Onboarding re-entry → render only the home-swipe opt-in/opt-out control, never the country picker.
 - Remove the "change country in 24 hours" copy/UI entirely.
 
