@@ -28,7 +28,8 @@ Synced from: EOM/projects.json
 
 ## Planned Updates (design decisions)
 
-### RMP-11 — Country lock is permanent, not 24h-changeable
+### RMP-11 — Country lock is permanent, not 24h-changeable  (RELEASE DEPENDENCY)
+**Status:** Planned. **Release blocker:** yes — the app must not ship the current 24h-changeable country flow; permanent lock is a trust/safety guarantee, not a nice-to-have.
 **Problem:** current design lets users change home country every 24h. That is the wrong model and defeats the product's safety intent.
 
 **Correct design:**
