@@ -20,17 +20,21 @@ router.post('/log', async (req, res) => {
   const { userId, presidentId, cardType, action } = req.body;
 
   if (!userId || !presidentId || !cardType || !action) {
+    console.error('[swipes/log] 400 Missing required fields. Body:', JSON.stringify(req.body));
     return res.status(400).json({ error: 'Missing required fields' });
   }
   if (!validateUserId(userId)) {
+    console.error('[swipes/log] 400 Invalid userId format. Body:', JSON.stringify(req.body));
     return res.status(400).json({ error: 'Invalid userId format' });
   }
   const validActions = ['like', 'nolike', 'skip'];
   if (!validActions.includes(action)) {
+    console.error('[swipes/log] 400 Invalid action. Body:', JSON.stringify(req.body));
     return res.status(400).json({ error: 'Invalid action' });
   }
   const validCardTypes = ['home', 'global'];
   if (!validCardTypes.includes(cardType)) {
+    console.error('[swipes/log] 400 Invalid card type. Body:', JSON.stringify(req.body));
     return res.status(400).json({ error: 'Invalid card type' });
   }
 
