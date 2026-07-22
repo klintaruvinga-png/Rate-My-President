@@ -1,6 +1,6 @@
 // Leaderboard route with hardened query handling and corrected calculations
 const express = require('express');
-const { getDatabase } = require('../db/client');
+const { query } = require('../db/client');
 const wilsonScore = require('wilson-score-rank');
 
 const router = express.Router();
@@ -23,26 +23,20 @@ function calculateWilsonScore(likes, dislikes) {
  * GET /leaderboard
  * Returns the leaderboard with vote counts, approval rate, and Wilson score.
  * Supports optional window (day|week|all) and region filtering.
- * Query parameters are safely bound using prepared statements to prevent SQL injection.
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const db = getDatabase();
     const { window = 'all', region } = req.query;
 
-    // Validate window parameter
     const validWindows = ['day', 'week', 'all'];
     if (window && !validWindows.includes(window)) {
       return res.status(400).json({ error: 'Invalid window parameter. Must be one of: day, week, all' });
     }
-
-    // Validate region parameter if provided
     const validRegions = ['Africa', 'Europe', 'Asia', 'Americas', 'Oceania'];
     if (region && !validRegions.includes(region)) {
       return res.status(400).json({ error: 'Invalid region parameter. Must be one of: Africa, Europe, Asia, Americas, Oceania' });
     }
 
-    // Build query parameters and filter clause
     const params = [];
     let filterClause = '';
     const now = new Date();
@@ -60,22 +54,21 @@ router.get('/', (req, res) => {
     }
 
     if (region) {
-      // Append region filter, respecting existing clause
       filterClause += (filterClause ? ' AND ' : '') + 'p.region = ?';
       params.push(region);
     }
 
-    const query = `
+    const sql = `
       SELECT
         p.id,
         p.name,
         p.country,
         p.region,
         p.avatar_url,
-        COALESCE(SUM(CASE WHEN sl.action = 'like' THEN 1 ELSE 0 END), 0) as likes,
-        COALESCE(SUM(CASE WHEN sl.action = 'nolike' THEN 1 ELSE 0 END), 0) as dislikes,
-        COALESCE(SUM(CASE WHEN sl.action = 'skip' THEN 1 ELSE 0 END), 0) as skips,
-        COALESCE(COUNT(sl.id), 0) as total_votes
+        COALESCE(SUM(CASE WHEN sl.action = 'like' THEN 1 ELSE 0 END), 0)::int as likes,
+        COALESCE(SUM(CASE WHEN sl.action = 'nolike' THEN 1 ELSE 0 END), 0)::int as dislikes,
+        COALESCE(SUM(CASE WHEN sl.action = 'skip' THEN 1 ELSE 0 END), 0)::int as skips,
+        COALESCE(COUNT(sl.id), 0)::int as total_votes
       FROM presidents p
       LEFT JOIN swipe_logs sl ON p.id = sl.president_id
         ${filterClause}
@@ -84,17 +77,14 @@ router.get('/', (req, res) => {
       ORDER BY total_votes DESC
     `;
 
-    const stmt = db.prepare(query);
-    // Bind parameters (may be empty array)
-    stmt.bind(params);
-    const leaderboard = [];
-
-    while (stmt.step()) {
-      const row = stmt.getAsObject();
+    const rows = await query(sql, params);
+    const leaderboard = rows.map((row) => {
       const wilson = calculateWilsonScore(row.likes, row.dislikes);
-      // Approval rate: exclude skips from denominator
-      const approvalRate = (row.likes + row.dislikes) > 0 ? (row.likes / (row.likes + row.dislikes) * 100).toFixed(1) : 0;
-      leaderboard.push({
+      const approvalRate =
+        (row.likes + row.dislikes) > 0
+          ? (row.likes / (row.likes + row.dislikes) * 100).toFixed(1)
+          : 0;
+      return {
         id: row.id,
         name: row.name,
         country: row.country,
@@ -105,14 +95,11 @@ router.get('/', (req, res) => {
         skips: row.skips,
         total_votes: row.total_votes,
         approval_rate: approvalRate,
-        wilson_score: wilson,
-      });
-    }
-    stmt.free();
+        wilson_score: wilson
+      };
+    });
 
-    // Sort by Wilson score for fair ranking
     leaderboard.sort((a, b) => b.wilson_score - a.wilson_score);
-    // Add rank
     leaderboard.forEach((item, idx) => {
       item.rank = idx + 1;
     });

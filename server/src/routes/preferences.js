@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDatabase, saveDatabase } = require('../db/client');
+const { query } = require('../db/client');
 const { validateUserId } = require('../utils/validateUserId');
 
 const router = express.Router();
@@ -17,44 +17,24 @@ const ALLOWED_PREFERENCE_FIELDS = [
   'language'
 ];
 
-function getPreferencesByUserId(db, userId) {
-  const stmt = db.prepare('SELECT * FROM user_preferences WHERE user_id = :userId');
-  stmt.bind({ ':userId': userId });
-
-  let preferences = null;
-
-  if (stmt.step()) {
-    const row = stmt.get();
-    const columns = stmt.getColumnNames();
-    preferences = {};
-    columns.forEach((col, index) => {
-      preferences[col] = row[index];
-    });
-  }
-  stmt.free();
-
-  return preferences;
+async function getPreferencesByUserId(userId) {
+  const rows = await query(
+    'SELECT * FROM user_preferences WHERE user_id = :userId',
+    { ':userId': userId }
+  );
+  return rows.length > 0 ? rows[0] : null;
 }
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const { userId } = req.query;
-
-  if (!userId) {
-    return res.status(400).json({ error: 'Missing userId' });
-  }
-
-  if (!validateUserId(userId)) {
-    return res.status(400).json({ error: 'Invalid userId format' });
-  }
+  if (!userId) return res.status(400).json({ error: 'Missing userId' });
+  if (!validateUserId(userId)) return res.status(400).json({ error: 'Invalid userId format' });
 
   try {
-    const db = getDatabase();
-    const preferences = getPreferencesByUserId(db, userId);
-
+    const preferences = await getPreferencesByUserId(userId);
     if (preferences) {
       res.json(preferences);
     } else {
-      // Return default preferences
       res.json({
         user_id: userId,
         home_country: null,
@@ -76,34 +56,22 @@ router.get('/', (req, res) => {
   }
 });
 
-router.patch('/', (req, res) => {
+router.patch('/', async (req, res) => {
   const { userId, preferences } = req.body;
-
   if (!userId || !preferences) {
     return res.status(400).json({ error: 'Missing userId or preferences' });
   }
-
   if (!validateUserId(userId)) {
     return res.status(400).json({ error: 'Invalid userId format' });
   }
 
   try {
-    const db = getDatabase();
-
-    // Check if user exists
-    const checkStmt = db.prepare('SELECT user_id FROM user_preferences WHERE user_id = :userId');
-    checkStmt.bind({ ':userId': userId });
-    let userExists = false;
-    if (checkStmt.step()) {
-      userExists = true;
-    }
-    checkStmt.free();
+    const existing = await getPreferencesByUserId(userId);
 
     const fields = [];
     const values = {};
 
-    // Whitelist and validate preference keys
-    Object.keys(preferences).forEach(key => {
+    Object.keys(preferences).forEach((key) => {
       if (ALLOWED_PREFERENCE_FIELDS.includes(key)) {
         fields.push(`${key} = :${key}`);
         values[`:${key}`] = preferences[key];
@@ -117,39 +85,28 @@ router.patch('/', (req, res) => {
     values[':updatedAt'] = new Date().toISOString();
     values[':userId'] = userId;
 
-    if (userExists) {
-      // Update existing
-      const query = `UPDATE user_preferences SET ${fields.join(', ')}, updated_at = :updatedAt WHERE user_id = :userId`;
-      const updateStmt = db.prepare(query);
-      updateStmt.bind(values);
-      updateStmt.step();
-      updateStmt.free();
+    if (existing) {
+      const sql = `UPDATE user_preferences SET ${fields.join(', ')}, updated_at = :updatedAt WHERE user_id = :userId`;
+      await query(sql, values);
     } else {
-      // Insert new
-      const whitelistedKeys = Object.keys(preferences).filter(k => ALLOWED_PREFERENCE_FIELDS.includes(k));
+      const whitelistedKeys = Object.keys(preferences).filter((k) =>
+        ALLOWED_PREFERENCE_FIELDS.includes(k)
+      );
       const allFields = ['user_id', ...whitelistedKeys, 'updated_at'];
-      const placeholders = allFields.map(f => `:${f}`).join(', ');
+      const placeholders = allFields.map((f) => `:${f}`).join(', ');
       const allValues = {
         ':user_id': userId,
         ':updated_at': new Date().toISOString()
       };
-
-      whitelistedKeys.forEach(key => {
+      whitelistedKeys.forEach((key) => {
         allValues[`:${key}`] = preferences[key];
       });
 
-      const query = `INSERT INTO user_preferences (${allFields.join(', ')}) VALUES (${placeholders})`;
-      const insertStmt = db.prepare(query);
-      insertStmt.bind(allValues);
-      insertStmt.step();
-      insertStmt.free();
+      const sql = `INSERT INTO user_preferences (${allFields.join(', ')}) VALUES (${placeholders})`;
+      await query(sql, allValues);
     }
 
-    saveDatabase();
-
-    // Return updated preferences
-    const updatedPrefs = getPreferencesByUserId(db, userId);
-
+    const updatedPrefs = await getPreferencesByUserId(userId);
     if (updatedPrefs) {
       res.json(updatedPrefs);
     } else {
