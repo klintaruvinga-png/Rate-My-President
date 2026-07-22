@@ -28,7 +28,7 @@ Synced from: EOM/projects.json
 | RMP-12 | Atomic swipe-limit fix (pg_advisory_xact_lock) — authored in autoclosed PR #38, deferred to later PR | deferred | Kudzie |
 | RMP-13 | Backend pg pool hardening (retry on transient Railway-proxy drops + pool error handler) — defensive; observed write 500 was a test-harness quoting artifact, not a confirmed prod bug | done | KudzBot |
 | RMP-14 | Swipe-flow hardening (Devin review): backend auto-creates user on /log (kills register/swipe FK race); frontend logSwipe type {allowed}, queue advances only on success, inline error UI | done | KudzBot |
-| RMP-15 | ROOT CAUSE of swipe 400: stale cached client bundle sent action:'approve' (pre-like rename); server now normalizes approve->like / disapprove|oppose|reject->nolike. Hard-refresh clears it. favicon.png 404 on ratemypresident.xyz | in progress | KudzBot |
+| RMP-15 | ROOT CAUSE of swipe 400: stale cached client bundle sent action:'approve' (pre-like rename); server now normalizes approve->like / disapprove|oppose|reject->nolike. favicon.png 404 fixed (copied to repo-root public). | done | KudzBot |
 
 ## Notes
 
