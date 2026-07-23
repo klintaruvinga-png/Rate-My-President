@@ -92,11 +92,8 @@ function App() {
     api.registerUser(userId).catch((err) => console.error('User register error:', err));
   }, []);
 
-  const [businessRuleError, setBusinessRuleError] = useState<string | null>(null);
-
   const handleSwipe = async (action: VoteAction, cardId: string, cardType: 'home' | 'global'): Promise<boolean | string> => {
     if (!action) return false;
-    setBusinessRuleError(null);
     try {
       const res = await api.logSwipe(userId, cardId, cardType, action);
       loadLeaderboard();
@@ -105,8 +102,7 @@ function App() {
     } catch (err) {
       // Business-rule 400 (daily limit / already voted) carries a reason.
       if (err instanceof ApiBusinessError) {
-        setBusinessRuleError(err.reason ?? 'Action not allowed.');
-        return false;
+        return err.reason ?? 'Action not allowed.';
       }
       console.error('Swipe persist error:', err);
       return false;
@@ -287,14 +283,6 @@ function App() {
           )}
           {activeTab === 'swipe' && (
             <div className="flex-1 flex flex-col justify-center min-h-0 py-0 sm:py-1">
-              {businessRuleError && (
-                <div
-                  role="alert"
-                  className="mb-2 rounded-lg border border-[oklch(0.55_0.20_25)] bg-[oklch(0.30_0.10_25)] px-3 py-2 text-sm text-[oklch(0.85_0.08_25)]"
-                >
-                  {businessRuleError}
-                </div>
-              )}
               <ErrorBoundary label="Swipe">
                 <SwipeCardDemo
                   presidents={presidents}
