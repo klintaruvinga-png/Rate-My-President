@@ -14,6 +14,8 @@ import AnimatedFlag from '@root/AnimatedFlag';
 import SwipeTutorial from './SwipeTutorial';
 import { setUserCountry, setCountryLock, isCountryLocked, getCountryLockUntil } from './onboardingStorage';
 import type { CardData } from './SwipeCard.types';
+import { api } from './api/client';
+import { resolveAvatar } from './api/client';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation' | 'international-only';
 type LocationStatus = 'idle' | 'requesting' | 'success' | 'error';
@@ -214,13 +216,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         }
 
         try {
-          // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
-            { signal: abortController.signal }
-          );
-          const data = await response.json();
-          const countryCode = data.address?.country_code?.toUpperCase();
+          // Coordinates are sent to the application backend (/api/geocode),
+          // which proxies the geocoding request to Nominatim (OpenStreetMap).
+          // The backend returns { countryCode } or null.
+          const geo = await api.geocode(position.coords.latitude, position.coords.longitude);
+          const countryCode = geo?.countryCode?.toUpperCase();
           const matchedCountry = availableCountries.find(
             (country) => country.code.toUpperCase() === countryCode?.toUpperCase()
           );
@@ -419,7 +419,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   // Helper to build presidential card data from selected country
   const buildPresidentialCard = (country: CountryData): CardData => {
-    const avatarUrl = country.avatarUrl ?? `https://api.dicebear.com/7.x/initials/svg?seed=${country.avatarSeed ?? country.code}&backgroundColor=${country.avatarColor ?? '2f4f4f'}`;
+    const avatarUrl = resolveAvatar(country.avatarUrl) || `https://api.dicebear.com/7.x/initials/svg?seed=${country.avatarSeed ?? country.code}&backgroundColor=${country.avatarColor ?? '2f4f4f'}`;
     const today = new Date().toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'short',
@@ -602,7 +602,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 <div className="space-y-1">
                   <h2 className="mb-2 text-2xl font-bold text-[oklch(0.95_0.02_250)] font-['Space_Grotesk']">Where are you from?</h2>
                   <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Space_Grotesk']">We will show your home leader first. <span className="text-[oklch(0.72_0.15_65)]">You can also skip that and use global cards only.</span></p>
-                  <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">We use your location to pick your country. We send your coordinates to Nominatim, an OpenStreetMap service, to detect your country.</p>
+                  <p className="text-xs text-[oklch(0.75_0.02_250)] opacity-60 font-['Space_Grotesk']">We use your location to pick your country. Your coordinates are sent to our backend, which proxies geocoding requests to Nominatim (OpenStreetMap). Coordinates are not stored.</p>
                 </div>
 
                 {/* ── Selected-country preview card ── */}
@@ -824,7 +824,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 Use your location?
               </h3>
               <p className="text-sm text-[oklch(0.75_0.02_250)] font-['Inter'] mb-4">
-                We can detect your country automatically. We send your coordinates to <strong>Nominatim (OpenStreetMap)</strong> to determine your location.
+                We can detect your country automatically. Your coordinates are sent to our backend, which proxies geocoding requests to <strong>Nominatim (OpenStreetMap)</strong>. Coordinates are not stored.
               </p>
               <div className="flex gap-2">
                 <button

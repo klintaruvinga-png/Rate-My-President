@@ -3,7 +3,8 @@ import './App.css';
 import OnboardingDemo from './Onboarding.demo';
 import SwipeCardDemo from './SwipeCard.demo';
 import Leaderboard from './Leaderboard';
-import { api } from './api/client';
+import { api, ApiBusinessError, resolveAvatar } from './api/client';
+import ErrorBoundary from './ErrorBoundary';
 import { getUserId } from './utils/userId';
 import type { VoteAction } from './SwipeCard.types';
 import type { ApiLeaderboardEntry } from './api/client';
@@ -25,6 +26,7 @@ function App() {
   });
 
   const [leaderboardEntries, setLeaderboardEntries] = useState<import('./Leaderboard.types').LeaderboardEntry[]>([]);
+  const [approvalRates, setApprovalRates] = useState<Record<string, number>>({});
   const [presidents, setPresidents] = useState<import('./api/client').President[]>([]);
   const [swipeStatus, setSwipeStatus] = useState<import('./api/client').SwipeStatusView | null>(null);
   const [userId] = useState<string>(() => getUserId());
@@ -36,7 +38,7 @@ function App() {
         id: String(e.id),
         rank: e.rank ?? 0,
         name: e.name,
-        avatarUrl: e.avatar_url ?? '',
+        avatarUrl: resolveAvatar(e.avatar_url),
         approvalPercent: typeof e.approval_rate === 'number' ? e.approval_rate : Number(e.approval_rate) || 0,
         trend: (e.wilson_score ?? 0) >= 0 ? 'up' : 'down',
         voteCount: e.total_votes ?? 0,
@@ -45,6 +47,13 @@ function App() {
         countryFlag: undefined,
       }));
       setLeaderboardEntries(entries);
+      // Build presidentId -> approval % map for the swipe results reveal.
+      const rates: Record<string, number> = {};
+      for (const e of raw) {
+        const pct = typeof e.approval_rate === 'number' ? e.approval_rate : Number(e.approval_rate) || 0;
+        if (Number.isFinite(pct)) rates[String(e.id)] = pct;
+      }
+      setApprovalRates(rates);
     } catch (err) {
       console.error('Leaderboard load error:', err);
     }
@@ -83,14 +92,22 @@ function App() {
     api.registerUser(userId).catch((err) => console.error('User register error:', err));
   }, []);
 
-  const handleSwipe = async (action: VoteAction, cardId: string, cardType: 'home' | 'global'): Promise<boolean> => {
+  const [businessRuleError, setBusinessRuleError] = useState<string | null>(null);
+
+  const handleSwipe = async (action: VoteAction, cardId: string, cardType: 'home' | 'global'): Promise<boolean | string> => {
     if (!action) return false;
+    setBusinessRuleError(null);
     try {
       const res = await api.logSwipe(userId, cardId, cardType, action);
       loadLeaderboard();
       refreshSwipeStatus();
-      return res.allowed !== false;
+      return res.allowed !== false ? true : (res.reason ?? 'Action not allowed.');
     } catch (err) {
+      // Business-rule 400 (daily limit / already voted) carries a reason.
+      if (err instanceof ApiBusinessError) {
+        setBusinessRuleError(err.reason ?? 'Action not allowed.');
+        return false;
+      }
       console.error('Swipe persist error:', err);
       return false;
     }
@@ -263,19 +280,38 @@ function App() {
       {/* Main Content Area */}
       <main className="flex flex-1 min-h-0 flex-col overflow-hidden">
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col min-h-0 px-4 pt-1 pb-0 sm:px-6 sm:pt-2 sm:pb-1 lg:px-8 lg:py-2">
-          {activeTab === 'onboarding' && <OnboardingDemo onComplete={handleOnboardingComplete} />}
+          {activeTab === 'onboarding' && (
+            <ErrorBoundary label="Onboarding">
+              <OnboardingDemo onComplete={handleOnboardingComplete} />
+            </ErrorBoundary>
+          )}
           {activeTab === 'swipe' && (
             <div className="flex-1 flex flex-col justify-center min-h-0 py-0 sm:py-1">
-              <SwipeCardDemo
-                presidents={presidents}
-                homeCountryCode={getUserCountry()}
-                swipeStatus={swipeStatus}
-                onNavigateToLeaderboard={() => handleTabChange('leaderboard')}
-                onSwipe={handleSwipe}
-              />
+              {businessRuleError && (
+                <div
+                  role="alert"
+                  className="mb-2 rounded-lg border border-[oklch(0.55_0.20_25)] bg-[oklch(0.30_0.10_25)] px-3 py-2 text-sm text-[oklch(0.85_0.08_25)]"
+                >
+                  {businessRuleError}
+                </div>
+              )}
+              <ErrorBoundary label="Swipe">
+                <SwipeCardDemo
+                  presidents={presidents}
+                  homeCountryCode={getUserCountry()}
+                  swipeStatus={swipeStatus}
+                  approvalRates={approvalRates}
+                  onNavigateToLeaderboard={() => handleTabChange('leaderboard')}
+                  onSwipe={handleSwipe}
+                />
+              </ErrorBoundary>
             </div>
           )}
-          {activeTab === 'leaderboard' && <Leaderboard entries={leaderboardEntries} />}
+          {activeTab === 'leaderboard' && (
+            <ErrorBoundary label="Leaderboard">
+              <Leaderboard entries={leaderboardEntries} />
+            </ErrorBoundary>
+          )}
         </div>
       </main>
 
