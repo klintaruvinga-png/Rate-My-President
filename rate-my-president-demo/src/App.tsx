@@ -12,8 +12,6 @@ import headerImage from '@root/assets/Obama Header No BG.png';
 import NewsTicker from './NewsTicker';
 // LeaderTicker not used in this demo shell
 import { getHasCompletedOnboarding, setHasCompletedOnboarding, setUserCountry, getUserCountry } from './onboardingStorage';
-import { availableCountries } from './countries';
-import { preloadFlags } from './flagPreloader';
 import { HomeIcon, SwipeIcon, LeaderboardIcon, HelpIcon } from '@root/Icons';
 
 function App() {
@@ -97,7 +95,6 @@ function App() {
     try {
       const res = await api.logSwipe(userId, cardId, cardType, action);
       loadLeaderboard();
-      refreshSwipeStatus();
       return res.allowed !== false ? true : (res.reason ?? 'Action not allowed.');
     } catch (err) {
       // Business-rule 400 (daily limit / already voted) carries a reason.
@@ -106,17 +103,16 @@ function App() {
       }
       console.error('Swipe persist error:', err);
       return false;
+    } finally {
+      // Always refresh lock state from the server — even when logSwipe throws
+      // (e.g. business-rule 400 in a second tab). Without this, the UI stays
+      // unlocked and repeats failing swipes (RMP-13 P1-2).
+      refreshSwipeStatus();
     }
   };
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const helpCloseButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  // Warm the browser HTTP cache for all flag images immediately on app boot.
-  // This ensures flags are ready before SwipeCard mounts after onboarding.
-  useEffect(() => {
-    preloadFlags(availableCountries.map((c) => c.code));
-  }, []);
 
   useEffect(() => {
     if (!showHelpTooltip) return;

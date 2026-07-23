@@ -17,6 +17,12 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         voice: ['Space Grotesk', 'system-ui', 'sans-serif'],
       },
+      borderRadius: {
+        'avatar-list': '8px',
+        'avatar-profile': '12px',
+        'avatar-share': '24px',
+        'avatar-hero': '20px',
+      },
     },
   },
   plugins: [],
