@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction, CardType } from './SwipeCard.types';
 import type { President, SwipeStatusView } from './api/client';
+import { resolveAvatar } from './api/client';
 import { availableCountries } from './countries';
 import { getNextDailyResetTimestamp } from '@root/swipeLockStorage';
 
@@ -33,7 +34,8 @@ function buildCardFromPresident(president: President, type: CardType, approvalRa
   const country = countryEntryFromName(president.country);
   const leaderName = president.name ?? country?.leader ?? 'Unknown';
   const avatarUrl =
-    country?.avatarUrl ?? makeAvatarUrl(president.name ?? country?.code ?? 'X', '2f4f4f');
+    resolveAvatar(country?.avatarUrl) ??
+    makeAvatarUrl(president.name ?? country?.code ?? 'X', '2f4f4f');
 
   return {
     id: String(president.id),

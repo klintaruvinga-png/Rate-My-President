@@ -77,7 +77,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     // Clear reveal timers
     revealTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     revealTimersRef.current = [];
-  }, [card.id]);
+  }, [card?.id]);
 
   useEffect(() => {
     return () => {

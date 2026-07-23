@@ -15,6 +15,7 @@ import SwipeTutorial from './SwipeTutorial';
 import { setUserCountry, setCountryLock, isCountryLocked, getCountryLockUntil } from './onboardingStorage';
 import type { CardData } from './SwipeCard.types';
 import { api } from './api/client';
+import { resolveAvatar } from './api/client';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation' | 'international-only';
 type LocationStatus = 'idle' | 'requesting' | 'success' | 'error';
@@ -418,7 +419,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   // Helper to build presidential card data from selected country
   const buildPresidentialCard = (country: CountryData): CardData => {
-    const avatarUrl = country.avatarUrl ?? `https://api.dicebear.com/7.x/initials/svg?seed=${country.avatarSeed ?? country.code}&backgroundColor=${country.avatarColor ?? '2f4f4f'}`;
+    const avatarUrl = resolveAvatar(country.avatarUrl) ?? `https://api.dicebear.com/7.x/initials/svg?seed=${country.avatarSeed ?? country.code}&backgroundColor=${country.avatarColor ?? '2f4f4f'}`;
     const today = new Date().toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'short',
