@@ -13,7 +13,7 @@ const SkeletonRow = () => (
     </td>
     <td className="px-2 py-2 sm:px-4 sm:py-3">
       <div className="flex items-center gap-1.5 sm:gap-3">
-        <div className="h-7 w-7 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-avatar-list" />
+        <div className="h-7 w-7 sm:h-10 sm:w-10 bg-[oklch(0.28_0.02_250)] rounded-[8px]" />
         <div className="h-2.5 w-12 sm:h-3 sm:w-24 bg-[oklch(0.28_0.02_250)] rounded" />
       </div>
     </td>
@@ -519,7 +519,7 @@ export default function Leaderboard({
                                 target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="8" fill="%230f172a"/><circle cx="60" cy="50" r="24" fill="%23e2e8f0"/><path d="M28 104c8-18 24-26 32-26s24 8 32 26" fill="%23e2e8f0"/></svg>';
                               }
                             }}
-                            className="h-7 w-7 sm:h-10 sm:w-10 rounded-avatar-list bg-[oklch(0.20_0.02_250)] flex-shrink-0 object-cover"
+                              className="h-7 w-7 sm:h-10 sm:w-10 rounded-[8px] bg-[oklch(0.20_0.02_250)] flex-shrink-0 object-cover"
                           />
                           {/* Flag + Name */}
                           <div className="flex items-center gap-1 min-w-0 flex-1">

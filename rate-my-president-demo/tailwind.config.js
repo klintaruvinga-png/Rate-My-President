@@ -17,12 +17,10 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         voice: ['Space Grotesk', 'system-ui', 'sans-serif'],
       },
-      borderRadius: {
-        'avatar-list': '8px',
-        'avatar-profile': '12px',
-        'avatar-share': '24px',
-        'avatar-hero': '20px',
-      },
+      // NOTE: Tailwind v4 (4.3.2) uses CSS-first config. `theme.extend` here is
+      // IGNORED unless an `@config` directive is added to src/index.css. Avatar
+      // rounding is therefore applied inline as `rounded-[8px]` in Leaderboard.tsx
+      // (RMP-13 P2-1) rather than via this token, to guarantee emission.
     },
   },
   plugins: [],
