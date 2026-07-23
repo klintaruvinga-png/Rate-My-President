@@ -34,7 +34,8 @@ function buildCardFromPresident(president: President, type: CardType, approvalRa
   const country = countryEntryFromName(president.country);
   const leaderName = president.name ?? country?.leader ?? 'Unknown';
   const avatarUrl =
-    resolveAvatar(country?.avatarUrl) ??
+    resolveAvatar(president.avatarUrl) ||
+    resolveAvatar(country?.avatarUrl) ||
     makeAvatarUrl(president.name ?? country?.code ?? 'X', '2f4f4f');
 
   return {
@@ -206,16 +207,8 @@ const withLiveApproval = (card: CardData): CardData => {
     return true;
   };
 
-  const currentCard = withLiveApproval(cardsQueue[0]);
-  const nextCard = withLiveApproval(cardsQueue[1]);
-
-  if (!currentCard && !locked) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-white opacity-60">Loading stack...</p>
-      </div>
-    );
-  }
+  const currentCard = cardsQueue[0] ? withLiveApproval(cardsQueue[0]) : undefined;
+  const nextCard = cardsQueue[1] ? withLiveApproval(cardsQueue[1]) : undefined;
 
   if (isLimitReached || locked) {
     return (
@@ -233,6 +226,14 @@ const withLiveApproval = (card: CardData): CardData => {
             </p>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (!currentCard) {
+    return (
+      <div className="flex items-center justify-center">
+        <p className="text-white opacity-60">Loading stack...</p>
       </div>
     );
   }

@@ -5,7 +5,7 @@ This is a **real, buildable codebase**, not docs-only. It is a gamified swipe-to
 
 - **Frontend (source of truth):** `rate-my-president-demo/` — `npm run build` = `tsc -b && vite build`. This is the app that ships.
 - **Static assets & `publicDir`:** `vite.config.ts` sets `publicDir` to the **repo-root `public/`** (NOT `rate-my-president-demo/public/`). Any file you want served at runtime (avatars, `robots.txt`, `sitemap.xml`, `manifest.json`, `favicon.*`) MUST go in repo-root `public/`. Files placed in `rate-my-president-demo/public/` are silently ignored by the build. After changing assets, rebuild and confirm they appear in `dist/` — a missing file in `dist/` means it was in the wrong `public/`.
-- **Backend:** `server/` — Express 5 REST API + Postgres (pg). Daily swipe-lock enforced server-side.
+- **Backend:** `server/` — Express 5 REST API + sql.js. Daily swipe-lock enforced server-side.
 - **Shared modules:** component files at repo root (`Icons.tsx`, `AnimatedFlag.tsx`, `swipeLockStorage.ts`, `assets/`) are imported by the demo via the `@root` alias (`vite.config.ts` maps `@root` → repo root). These are shared, not duplicate.
 - **Docs:** PRD / design theory / PRODUCT.md / DESIGN.md / onboarding + leaderboard integration notes live at repo root and in `docs/`.
 
@@ -17,6 +17,7 @@ This is a **real, buildable codebase**, not docs-only. It is a gamified swipe-to
 - **PRs are real, not drafts:** use `gh pr create` without `--draft` (drafts don't auto-review).
 
 ## Pre-production guardrails (prevent recurrence of audited bugs)
+
 These are enforced rules, not suggestions. Each maps to a production-readiness failure found in the Devin + Antigrav audits.
 
 - **Image optimization is mandatory pre-merge.** No raster image (>50 KB) may be committed to `public/` as PNG/JPG. Convert to WebP at ≤120 KB, longest side ≤450px (avatars) using an automated step. Before committing new assets, run the conversion and verify size. The 35 MB → 312 KB avatar regression was a direct miss here.

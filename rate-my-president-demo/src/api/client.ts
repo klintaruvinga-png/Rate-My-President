@@ -47,8 +47,26 @@ export interface SwipeStatusView {
 // rewrite the extension to keep payloads small.
 export function resolveAvatar(url?: string): string {
   if (!url) return '';
-  if (/^https?:\/\//i.test(url)) return url;
   if (url.startsWith('//')) return `${window.location.protocol}${url}`;
+
+  // Absolute URL: preserve frontend-host URLs, normalize backend-host URLs
+  if (/^https?:\/\//i.test(url)) {
+    const frontendOrigin = window.location.origin;
+    // If URL is already on the frontend host, return it as-is
+    if (url.startsWith(frontendOrigin)) return url;
+
+    // Backend-host URL (e.g. Railway API host): extract the path, normalize
+    // to frontend origin, and apply .png->.webp rewrite
+    try {
+      const urlObj = new URL(url);
+      const webp = urlObj.pathname.replace(/\.png$/i, '.webp');
+      return `${frontendOrigin}${webp}`;
+    } catch {
+      // Invalid URL, return as-is
+      return url;
+    }
+  }
+
   // Relative path (e.g. /avatars/x.png) -> prepend the current frontend origin
   // and prefer the compressed .webp asset.
   const rel = url.startsWith('/') ? url : `/${url}`;
@@ -158,8 +176,8 @@ export const api = {
 
   // GET /api/geocode?lat=..&lon=..  (proxies Nominatim server-side)
   // Service returns { countryCode } (or null on miss).
-  geocode(lat: number, lon: number): Promise<{ countryCode?: string }> {
-    return request<{ countryCode?: string }>(`/geocode?lat=${lat}&lon=${lon}`);
+  geocode(lat: number, lon: number): Promise<{ countryCode?: string } | null> {
+    return request<{ countryCode?: string } | null>(`/geocode?lat=${lat}&lon=${lon}`);
   },
 };
 
