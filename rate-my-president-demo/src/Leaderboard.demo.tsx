@@ -27,7 +27,8 @@ export function LeaderboardDemo() {
 
   const handleLeaderClick = (leaderId: string) => {
     const leader = entries.find((e) => e.id === leaderId);
-    console.log('Clicked leader:', leader?.name);
+    // No console.log in production; analytics hook goes here when added.
+    void leader;
   };
 
   const getLastUpdatedTime = () => {

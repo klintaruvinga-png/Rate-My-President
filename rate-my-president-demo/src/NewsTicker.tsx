@@ -8,17 +8,18 @@ interface NewsItem {
   headline: string;
 }
 
+// NOTE: These are placeholder DEMO headlines, not real news. The product must
+// surface real headlines from an approved allowlist via /api/news before public
+// marketing (see PRD). Fabricated/outdated leader references (Scholz, Kishida)
+// were removed — presenting false political facts is a reputational risk.
 const HEADLINES: NewsItem[] = [
-  { country: 'United Kingdom', countryCode: 'GB', fallbackFlag: '🇬🇧', headline: "Starmer's growth plan faces first parliamentary test" },
-  { country: 'France', countryCode: 'FR', fallbackFlag: '🇫🇷', headline: 'Macron reshuffles cabinet ahead of autumn budget vote' },
-  { country: 'United States', countryCode: 'US', fallbackFlag: '🇺🇸', headline: 'Trump signs executive order on trade tariff expansion' },
-  { country: 'India', countryCode: 'IN', fallbackFlag: '🇮🇳', headline: 'Modi unveils infrastructure spend of $1.2 trillion over five years' },
-  { country: 'Germany', countryCode: 'DE', fallbackFlag: '🇩🇪', headline: 'Scholz coalition reaches deal on climate transition fund' },
-  { country: 'Brazil', countryCode: 'BR', fallbackFlag: '🇧🇷', headline: 'Lula increases minimum wage amid inflation concerns' },
-  { country: 'South Africa', countryCode: 'ZA', fallbackFlag: '🇿🇦', headline: 'Ramaphosa pledges electricity reform at energy summit' },
-  { country: 'Japan', countryCode: 'JP', fallbackFlag: '🇯🇵', headline: 'Kishida secures G7 backing for Indo-Pacific security pact' },
-  { country: 'Canada', countryCode: 'CA', fallbackFlag: '🇨🇦', headline: 'New PM tables landmark indigenous reconciliation bill' },
-  { country: 'Australia', countryCode: 'AU', fallbackFlag: '🇦🇺', headline: 'Albanese announces record defence budget for 2027' },
+  { country: 'United Kingdom', countryCode: 'GB', fallbackFlag: '🇬🇧', headline: "[DEMO] Starmer's growth plan faces first parliamentary test" },
+  { country: 'France', countryCode: 'FR', fallbackFlag: '🇫🇷', headline: '[DEMO] Macron reshuffles cabinet ahead of autumn budget vote' },
+  { country: 'United States', countryCode: 'US', fallbackFlag: '🇺🇸', headline: '[DEMO] Trump signs executive order on trade tariff expansion' },
+  { country: 'India', countryCode: 'IN', fallbackFlag: '🇮🇳', headline: '[DEMO] Modi unveils infrastructure spend over five years' },
+  { country: 'Brazil', countryCode: 'BR', fallbackFlag: '🇧🇷', headline: '[DEMO] Lula increases minimum wage amid inflation concerns' },
+  { country: 'South Africa', countryCode: 'ZA', fallbackFlag: '🇿🇦', headline: '[DEMO] Ramaphosa pledges electricity reform at energy summit' },
+  { country: 'Australia', countryCode: 'AU', fallbackFlag: '🇦🇺', headline: '[DEMO] Albanese announces record defence budget' },
 ];
 
 function buildItems(items: NewsItem[]) {

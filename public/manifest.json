@@ -1,0 +1,17 @@
+{
+  "name": "Rate My President",
+  "short_name": "Rate My President",
+  "description": "Swipe to rate world leaders and see real-time global approval leaderboards.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

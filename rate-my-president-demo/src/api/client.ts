@@ -40,6 +40,22 @@ export interface SwipeStatusView {
   locked: boolean;
 }
 
+// Resolve a backend avatar_url (which may be a relative /avatars/... path) to
+// an absolute URL on the FRONTEND origin. The Vercel frontend serves
+// /avatars/* statically; the Railway backend does not. If the value is already
+// absolute, leave it untouched. PNGs are converted to WebP in the build, so
+// rewrite the extension to keep payloads small.
+export function resolveAvatar(url?: string): string {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  if (url.startsWith('//')) return `${window.location.protocol}${url}`;
+  // Relative path (e.g. /avatars/x.png) -> prepend the current frontend origin
+  // and prefer the compressed .webp asset.
+  const rel = url.startsWith('/') ? url : `/${url}`;
+  const webp = rel.replace(/\.png$/i, '.webp');
+  return `${window.location.origin}${webp}`;
+}
+
 
 export interface President {
   id: string | number;
@@ -58,6 +74,20 @@ export interface UserRegisterResponse {
   token?: string;
 }
 
+// Thrown when the backend returns a business-rule 400 (e.g. daily limit
+// reached, already voted). Carries the server's `allowed`/`reason` so the UI
+// can show the correct message instead of a generic "could not be saved".
+export class ApiBusinessError extends Error {
+  allowed: boolean;
+  reason?: string;
+  constructor(message: string, allowed: boolean, reason?: string) {
+    super(message);
+    this.name = 'ApiBusinessError';
+    this.allowed = allowed;
+    this.reason = reason;
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -65,6 +95,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
+    // Business-rule 400s from /api/swipes/log carry { allowed:false, reason }.
+    if (res.status === 400 && typeof body.allowed === 'boolean') {
+      throw new ApiBusinessError(body.reason ?? 'Action not allowed', body.allowed, body.reason);
+    }
     throw new Error(body.error ?? `Request failed: ${res.status}`);
   }
   return res.json() as Promise<T>;
@@ -123,8 +157,9 @@ export const api = {
   },
 
   // GET /api/geocode?lat=..&lon=..  (proxies Nominatim server-side)
-  geocode(lat: number, lon: number): Promise<{ country_code?: string }> {
-    return request<{ country_code?: string }>(`/geocode?lat=${lat}&lon=${lon}`);
+  // Service returns { countryCode } (or null on miss).
+  geocode(lat: number, lon: number): Promise<{ countryCode?: string }> {
+    return request<{ countryCode?: string }>(`/geocode?lat=${lat}&lon=${lon}`);
   },
 };
 

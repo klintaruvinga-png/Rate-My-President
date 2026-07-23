@@ -26,8 +26,9 @@ function countryEntryFromName(name: string | null | undefined) {
 
 // Build a real CardData from a DB president row, bridged to the curated
 // availableCountries entry. The card id is the REAL DB president id so votes
-// persist against real rows.
-function buildCardFromPresident(president: President, type: CardType): CardData | null {
+// persist against real rows. `approvalRate` (optional) carries the live
+// aggregate approval % from the leaderboard so the results reveal is real.
+function buildCardFromPresident(president: President, type: CardType, approvalRate?: number): CardData | null {
   if (president.id === undefined || president.id === null) return null;
   const country = countryEntryFromName(president.country);
   const leaderName = president.name ?? country?.leader ?? 'Unknown';
@@ -43,7 +44,7 @@ function buildCardFromPresident(president: President, type: CardType): CardData 
     leaderName,
     avatarUrl,
     headerImageUrl: avatarUrl,
-    approvalPercent: 0,
+    approvalPercent: typeof approvalRate === 'number' && !Number.isNaN(approvalRate) ? approvalRate : 0,
     trend: 'neutral',
     headlines: country
       ? [
@@ -72,7 +73,13 @@ function shuffle<T>(arr: T[]): T[] {
 // (if present), then global leaders up to the server-reported remaining count.
 // Home matching compares the user's stored country CODE (e.g. 'US') against
 // each president's resolved country code (derived from its country NAME).
-function buildQueue(presidents: President[], homeCode: string | null, remaining: number): CardData[] {
+// `approvalRates` maps presidentId -> live approval % (from the leaderboard).
+function buildQueue(
+  presidents: President[],
+  homeCode: string | null,
+  remaining: number,
+  approvalRates?: Record<string, number>,
+): CardData[] {
   if (!presidents.length || remaining <= 0) return [];
 
   const normHome = homeCode ? homeCode.toUpperCase() : null;
@@ -84,12 +91,16 @@ function buildQueue(presidents: President[], homeCode: string | null, remaining:
 
   const queue: CardData[] = [];
   if (homePresident) {
-    const homeCard = buildCardFromPresident(homePresident, 'home');
+    const homeCard = buildCardFromPresident(
+      homePresident,
+      'home',
+      approvalRates?.[String(homePresident.id)],
+    );
     if (homeCard) queue.push(homeCard);
   }
   for (const p of globals) {
     if (queue.length >= remaining) break;
-    const card = buildCardFromPresident(p, 'global');
+    const card = buildCardFromPresident(p, 'global', approvalRates?.[String(p.id)]);
     if (card) queue.push(card);
   }
   return queue;
@@ -101,6 +112,7 @@ export function SwipeCardDemo({
   presidents = [],
   homeCountryCode = null,
   swipeStatus = null,
+  approvalRates,
   onNavigateToLeaderboard,
   onSwipe,
 }: {
@@ -108,7 +120,9 @@ export function SwipeCardDemo({
   homeCountryCode?: string | null;
   swipeStatus?: SwipeStatusView | null;
   onNavigateToLeaderboard?: () => void;
-  onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => Promise<boolean> | void;
+  onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => Promise<boolean | string> | void;
+  /** Live approval % per presidentId, from the leaderboard. */
+  approvalRates?: Record<string, number>;
 } = {}) {
   const dailyLimit = swipeStatus?.limit ?? (homeCountryCode ? 2 : 1);
   const used = swipeStatus?.used ?? 0;
@@ -117,7 +131,7 @@ export function SwipeCardDemo({
 
   const [voteHistory, setVoteHistory] = useState<VoteAction[]>([]);
   const [cardsQueue, setCardsQueue] = useState<CardData[]>(() =>
-    buildQueue(presidents, homeCountryCode, remaining || 1)
+    buildQueue(presidents, homeCountryCode, remaining || 1, approvalRates)
   );
   const [isLimitReached, setIsLimitReached] = useState(locked);
   const [swipeError, setSwipeError] = useState<string | null>(null);
@@ -126,7 +140,7 @@ export function SwipeCardDemo({
   useEffect(() => {
     setIsLimitReached(locked);
     if (!locked && presidents.length) {
-      setCardsQueue(buildQueue(presidents, homeCountryCode, remaining || 1));
+      setCardsQueue(buildQueue(presidents, homeCountryCode, remaining || 1, approvalRates));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [presidents, homeCountryCode, locked, remaining]);
@@ -142,29 +156,24 @@ export function SwipeCardDemo({
     // Persist to the server and only advance the queue if it succeeds.
     // This prevents the "queue freezes / skips on error" bug: a failed swipe
     // keeps the current card so the user can retry.
+    //
+    // onSwipe resolves to:
+    //   true            -> accepted (server source of truth for the lock)
+    //   false           -> silent/network failure (keep card, generic retry msg)
+    //   string          -> user-facing reason (e.g. daily limit reached)
+    // The remaining-count is owned by the server; App.refreshSwipeStatus() runs
+    // after each swipe and the effect above rebuilds the queue from `remaining`,
+    // so we never recompute used/voteHistory locally (was a stale-closure race).
     const persist = async () => {
       try {
         const ok = onSwipe ? await onSwipe(voteAction, currentCard.id, currentCard.type) : true;
-        if (!ok) {
-          setSwipeError('Vote could not be saved. Please try again.');
+        if (ok !== true) {
+          setSwipeError(typeof ok === 'string' ? ok : 'Vote could not be saved. Please try again.');
           return;
         }
-        // Advance the queue (server is source of truth for the lock).
-        setCardsQueue((prev) => {
-          const nextQueue = prev.slice(1);
-          const newUsed = used + voteHistory.length + 1;
-          if (!locked && newUsed < dailyLimit && presidents.length) {
-            const more = buildQueue(
-              presidents,
-              homeCountryCode,
-              Math.max(0, dailyLimit - newUsed)
-            );
-            if (nextQueue.length < 1 && more.length) {
-              nextQueue.push(more[0]);
-            }
-          }
-          return nextQueue;
-        });
+        // Advance the queue. Server drives the lock; the swipeStatus effect
+        // rebuilds remaining cards when `remaining` changes.
+        setCardsQueue((prev) => prev.slice(1));
         if (remaining <= 1) {
           setTimeout(() => setIsLimitReached(true), 600);
         }
@@ -225,7 +234,7 @@ export function SwipeCardDemo({
         nextCard={nextCard}
         onVote={handleVote}
         showMicroHistory={true}
-        isLocked={false}
+        isLocked={locked || isLimitReached}
         nextResetAt={getNextDailyResetTimestamp()}
         onShowLeaderboard={onNavigateToLeaderboard}
       />

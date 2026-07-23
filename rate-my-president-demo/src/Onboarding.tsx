@@ -14,6 +14,7 @@ import AnimatedFlag from '@root/AnimatedFlag';
 import SwipeTutorial from './SwipeTutorial';
 import { setUserCountry, setCountryLock, isCountryLocked, getCountryLockUntil } from './onboardingStorage';
 import type { CardData } from './SwipeCard.types';
+import { api } from './api/client';
 
 export type OnboardingScreen = 'intro' | 'mechanic-home' | 'mechanic-global' | 'mechanic-summary' | 'country-select' | 'confirmation' | 'international-only';
 type LocationStatus = 'idle' | 'requesting' | 'success' | 'error';
@@ -214,13 +215,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         }
 
         try {
-          // TODO: In production, use a server-side proxy or approved provider instead of calling Nominatim directly from the browser
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&addressdetails=1`,
-            { signal: abortController.signal }
-          );
-          const data = await response.json();
-          const countryCode = data.address?.country_code?.toUpperCase();
+          // Geocoding is proxied through the backend (/api/geocode) to avoid
+          // calling Nominatim directly from the browser (rate limits, no auth,
+          // CORS). The backend returns { countryCode } or null.
+          const geo = await api.geocode(position.coords.latitude, position.coords.longitude);
+          const countryCode = geo?.countryCode?.toUpperCase();
           const matchedCountry = availableCountries.find(
             (country) => country.code.toUpperCase() === countryCode?.toUpperCase()
           );
