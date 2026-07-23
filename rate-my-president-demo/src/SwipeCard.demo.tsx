@@ -136,14 +136,31 @@ export function SwipeCardDemo({
   const [isLimitReached, setIsLimitReached] = useState(locked);
   const [swipeError, setSwipeError] = useState<string | null>(null);
 
-  // Rebuild the queue when real data / lock state arrives from the server.
-  useEffect(() => {
-    setIsLimitReached(locked);
-    if (!locked && presidents.length) {
-      setCardsQueue(buildQueue(presidents, homeCountryCode, remaining || 1, approvalRates));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [presidents, homeCountryCode, locked, remaining]);
+// Rebuild the queue when the president set, home country, or lock state
+// changes (initial load / unlock). Remaining-count changes are NOT a trigger:
+// after a successful swipe handleVote advances the queue via slice(1), and
+// rebuilding here on every remaining tick would re-insert the already-voted
+// home card for a home-country user (server returns 400 "already voted").
+// NOTE: approvalRates is also intentionally excluded — live approval % is
+// applied at render time via withLiveApproval(), avoiding mid-session reshuffle.
+useEffect(() => {
+  setIsLimitReached(locked);
+  if (!locked && presidents.length) {
+    setCardsQueue(buildQueue(presidents, homeCountryCode, remaining || 1, approvalRates));
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [presidents, homeCountryCode, locked]);
+
+// Apply the live approval % at render time (not baked into the queued card),
+// so a card built before the leaderboard loads still shows the real figure
+// once approvalRates arrives — no queue rebuild / reshuffle required.
+const withLiveApproval = (card: CardData): CardData => {
+  const live = approvalRates?.[card.id];
+  if (typeof live === 'number' && !Number.isNaN(live)) {
+    return { ...card, approvalPercent: live };
+  }
+  return card;
+};
 
   const handleVote = (action: VoteAction): boolean => {
     const voteAction = action ?? 'skip';
@@ -187,8 +204,8 @@ export function SwipeCardDemo({
     return true;
   };
 
-  const currentCard = cardsQueue[0];
-  const nextCard = cardsQueue[1];
+  const currentCard = withLiveApproval(cardsQueue[0]);
+  const nextCard = withLiveApproval(cardsQueue[1]);
 
   if (!currentCard && !locked) {
     return (
