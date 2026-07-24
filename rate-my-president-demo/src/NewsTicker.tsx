@@ -55,7 +55,7 @@ export function NewsTicker() {
 
       <span className="ticker-label">
         <span className="ticker-live-dot" />
-        News
+        [DEMO MODE]
       </span>
 
       <span className="ticker-divider" aria-hidden="true" />

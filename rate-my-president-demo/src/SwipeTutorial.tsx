@@ -349,11 +349,13 @@ export const SwipeTutorial: React.FC = () => {
 
       {/* Floating Synchronized Text Prompts */}
       <div className="relative h-5 w-full text-center mt-2 text-[10px] font-semibold uppercase tracking-widest font-['Space_Grotesk'] text-[oklch(0.72_0.15_65)] sm:h-6 sm:mt-3 sm:text-xs">
-        <span className="absolute inset-x-0 mx-auto opacity-0 animate-prompt-right">
-          👉 Swipe Right to Like
+        <span className="absolute inset-x-0 mx-auto opacity-0 animate-prompt-right flex items-center justify-center gap-1">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          Swipe Right to Like
         </span>
-        <span className="absolute inset-x-0 mx-auto opacity-0 animate-prompt-left">
-          👈 Swipe Left to No Like
+        <span className="absolute inset-x-0 mx-auto opacity-0 animate-prompt-left flex items-center justify-center gap-1">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+          Swipe Left to No Like
         </span>
       </div>
     </div>

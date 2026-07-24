@@ -1,2 +1,12 @@
 node_modules/
 server/.env
+dist/
+.venv/
+.vscode/
+*.log
+trace*.txt
+pr_comments.json
+demo-app/
+*.db
+*.sqlite
+.DS_Store

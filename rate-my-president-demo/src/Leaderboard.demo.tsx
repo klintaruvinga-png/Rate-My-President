@@ -25,9 +25,8 @@ export function LeaderboardDemo() {
     setSelectedWindow(window);
   };
 
-  const handleLeaderClick = (leaderId: string) => {
-    const leader = entries.find((e) => e.id === leaderId);
-    console.log('Leader clicked:', leader);
+  const handleLeaderClick = (_leaderId: string) => {
+    // Reserved for future leader detail view. No-op for now (no console in prod).
   };
 
   const getLastUpdatedTime = () => {

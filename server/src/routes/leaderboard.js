@@ -38,23 +38,27 @@ router.get('/', async (req, res) => {
     }
 
     const params = [];
-    let filterClause = '';
+    let timeJoinClause = '';
+    let whereClause = '';
     const now = new Date();
     let startDate;
 
     if (window === 'day') {
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      filterClause = 'AND sl.created_at >= ?';
+      timeJoinClause = 'AND sl.created_at >= ?';
       params.push(startDate.toISOString());
     } else if (window === 'week') {
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 7);
-      filterClause = 'AND sl.created_at >= ?';
+      timeJoinClause = 'AND sl.created_at >= ?';
       params.push(startDate.toISOString());
     }
 
     if (region) {
-      filterClause += (filterClause ? ' AND ' : '') + 'p.region = ?';
+      // Region is on `presidents p`, not on `swipe_logs sl`, so it belongs in
+      // WHERE (not the LEFT JOIN ON). Keeping the time filter in the ON clause
+      // is required so non-matching presidents still appear with 0 votes.
+      whereClause = 'AND p.region = ?';
       params.push(region);
     }
 
@@ -71,8 +75,9 @@ router.get('/', async (req, res) => {
         COALESCE(COUNT(sl.id), 0)::int as total_votes
       FROM presidents p
       LEFT JOIN swipe_logs sl ON p.id = sl.president_id
-        ${filterClause}
+        ${timeJoinClause}
       WHERE p.active = 1
+        ${whereClause}
       GROUP BY p.id
       ORDER BY total_votes DESC
     `;
