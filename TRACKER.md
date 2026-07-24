@@ -24,7 +24,7 @@ Synced from: EOM/projects.json
 | RMP-07 | Connect demo app to backend API (swipes/leaderboard/preferences) | Done | — |
 | RMP-08 | Auth & user management (JWT, session persistence) | Not started | — |
 | RMP-09 | Domain + HTTPS setup (geolocation requires HTTPS) | Done | Kudzie |
-| RMP-10 | Automated tests (unit/integration/E2E) | In progress | KudzBot |
+| RMP-10 | Automated tests (unit/integration/E2E) — baseline established: frontend vitest (streakStorage 7 tests) + server node:test (leaderboard SQL 3 tests); orphaned swipeLockStorage.test.ts removed | In progress (baseline) | KudzBot |
 | RMP-11 | Country lock redesign (permanent lock, safety model) — RELEASE DEPENDENCY | scheduled_for_planning | pipeline-planning-agent |
 | RMP-13 | **Production-readiness audit remediation (Wave A–E)** — RELEASE BLOCKER | In progress | KudzBot |
 | RMP-14 | Pre-prod guardrails encoded in AGENTS.md | Done | KudzBot |
@@ -79,6 +79,7 @@ React+Vite+TS frontend + Express5/Postgres backend. Combined audit (2026-07-23) 
 
 ## Changelog
 
+- 2026-07-24 — PR #44 (tests): Establish test baseline. Frontend vitest suite (streakStorage 7/7) + server node:test suite (leaderboard SQL 3/3, incl. P0 region-500 regression). Removed orphaned swipeLockStorage.test.ts (imported non-existent module). Server `test` script = `node --test "tests/*.test.cjs"`; demo `test` script = vitest (already present). RMP-10 baseline established.
 - 2026-07-24 — PR #43 (Wave A PR #3): UI #5 Daily Prompt (rotating microcopy, DESIGN.md:223) + UI #7 Streak Counter (amber accent, StreakIcon, aria-live, client-side localStorage streak per anonymous UUID). **Wave A + B now fully merged** (PR #41/#42/#43; CodeRabbit autofixes applied + lockfile `name:"git"` corruption reverted + build/tsc gate green). Remaining: CHECKLIST pre-deploy non-code checks + Wave C/D/E.
 - 2026-07-24 — PR #42 (Wave A PR #2): P1-1 wire time-window+region to real API; P1-3/P1-4 make `handleVote` return `Promise<boolean>` (reveal-on-accept, rollback-on-reject). P1-5 verified already satisfied (confirmation screen). UI #5/#7 (Daily Prompt, Streak Counter) deferred to PR #3 (net-new components).
 - 2026-07-24 — PR #41 merged: P0-1 leaderboard region 500 (live 200 verified), P1-2 finally-refresh, PERF eager-flag-preload removed, UI #1/#2/#3, P2-1 avatar rounding (v4 fix), Arch A10/A11/A12 cleanup, P1-6 [DEMO MODE], P1-7 APP_READINESS rewrite. Remaining Wave A items (P1-1, P1-3/P1-4, P1-5, UI #5, UI #7) deferred to PR #2.
