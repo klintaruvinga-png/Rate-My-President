@@ -301,6 +301,7 @@ function App() {
                   homeCountryCode={getUserCountry()}
                   swipeStatus={swipeStatus}
                   approvalRates={approvalRates}
+                  userId={userId}
                   onNavigateToLeaderboard={() => handleTabChange('leaderboard')}
                   onSwipe={handleSwipe}
                 />

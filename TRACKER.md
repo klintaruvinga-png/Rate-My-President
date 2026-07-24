@@ -49,8 +49,8 @@ Synced from: EOM/projects.json
 - [x] **UI #1** Avatar fallback `rx="60"` → `rx="20"` in `SwipeCard.tsx`. **MERGED #41.**
 - [x] **UI #2** Replace 👉👈 emoji in `SwipeTutorial.tsx` with Arrow SVG icons. **MERGED #41.**
 - [x] **UI #3** Delete `console.log` in `Leaderboard.demo.tsx`. **MERGED #41.**
-- [ ] **UI #5** Add Daily Prompt row to `SwipeCard` (rotating microcopy per DESIGN.md:223). *(next task — PR #3)*
-- [ ] **UI #7** Implement Streak Counter component (amber accent, Streak icon, `aria-live`). *(next task — PR #3)*
+- [x] **UI #5** Add Daily Prompt row to `SwipeCard` (rotating microcopy per DESIGN.md:223). **MERGED #43.**
+- [x] **UI #7** Implement Streak Counter component (amber accent, Streak icon, `aria-live`). **MERGED #43.** (client-side localStorage streak per anonymous UUID; no backend change)
 - [x] **P2-1** Avatar rounding: applied `rounded-[8px]` in `Leaderboard.tsx` (Tailwind v4 ignores config tokens; arbitrary value emits). **MERGED #41.**
 - [x] **Arch A10/A11/A12** Delete unused `rate-my-president-demo/src/AnimatedFlag.tsx`; remove `pr_comments.json` + empty `demo-app/`; expand `.gitignore`; untrack `node_modules/`. **MERGED #41.**
 
@@ -75,9 +75,10 @@ Synced from: EOM/projects.json
 - [ ] **Arch A15+** Backend TS + Zod validation (optional, long-term).
 
 ## Notes
-React+Vite+TS frontend + Express5/Postgres backend. Combined audit (2026-07-23) consolidated 6 scans: 1 P0 (leaderboard region 500 — FIXED LIVE), 8 P1, plus design-spec violations, third-party flag-CDN dependency, architecture/perf debt. Antigrav "Railway crash" + "TS 6.0" claims excluded as false positives. Wave A/B merged via PR #41 + PR #42. Not launch-ready: remaining blockers are A6 (P2 edge-case race), UI #5/#7 (Daily Prompt, Streak Counter → PR #3), and all of Wave C/D/E per CHECKLIST pre-deploy items.
+React+Vite+TS frontend + Express5/Postgres backend. Combined audit (2026-07-23) consolidated 6 scans: 1 P0 (leaderboard region 500 — FIXED LIVE), 8 P1, plus design-spec violations, third-party flag-CDN dependency, architecture/perf debt. Antigrav "Railway crash" + "TS 6.0" claims excluded as false positives. **Wave A + B fully merged** (PR #41, #42, #43). Remaining launch-gate items are the non-code CHECKLIST pre-deploy checks (manual swipe-lock log, Wilson recalc, secrets scan, AGENTS.md currency) + Wave C/D/E hardening. A6 (vote UNIQUE-race edge) remains a low-priority follow-up.
 
 ## Changelog
+- 2026-07-24 — PR #43 (Wave A PR #3): UI #5 Daily Prompt (rotating microcopy, DESIGN.md:223) + UI #7 Streak Counter (amber accent, StreakIcon, aria-live, client-side localStorage streak per anonymous UUID). **Wave A + B now fully merged** (PR #41/#42/#43). Remaining: CHECKLIST pre-deploy non-code checks + Wave C/D/E.
 - 2026-07-24 — PR #42 (Wave A PR #2): P1-1 wire time-window+region to real API; P1-3/P1-4 make `handleVote` return `Promise<boolean>` (reveal-on-accept, rollback-on-reject). P1-5 verified already satisfied (confirmation screen). UI #5/#7 (Daily Prompt, Streak Counter) deferred to PR #3 (net-new components).
 - 2026-07-24 — PR #41 merged: P0-1 leaderboard region 500 (live 200 verified), P1-2 finally-refresh, PERF eager-flag-preload removed, UI #1/#2/#3, P2-1 avatar rounding (v4 fix), Arch A10/A11/A12 cleanup, P1-6 [DEMO MODE], P1-7 APP_READINESS rewrite. Remaining Wave A items (P1-1, P1-3/P1-4, P1-5, UI #5, UI #7) deferred to PR #2.
 - 2026-07-23 — Combined 6-scan audit added (docs/COMBINED_AUDIT_2026-07-23.md); RMP-13 reopened as audit-remediation tracker; readiness milestone re-opened `in_progress`.

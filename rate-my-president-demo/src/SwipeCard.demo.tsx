@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import SwipeCard from './SwipeCard';
 import type { CardData, VoteAction, CardType } from './SwipeCard.types';
+import { recordVoteToday, getStreak } from './streakStorage';
+import StreakCounter from './StreakCounter';
+import DailyPrompt from './DailyPrompt';
 import type { President, SwipeStatusView } from './api/client';
 import { resolveAvatar } from './api/client';
 import { availableCountries } from './countries';
@@ -118,12 +121,15 @@ export function SwipeCardDemo({
   approvalRates,
   onNavigateToLeaderboard,
   onSwipe,
+  userId,
 }: {
   presidents?: President[];
   homeCountryCode?: string | null;
   swipeStatus?: SwipeStatusView | null;
   onNavigateToLeaderboard?: () => void;
   onSwipe?: (action: VoteAction, cardId: string, cardType: 'home' | 'global') => Promise<boolean | string> | void;
+  /** Anonymous local UUID (privacy-preserving). Used only for client-side streak tracking. */
+  userId?: string;
   /** Live approval % per presidentId, from the leaderboard. */
   approvalRates?: Record<string, number>;
 } = {}) {
@@ -138,6 +144,7 @@ export function SwipeCardDemo({
   );
   const [isLimitReached, setIsLimitReached] = useState(locked);
   const [swipeError, setSwipeError] = useState<string | null>(null);
+  const [streak, setStreak] = useState<number>(() => getStreak(userId ?? ''));
 
 // Rebuild the queue when the president set, home country, or lock state
 // changes (initial load / unlock). Remaining-count changes are NOT a trigger:
@@ -198,6 +205,10 @@ const withLiveApproval = (card: CardData): CardData => {
         // Advance the queue. Server drives the lock; the swipeStatus effect
         // rebuilds remaining cards when `remaining` changes.
         setCardsQueue((prev) => prev.slice(1));
+        // Update the client-side streak (privacy-preserving, per anonymous UUID).
+        if (userId) {
+          setStreak(recordVoteToday(userId));
+        }
         if (remaining <= 1) {
           // Delay limit overlay until SwipeCard's final reveal animation (800ms) completes.
           setTimeout(() => setIsLimitReached(true), 800);
@@ -245,6 +256,10 @@ const withLiveApproval = (card: CardData): CardData => {
 
   return (
     <div className="h-full flex flex-col">
+      <div className="flex items-center justify-center mb-2">
+        <StreakCounter streak={streak} />
+      </div>
+
       {swipeError && (
         <div
           role="alert"
@@ -253,6 +268,8 @@ const withLiveApproval = (card: CardData): CardData => {
           {swipeError}
         </div>
       )}
+
+      <DailyPrompt leaderName={currentCard?.leaderName} />
 
       <SwipeCard
         card={currentCard}
