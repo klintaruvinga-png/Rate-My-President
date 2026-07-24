@@ -165,7 +165,7 @@ const withLiveApproval = (card: CardData): CardData => {
   return card;
 };
 
-  const handleVote = (action: VoteAction): boolean => {
+  const handleVote = (action: VoteAction): boolean | Promise<boolean> => {
     const voteAction = action ?? 'skip';
     const currentCard = cardsQueue[0];
     if (!currentCard) return false;
@@ -184,27 +184,32 @@ const withLiveApproval = (card: CardData): CardData => {
     // The remaining-count is owned by the server; App.refreshSwipeStatus() runs
     // after each swipe and the effect above rebuilds the queue from `remaining`,
     // so we never recompute used/voteHistory locally (was a stale-closure race).
-    const persist = async () => {
+    //
+    // We RETURN the persist promise (not `true`) so SwipeCard's onVote awaits the
+    // real server outcome: the results overlay only reveals on acceptance, and the
+    // card snaps back on rejection (RMP-13 P1-3/P1-4).
+    const persist = async (): Promise<boolean> => {
       try {
         const ok = onSwipe ? await onSwipe(voteAction, currentCard.id, currentCard.type) : true;
         if (ok !== true) {
           setSwipeError(typeof ok === 'string' ? ok : 'Vote could not be saved. Please try again.');
-          return;
+          return false;
         }
         // Advance the queue. Server drives the lock; the swipeStatus effect
         // rebuilds remaining cards when `remaining` changes.
         setCardsQueue((prev) => prev.slice(1));
         if (remaining <= 1) {
-          setTimeout(() => setIsLimitReached(true), 600);
+          // Delay limit overlay until SwipeCard's final reveal animation (800ms) completes.
+          setTimeout(() => setIsLimitReached(true), 800);
         }
+        return true;
       } catch (err) {
         console.error('Swipe persist error:', err);
         setSwipeError('Vote could not be saved. Please try again.');
+        return false;
       }
     };
-    void persist();
-
-    return true;
+    return persist();
   };
 
   const currentCard = cardsQueue[0] ? withLiveApproval(cardsQueue[0]) : undefined;
