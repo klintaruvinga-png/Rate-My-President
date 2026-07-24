@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { recordVoteToday, getStreak } from './streakStorage';
 
 // Minimal in-memory localStorage shim so streakStorage (which reads
