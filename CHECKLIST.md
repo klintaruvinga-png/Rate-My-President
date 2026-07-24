@@ -35,7 +35,7 @@ Last updated: 2026-07-23
 - [x] **P1-5** Geolocated home country requires explicit user confirm (no auto-advance). **VERIFIED already satisfied (confirmation screen).**
 - [ ] **P1-6** No fabricated `[DEMO]` headlines on the live site; ticker shows `[DEMO MODE]` when placeholder.
 - [x] **UI #1/#2/#3** Avatar fallback rounded-square (`rx=20`); no emoji in interactive UI; no `console.log` in shipped components.
-- [x] **UI #5/#7** Daily Prompt row present; Streak Counter implemented. **PR #43 committed, pending build+tsc gate.**
+- [x] **UI #5/#7** Daily Prompt row present; Streak Counter implemented. **MERGED #43.**
 - [x] **P2-1** Avatars render rounded (`rounded-[8px]` in Leaderboard.tsx; Tailwind v4 ignores config tokens).
 - [ ] Manual verification of swipe lock logged.
 - [ ] Leaderboard score recalculated against known inputs.
