@@ -14,7 +14,7 @@ export function StreakCounter({ streak }: StreakCounterProps) {
   return (
     <div
       aria-live="polite"
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold font-['Space_Grotesk'] border transition-colors ${
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold font-['Space_Grotesk'] border transition-colors motion-reduce:transition-none ${
         active
           ? 'bg-[oklch(0.72_0.15_65)]/15 text-[oklch(0.72_0.15_65)] border-[oklch(0.72_0.15_65)]/40'
           : 'bg-[oklch(0.20_0.02_250)] text-[oklch(0.75_0.02_250)] border-[oklch(0.28_0.02_250)]'
