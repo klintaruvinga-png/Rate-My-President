@@ -33,7 +33,7 @@ Last updated: 2026-07-23
 - [x] **P1-3/P1-4** Failed swipe rolls back the card (no frozen results overlay); `handleVote` awaits server result. **MERGED #42.**
 - [x] **PERF P1/P2** No eager third-party flag preload on boot; flags self-hosted or lazy-loaded.
 - [x] **P1-5** Geolocated home country requires explicit user confirm (no auto-advance). **VERIFIED already satisfied (confirmation screen).**
-- [x] **P1-6** No fabricated `[DEMO]` headlines on the live site; ticker shows `[DEMO MODE]` when placeholder.
+- [ ] **P1-6** No fabricated `[DEMO]` headlines on the live site; ticker shows `[DEMO MODE]` when placeholder.
 - [x] **UI #1/#2/#3** Avatar fallback rounded-square (`rx=20`); no emoji in interactive UI; no `console.log` in shipped components.
 - [ ] **UI #5/#7** Daily Prompt row present; Streak Counter implemented. *(PR #3 — net-new components)*
 - [x] **P2-1** Avatars render rounded (`rounded-[8px]` in Leaderboard.tsx; Tailwind v4 ignores config tokens).

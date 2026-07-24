@@ -199,7 +199,8 @@ const withLiveApproval = (card: CardData): CardData => {
         // rebuilds remaining cards when `remaining` changes.
         setCardsQueue((prev) => prev.slice(1));
         if (remaining <= 1) {
-          setTimeout(() => setIsLimitReached(true), 600);
+          // Delay limit overlay until SwipeCard's final reveal animation (800ms) completes.
+          setTimeout(() => setIsLimitReached(true), 800);
         }
         return true;
       } catch (err) {

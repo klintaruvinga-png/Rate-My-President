@@ -35,22 +35,22 @@ Synced from: EOM/projects.json
 **Launch-blocking (must merge before public marketing):**
 
 ### Wave A — Ship-blockers
-- [x] **P0-1** Leaderboard `GET /api/leaderboard?region=` 500 (server SQL: move region to WHERE, keep time filter in LEFT JOIN ON). **MERGED #41 — live 200 verified.** + regression test. (regression test still TODO)
+- [ ] **P0-1** Leaderboard `GET /api/leaderboard?region=` 500 (server SQL: move region to WHERE, keep time filter in LEFT JOIN ON). **MERGED #41 — live 200 verified; regression test still TODO.**
 - [x] **P1-2** Move `refreshSwipeStatus()` into `finally` in `App.handleSwipe` (fixes multi-tab lock desync on business-rule 400). **MERGED #41.**
 - [ ] **A6 (P2 edge)** Harden vote UNIQUE-race: catch Postgres unique violation → clean `400 {allowed:false}` (pre-check already covers normal path).
-- [x] **P1-3 / P1-4** SwipeCard results: `handleVote` now returns `Promise<boolean>` (awaits server persist) so the results overlay reveals only on acceptance and the card rolls back on rejection. `onNext` not needed — SwipeCard's existing rollback path handles it. **MERGED #42.**
+- [x] **P1-3 / P1-4** SwipeCard results: `handleVote` now returns `boolean | Promise<boolean>` (awaits server persist when a card exists, synchronous `false` when queue empty) so the results overlay reveals only on acceptance and the card rolls back on rejection. `onNext` not needed — SwipeCard's existing rollback path handles it. **MERGED #42.**
 - [x] **PERF P1/P2** Stop eager `preloadFlags()`; flags lazy-load per card on visibility (removes third-party CDN dependency). **MERGED #41.**
 - [x] **P1-1** Wire time-window (Today/This Week) + region pills to real API. `App` now holds `selectedWindow`/`selectedRegion` state, `loadLeaderboard(window, region)` queries the API, handlers wired to `Leaderboard`. **MERGED #42.** (Leaderboard still client-filters region as a safety net — harmless redundancy.)
 - [x] **P1-5** Geolocated home country requires explicit confirm — VERIFIED already satisfied: `Onboarding` routes `getCurrentPosition` success to a `confirmation` screen (no auto-assign/auto-advance). No code change needed.
-- [x] **P1-6** Remove/hide fabricated `[DEMO]` news on live site; add `[DEMO MODE]` bar label. **MERGED #41.**
+- [ ] **P1-6** Remove/hide fabricated `[DEMO]` news on live site; add `[DEMO MODE]` bar label. **MERGED #41 — live verification pending.**
 - [x] **P1-7** Rewrite `APP_READINESS.md` (was stale: claimed SQLite/mock data). **MERGED #41.**
 
 ### Wave B — Design-spec compliance + hygiene
 - [x] **UI #1** Avatar fallback `rx="60"` → `rx="20"` in `SwipeCard.tsx`. **MERGED #41.**
 - [x] **UI #2** Replace 👉👈 emoji in `SwipeTutorial.tsx` with Arrow SVG icons. **MERGED #41.**
 - [x] **UI #3** Delete `console.log` in `Leaderboard.demo.tsx`. **MERGED #41.**
-- [ ] **UI #5** Add Daily Prompt row to `SwipeCard` (rotating microcopy per DESIGN.md:223). *(next task — PR #2)*
-- [ ] **UI #7** Implement Streak Counter component (amber accent, Streak icon, `aria-live`). *(next task — PR #2)*
+- [ ] **UI #5** Add Daily Prompt row to `SwipeCard` (rotating microcopy per DESIGN.md:223). *(next task — PR #3)*
+- [ ] **UI #7** Implement Streak Counter component (amber accent, Streak icon, `aria-live`). *(next task — PR #3)*
 - [x] **P2-1** Avatar rounding: applied `rounded-[8px]` in `Leaderboard.tsx` (Tailwind v4 ignores config tokens; arbitrary value emits). **MERGED #41.**
 - [x] **Arch A10/A11/A12** Delete unused `rate-my-president-demo/src/AnimatedFlag.tsx`; remove `pr_comments.json` + empty `demo-app/`; expand `.gitignore`; untrack `node_modules/`. **MERGED #41.**
 
@@ -75,7 +75,7 @@ Synced from: EOM/projects.json
 - [ ] **Arch A15+** Backend TS + Zod validation (optional, long-term).
 
 ## Notes
-React+Vite+TS frontend + Express5/Postgres backend. Combined audit (2026-07-23) consolidated 6 scans: 1 P0 (leaderboard region 500 — FIXED LIVE), 8 P1, plus design-spec violations, third-party flag-CDN dependency, architecture/perf debt. Antigrav "Railway crash" + "TS 6.0" claims excluded as false positives. Not launch-ready until Wave A + B merge and CHECKLIST pre-deploy items ticked. Wave A/B merged via PR #41 + PR #42; remaining: A6 (edge), UI #5/#7 (Daily Prompt, Streak Counter → PR #3), and all of Wave C/D/E.
+React+Vite+TS frontend + Express5/Postgres backend. Combined audit (2026-07-23) consolidated 6 scans: 1 P0 (leaderboard region 500 — FIXED LIVE), 8 P1, plus design-spec violations, third-party flag-CDN dependency, architecture/perf debt. Antigrav "Railway crash" + "TS 6.0" claims excluded as false positives. Wave A/B merged via PR #41 + PR #42. Not launch-ready: remaining blockers are A6 (P2 edge-case race), UI #5/#7 (Daily Prompt, Streak Counter → PR #3), and all of Wave C/D/E per CHECKLIST pre-deploy items.
 
 ## Changelog
 - 2026-07-24 — PR #42 (Wave A PR #2): P1-1 wire time-window+region to real API; P1-3/P1-4 make `handleVote` return `Promise<boolean>` (reveal-on-accept, rollback-on-reject). P1-5 verified already satisfied (confirmation screen). UI #5/#7 (Daily Prompt, Streak Counter) deferred to PR #3 (net-new components).

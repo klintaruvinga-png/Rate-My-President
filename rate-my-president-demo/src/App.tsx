@@ -30,10 +30,14 @@ function App() {
   const [presidents, setPresidents] = useState<import('./api/client').President[]>([]);
   const [swipeStatus, setSwipeStatus] = useState<import('./api/client').SwipeStatusView | null>(null);
   const [userId] = useState<string>(() => getUserId());
+  const leaderboardRequestGen = useRef<number>(0);
 
   const loadLeaderboard = async (window: 'day' | 'week' | 'all' = selectedWindow, region: string = selectedRegion) => {
+    const requestId = ++leaderboardRequestGen.current;
     try {
       const raw: ApiLeaderboardEntry[] = await api.getLeaderboard(window, region === 'global' ? undefined : region);
+      // Only update state if this is still the latest request (prevent stale responses from race).
+      if (requestId !== leaderboardRequestGen.current) return;
       const entries: import('./Leaderboard.types').LeaderboardEntry[] = raw.map((e) => ({
         id: String(e.id),
         rank: e.rank ?? 0,
