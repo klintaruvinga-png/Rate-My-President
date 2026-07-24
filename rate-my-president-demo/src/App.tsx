@@ -24,14 +24,16 @@ function App() {
   });
 
   const [leaderboardEntries, setLeaderboardEntries] = useState<import('./Leaderboard.types').LeaderboardEntry[]>([]);
+  const [selectedWindow, setSelectedWindow] = useState<'day' | 'week' | 'all'>('all');
+  const [selectedRegion, setSelectedRegion] = useState<string>('global');
   const [approvalRates, setApprovalRates] = useState<Record<string, number>>({});
   const [presidents, setPresidents] = useState<import('./api/client').President[]>([]);
   const [swipeStatus, setSwipeStatus] = useState<import('./api/client').SwipeStatusView | null>(null);
   const [userId] = useState<string>(() => getUserId());
 
-  const loadLeaderboard = async () => {
+  const loadLeaderboard = async (window: 'day' | 'week' | 'all' = selectedWindow, region: string = selectedRegion) => {
     try {
-      const raw: ApiLeaderboardEntry[] = await api.getLeaderboard('all');
+      const raw: ApiLeaderboardEntry[] = await api.getLeaderboard(window, region === 'global' ? undefined : region);
       const entries: import('./Leaderboard.types').LeaderboardEntry[] = raw.map((e) => ({
         id: String(e.id),
         rank: e.rank ?? 0,
@@ -55,6 +57,16 @@ function App() {
     } catch (err) {
       console.error('Leaderboard load error:', err);
     }
+  };
+
+  const handleWindowChange = (window: 'day' | 'week' | 'all') => {
+    setSelectedWindow(window);
+    loadLeaderboard(window, selectedRegion);
+  };
+
+  const handleRegionChange = (region: string) => {
+    setSelectedRegion(region);
+    loadLeaderboard(selectedWindow, region);
   };
 
   const loadPresidents = async () => {
@@ -293,7 +305,13 @@ function App() {
           )}
           {activeTab === 'leaderboard' && (
             <ErrorBoundary label="Leaderboard">
-              <Leaderboard entries={leaderboardEntries} />
+              <Leaderboard
+                entries={leaderboardEntries}
+                selectedWindow={selectedWindow}
+                selectedRegion={selectedRegion}
+                onWindowChange={handleWindowChange}
+                onRegionChange={handleRegionChange}
+              />
             </ErrorBoundary>
           )}
         </div>

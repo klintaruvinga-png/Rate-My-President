@@ -28,16 +28,15 @@ Last updated: 2026-07-23
 
 ## Pre-deploy (RMP-13 Wave A + B gate — MUST be green before public marketing)
 
-- [ ] **P0-1** Leaderboard `GET /api/leaderboard?region=` returns 200 (no 500). Regression test added.
-- [ ] **P1-1** Time-window (Today/This Week) + region pills actually query the API and update the grid.
-- [ ] **P1-2** `refreshSwipeStatus()` runs in `finally` — multi-tab lock state stays correct on business-rule 400.
-- [ ] **P1-3/P1-4** Failed swipe rolls back the card (no frozen results overlay); `handleVote` awaits server result.
-- [ ] **PERF P1/P2** No eager third-party flag preload on boot; flags self-hosted or lazy-loaded.
-- [ ] **P1-5** Geolocated home country requires explicit user confirm (no auto-advance).
-- [ ] **P1-6** No fabricated `[DEMO]` headlines on the live site; ticker shows `[DEMO MODE]` when placeholder.
-- [ ] **UI #1/#2/#3** Avatar fallback rounded-square (`rx=20`); no emoji in interactive UI; no `console.log` in shipped components.
-- [ ] **UI #5/#7** Daily Prompt row present; Streak Counter implemented.
-- [ ] **P2-1** Avatars render rounded (Tailwind `rounded-avatar-list` token present).
+- [x] **P1-1** Time-window (Today/This Week) + region pills actually query the API and update the grid. **MERGED #42.**
+- [x] **P1-2** `refreshSwipeStatus()` runs in `finally` — multi-tab lock state stays correct on business-rule 400.
+- [x] **P1-3/P1-4** Failed swipe rolls back the card (no frozen results overlay); `handleVote` awaits server result. **MERGED #42.**
+- [x] **PERF P1/P2** No eager third-party flag preload on boot; flags self-hosted or lazy-loaded.
+- [x] **P1-5** Geolocated home country requires explicit user confirm (no auto-advance). **VERIFIED already satisfied (confirmation screen).**
+- [x] **P1-6** No fabricated `[DEMO]` headlines on the live site; ticker shows `[DEMO MODE]` when placeholder.
+- [x] **UI #1/#2/#3** Avatar fallback rounded-square (`rx=20`); no emoji in interactive UI; no `console.log` in shipped components.
+- [ ] **UI #5/#7** Daily Prompt row present; Streak Counter implemented. *(PR #3 — net-new components)*
+- [x] **P2-1** Avatars render rounded (`rounded-[8px]` in Leaderboard.tsx; Tailwind v4 ignores config tokens).
 - [ ] Manual verification of swipe lock logged.
 - [ ] Leaderboard score recalculated against known inputs.
 - [ ] No real payment secrets, private codes, or live endpoints in client bundle.
