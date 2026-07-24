@@ -41,6 +41,7 @@ Last updated: 2026-07-23
 - [ ] Leaderboard score recalculated against known inputs.
 - [ ] No real payment secrets, private codes, or live endpoints in client bundle.
 - [ ] AGENTS.md updated to current (code-bearing) state.
+- [x] **Test suites present + green**: frontend `npm test` (vitest, streakStorage 7/7) + server `npm test` (node:test, leaderboard SQL 3/3 incl. P0 region-500 regression). Run both before merging.
 
 ## Open gaps
 
